@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fleek NPS - Login</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;align-items:center;justify-content:center;min-height:100vh}
+    .card{background:#fff;border-radius:20px;padding:48px 40px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.2);text-align:center}
+    .logo{font-size:2.2rem;font-weight:900;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+    .subtitle{color:#6b7280;margin-bottom:32px;font-size:0.95rem}
+    input{width:100%;padding:13px 16px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:1rem;margin-bottom:14px;outline:none;transition:border-color 0.2s}
+    input:focus{border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,0.15)}
+    button{width:100%;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;transition:opacity 0.2s}
+    button:hover{opacity:0.9}
+    .error{color:#dc2626;font-size:0.85rem;margin:-6px 0 12px;display:none}
+    .hint{margin-top:20px;font-size:0.8rem;color:#9ca3af}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">⚡ Fleek</div>
+    <p class="subtitle">NPS Dashboard — Admin Login</p>
+    <input type="text" id="username" placeholder="Username" autocomplete="username"/>
+    <input type="password" id="password" placeholder="Password" autocomplete="current-password"/>
+    <p class="error" id="error">Invalid credentials. Please try again.</p>
+    <button onclick="login()">Login →</button>
+    <p class="hint">Default: admin / fleek2024</p>
+  </div>
+  <script>
+    function login(){
+      const u=document.getElementById('username').value.trim();
+      const p=document.getElementById('password').value;
+      const err=document.getElementById('error');
+      if(u==='admin'&&p==='fleek2024'){sessionStorage.setItem('nps_auth','true');window.location.href='/dashboard';}
+      else{err.style.display='block';}
+    }
+    document.addEventListener('keydown',e=>{if(e.key==='Enter')login();});
+    if(sessionStorage.getItem('nps_auth')==='true')window.location.href='/dashboard';
+  </script>
+</body>
+</html>
