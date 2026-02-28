@@ -913,7 +913,7 @@
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById('tab-' + id).classList.add('active');
-    document.querySelectorAll('.tab')[['overview','geography','departments','history','upload','responses','automation'].indexOf(id)]?.classList.add('active');
+    document.querySelectorAll('.tab')[['overview','geography','departments','history','upload','responses','automation','report'].indexOf(id)]?.classList.add('active');
     if (id === 'overview') renderOverview();
     else if (id === 'geography') renderGeography();
     else if (id === 'departments') renderDepartments();
@@ -921,6 +921,7 @@
     else if (id === 'upload') renderUploadLog();
     else if (id === 'responses') renderResponses();
     else if (id === 'automation') renderAutomation();
+    else if (id === 'report') renderReport();
   }
   
   // ===================== INIT =====================
@@ -929,6 +930,179 @@
     if (active) showTab(active);
   }
   
+
+  // ===================== REPORT GENERATOR =====================
+  function renderReport() {
+    const allData = getAll();
+    const periods = [...new Set(allData.map(e => e.period))].sort();
+    const sel = document.getElementById('reportPeriod');
+    if (!sel) return;
+    sel.innerHTML = '<option value="all">All Time</option>' + 
+      periods.map(p => `<option value="${p}">${p}</option>`).join('');
+  }
+
+  function buildReportHTML(periodFilter, title, subtitle, includeGeo, includeDept) {
+    const allData = getAll();
+    const filtered = periodFilter === 'all' ? allData : allData.filter(e => e.period === periodFilter);
+    const { nps, total, pro, pass, det } = calcNPS(filtered);
+    
+    const proCount = filtered.filter(e => e.score >= 9).length;
+    const passCount = filtered.filter(e => e.score >= 7 && e.score <= 8).length;
+    const detCount = filtered.filter(e => e.score <= 6).length;
+    const proP = total ? Math.round(proCount/total*100) : 0;
+    const passP = total ? Math.round(passCount/total*100) : 0;
+    const detP = total ? Math.round(detCount/total*100) : 0;
+    
+    // Dept breakdown
+    const depts = ['Seller Support','Quality Check','Payments','Shipping & Logistics','Vendor App','Sales & Visibility'];
+    const deptRows = depts.map(dept => {
+      const d = filtered.filter(e => e.department === dept);
+      if (!d.length) return '';
+      const n = calcNPS(d);
+      return `<tr><td>${dept}</td><td>${n.total}</td><td>${n.nps > 0 ? '+' : ''}${n.nps}</td><td>${Math.round(d.filter(e=>e.score>=9).length/n.total*100)}%</td><td>${Math.round(d.filter(e=>e.score<=6).length/n.total*100)}%</td></tr>`;
+    }).filter(Boolean).join('');
+
+    // Geo breakdown
+    const zones = ['PK Zone','PK Non-Zone','India','ROW'];
+    const geoRows = zones.map(zone => {
+      const d = filtered.filter(e => e.geography === zone);
+      if (!d.length) return '';
+      const n = calcNPS(d);
+      return `<tr><td>${zone}</td><td>${n.total}</td><td>${n.nps > 0 ? '+' : ''}${n.nps}</td><td>${Math.round(d.filter(e=>e.score>=9).length/n.total*100)}%</td><td>${Math.round(d.filter(e=>e.score<=6).length/n.total*100)}%</td></tr>`;
+    }).filter(Boolean).join('');
+
+    // History
+    const periods = [...new Set(allData.map(e => e.period))].sort();
+    const histRows = periods.map(p => {
+      const d = allData.filter(e => e.period === p);
+      const n = calcNPS(d);
+      return `<tr><td>${p}</td><td>${n.total}</td><td style="font-weight:700;color:${n.nps >= 0 ? '#3DD68C' : '#E8453C'}">${n.nps > 0 ? '+' : ''}${n.nps}</td></tr>`;
+    }).join('');
+
+    const npsColor = nps >= 0 ? '#3DD68C' : '#E8453C';
+    const now = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' });
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>${title || 'Fleek NPS Report'}</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0c0c0c;color:#f0f0f0;font-family:'Syne',sans-serif;padding:40px 24px;max-width:900px;margin:0 auto}
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;padding-bottom:24px;border-bottom:1px solid #252525}
+.logo-area img{height:36px;filter:brightness(0) invert(1)}
+.report-meta{text-align:right}
+.report-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px;color:#F5C518}
+.report-sub{color:#888;font-size:0.8rem;margin-top:4px}
+.hero{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:32px}
+.metric-card{background:#161616;border:1px solid #252525;border-radius:14px;padding:20px;text-align:center}
+.metric-label{font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:#888;margin-bottom:8px}
+.metric-value{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:2px}
+.nps-val{color:#F5C518}
+.pro-val{color:#3DD68C}
+.det-val{color:#E8453C}
+.pass-val{color:#F59E0B}
+.section{background:#161616;border:1px solid #252525;border-radius:14px;padding:24px;margin-bottom:20px}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:#F5C518;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:0.88rem}
+th{text-align:left;padding:8px 12px;border-bottom:1px solid #252525;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;color:#888;font-weight:600}
+td{padding:10px 12px;border-bottom:1px solid #181818;color:#f0f0f0}
+tr:last-child td{border-bottom:none}
+.bar-wrap{background:#1e1e1e;border-radius:6px;height:10px;overflow:hidden;margin-top:12px}
+.bar-fill{height:100%;border-radius:6px;transition:width 0.5s}
+.bar-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
+.bar-label{font-size:0.82rem;min-width:100px;color:#888}
+.bar-val{font-size:0.82rem;font-weight:700;min-width:40px;text-align:right}
+.footer{margin-top:40px;padding-top:20px;border-top:1px solid #252525;display:flex;justify-content:space-between;align-items:center;color:#555;font-size:0.75rem}
+.internal-badge{background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.2);color:#F5C518;padding:4px 12px;border-radius:6px;font-size:0.7rem;letter-spacing:1px}
+@media print{body{background:#fff;color:#000}.metric-card,.section{background:#f8f8f8;border-color:#ddd}.metric-label,.section-title,.report-sub,.bar-label,.footer{color:#555}th{color:#555}td{color:#222}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo-area">
+    <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek"/>
+    <div style="font-size:0.7rem;letter-spacing:2px;color:#888;margin-top:6px;text-transform:uppercase">Seller Experience</div>
+  </div>
+  <div class="report-meta">
+    <div class="report-title">${title || 'NPS REPORT'}</div>
+    <div class="report-sub">${subtitle || ''}</div>
+    <div class="report-sub">Generated: ${now}</div>
+    <span class="internal-badge">INTERNAL</span>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="metric-card"><div class="metric-label">Overall NPS</div><div class="metric-value nps-val" style="color:${npsColor}">${nps > 0 ? '+' : ''}${nps}</div></div>
+  <div class="metric-card"><div class="metric-label">Promoters</div><div class="metric-value pro-val">${proP}%</div></div>
+  <div class="metric-card"><div class="metric-label">Passives</div><div class="metric-value pass-val">${passP}%</div></div>
+  <div class="metric-card"><div class="metric-label">Detractors</div><div class="metric-value det-val">${detP}%</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">Score Distribution</div>
+  <div class="bar-row"><span class="bar-label">Promoters (9–10)</span><div style="flex:1"><div class="bar-wrap"><div class="bar-fill" style="width:${proP}%;background:#3DD68C"></div></div></div><span class="bar-val" style="color:#3DD68C">${proP}%</span></div>
+  <div class="bar-row"><span class="bar-label">Passives (7–8)</span><div style="flex:1"><div class="bar-wrap"><div class="bar-fill" style="width:${passP}%;background:#F59E0B"></div></div></div><span class="bar-val" style="color:#F59E0B">${passP}%</span></div>
+  <div class="bar-row"><span class="bar-label">Detractors (0–6)</span><div style="flex:1"><div class="bar-wrap"><div class="bar-fill" style="width:${detP}%;background:#E8453C"></div></div></div><span class="bar-val" style="color:#E8453C">${detP}%</span></div>
+  <div style="margin-top:16px;color:#888;font-size:0.82rem">Total responses: <strong style="color:#f0f0f0">${total}</strong> &nbsp;·&nbsp; Period: <strong style="color:#F5C518">${periodFilter === 'all' ? 'All Time' : periodFilter}</strong></div>
+</div>
+
+${histRows ? `<div class="section">
+  <div class="section-title">Historical Trend</div>
+  <table><thead><tr><th>Period</th><th>Responses</th><th>NPS</th></tr></thead><tbody>${histRows}</tbody></table>
+</div>` : ''}
+
+${includeDept && deptRows ? `<div class="section">
+  <div class="section-title">By Department</div>
+  <table><thead><tr><th>Department</th><th>Responses</th><th>NPS</th><th>Promoters</th><th>Detractors</th></tr></thead><tbody>${deptRows}</tbody></table>
+</div>` : ''}
+
+${includeGeo && geoRows ? `<div class="section">
+  <div class="section-title">By Geography</div>
+  <table><thead><tr><th>Zone</th><th>Responses</th><th>NPS</th><th>Promoters</th><th>Detractors</th></tr></thead><tbody>${geoRows}</tbody></table>
+</div>` : ''}
+
+<div class="footer">
+  <span>Fleek Seller Experience · Internal Report · Confidential</span>
+  <span>${now}</span>
+</div>
+</body>
+</html>`;
+  }
+
+  function generateReport() {
+    const periodFilter = document.getElementById('reportPeriod')?.value || 'all';
+    const title = 'NPS REPORT';
+    const subtitle = document.getElementById('reportAuthor')?.value || 'Seller Support Team';
+    const includeGeo = true;
+    const includeDept = true;
+    
+    const html = buildReportHTML(periodFilter, title, subtitle, includeGeo, includeDept);
+    const blob = new Blob([html], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    const period = periodFilter === 'all' ? 'AllTime' : periodFilter.replace(' ','_');
+    a.download = `Fleek_NPS_Report_${period}.html`;
+    a.click();
+    showToast('📄 Report downloaded!', 'success');
+  }
+  
+  function previewReport() {
+    const periodFilter = document.getElementById('reportPeriod')?.value || 'all';
+    const title = 'NPS REPORT';
+    const subtitle = document.getElementById('reportAuthor')?.value || 'Seller Support Team';
+    const includeGeo = true;
+    const includeDept = true;
+    
+    const html = buildReportHTML(periodFilter, title, subtitle, includeGeo, includeDept);
+    const win = window.open('', '_blank');
+    win.document.write(html);
+    win.document.close();
+  }
+
   populateSelects();
   renderOverview();
   renderUploadLog();
