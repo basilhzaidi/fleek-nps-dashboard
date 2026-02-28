@@ -9,310 +9,218 @@
     *{box-sizing:border-box;margin:0;padding:0}
     :root{--bg:#0c0c0c;--card:#161616;--border:#252525;--yellow:#F5C518;--red:#E8453C;--green:#3DD68C;--text:#f0f0f0;--muted:#888}
     body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 16px 60px}
-    
-    .header{width:100%;max-width:640px;text-align:center;padding:48px 0 32px}
-    .logo{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--yellow);letter-spacing:2px;display:flex;align-items:center;justify-content:center;gap:12px}
-    .logo span{font-size:2rem}
-    .tagline{color:var(--muted);margin-top:8px;font-size:1rem}
-    .survey-title{font-size:1.5rem;font-weight:800;margin-top:16px;line-height:1.3}
+    .header{width:100%;max-width:640px;text-align:center;padding:48px 0 24px}
+    .logo-img{width:48px;height:48px;object-fit:cover;border-radius:10px;margin-bottom:10px}
+    .brand{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--yellow);letter-spacing:4px}
+    .tagline{color:var(--muted);margin-top:6px;font-size:0.85rem;text-transform:uppercase;letter-spacing:1.5px}
+    .survey-title{font-size:1.45rem;font-weight:800;margin-top:20px;line-height:1.4}
     .survey-title em{color:var(--yellow);font-style:normal}
-    
+    .supplier-notice{width:100%;max-width:640px;background:rgba(61,214,140,0.06);border:1px solid rgba(61,214,140,0.2);border-radius:12px;padding:14px 18px;margin-bottom:24px;display:flex;align-items:center;gap:12px;font-size:0.82rem;color:var(--muted);line-height:1.5}
+    .supplier-notice .icon{font-size:1.3rem;flex-shrink:0}
+    .supplier-notice strong{color:var(--green)}
     .card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;width:100%;max-width:640px;margin-bottom:20px}
-    .section-label{font-family:'Bebas Neue',sans-serif;font-size:0.8rem;letter-spacing:2px;color:var(--yellow);margin-bottom:16px}
-    
-    /* NPS Score Selector */
-    .nps-question{font-size:1.1rem;font-weight:700;margin-bottom:20px;line-height:1.4}
-    .nps-scale{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;margin-bottom:12px}
-    .nps-btn{flex:1;min-width:44px;height:52px;border-radius:10px;border:2px solid var(--border);background:transparent;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all 0.15s}
+    .section-label{font-family:'Bebas Neue',sans-serif;font-size:0.78rem;letter-spacing:2.5px;color:var(--yellow);margin-bottom:16px}
+    .nps-question{font-size:1.05rem;font-weight:700;margin-bottom:20px;line-height:1.5}
+    .nps-scale{display:flex;gap:6px;margin-bottom:12px}
+    .nps-btn{flex:1;height:52px;border-radius:10px;border:2px solid var(--border);background:transparent;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.15s}
     .nps-btn:hover{border-color:var(--yellow);color:var(--yellow);transform:translateY(-2px)}
-    .nps-btn.selected.detractor{background:var(--red);border-color:var(--red);color:#fff}
-    .nps-btn.selected.passive{background:#F59E0B;border-color:#F59E0B;color:#fff}
-    .nps-btn.selected.promoter{background:var(--green);border-color:var(--green);color:#0c0c0c}
-    .nps-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:0.75rem;margin-top:6px}
-    
-    /* Form fields */
+    .nps-btn.selected.det{background:var(--red);border-color:var(--red);color:#fff}
+    .nps-btn.selected.pas{background:#F59E0B;border-color:#F59E0B;color:#fff}
+    .nps-btn.selected.pro{background:var(--green);border-color:var(--green);color:#0c0c0c}
+    .nps-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:0.72rem;margin-top:6px}
     .field{margin-bottom:20px}
-    .field label{display:block;font-weight:700;font-size:0.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+    .field label{display:block;font-weight:700;font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px}
     .field input,.field select,.field textarea{width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.95rem;padding:12px 16px;outline:none;transition:border-color 0.2s}
     .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--yellow)}
-    .field select option{background:#0c0c0c}
+    .field select option{background:#111}
     .field textarea{resize:vertical;min-height:90px}
-    .required{color:var(--red)}
-    
-    /* Star importance ratings */
-    .importance-grid{display:grid;gap:12px}
-    .importance-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .importance-row .topic{font-size:0.9rem;flex:1}
-    .star-row{display:flex;gap:4px}
-    .star{font-size:1.3rem;cursor:pointer;color:var(--border);transition:color 0.1s}
-    .star.active{color:var(--yellow)}
-    
-    /* Submit */
-    .submit-btn{width:100%;padding:18px;background:var(--yellow);color:#0c0c0c;border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;cursor:pointer;transition:opacity 0.2s;margin-top:8px}
-    .submit-btn:hover{opacity:0.9}
+    .req{color:var(--red)}
+    .star-grid{display:grid;gap:14px}
+    .star-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .star-row .topic{font-size:0.88rem;flex:1}
+    .stars{display:flex;gap:5px}
+    .star{font-size:1.4rem;cursor:pointer;color:var(--border);transition:color 0.1s}
+    .star.on{color:var(--yellow)}
+    .submit-btn{width:100%;padding:18px;background:var(--yellow);color:#0c0c0c;border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;cursor:pointer;transition:opacity 0.2s}
+    .submit-btn:hover{opacity:0.88}
     .submit-btn:disabled{opacity:0.4;cursor:not-allowed}
-    
-    /* Success */
-    .success-screen{display:none;text-align:center;padding:60px 32px}
-    .success-icon{font-size:4rem;margin-bottom:20px}
-    .success-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--green);letter-spacing:2px}
-    .success-msg{color:var(--muted);margin-top:12px;font-size:1rem;line-height:1.6}
-    
-    .progress-bar{height:3px;background:var(--border);border-radius:2px;width:100%;max-width:640px;margin-bottom:32px}
-    .progress-fill{height:100%;background:var(--yellow);border-radius:2px;transition:width 0.3s;width:0%}
-
-    .error-msg{color:var(--red);font-size:0.82rem;margin-top:6px;display:none}
+    .err-msg{color:var(--red);font-size:0.8rem;margin-top:8px;display:none}
+    .progress-bar{height:3px;background:var(--border);border-radius:2px;width:100%;max-width:640px;margin-bottom:28px}
+    .prog{height:100%;background:var(--yellow);border-radius:2px;transition:width 0.4s;width:0%}
+    .success-card{display:none;text-align:center;padding:60px 32px}
+    .success-icon{font-size:4rem;margin-bottom:16px}
+    .success-ttl{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--green);letter-spacing:2px}
+    .success-msg{color:var(--muted);margin-top:12px;font-size:0.95rem;line-height:1.7}
+    footer{width:100%;max-width:640px;text-align:center;padding:20px 0;font-size:0.75rem;color:var(--border)}
+    footer img{width:18px;height:18px;border-radius:4px;vertical-align:middle;margin-right:6px;opacity:0.5}
   </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="logo"><span>⚡</span> FLEEK</div>
-  <p class="tagline">Seller Experience Survey</p>
+  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAIAAAABc2X6AAAV10lEQVR4nO1beXhcxZGvqu45JVmyJMuHfDu+8W1sAyY2dgw2lyHA2s7ChngXAsGEhZDDC4GQJYGPEEggIQu5YAnnBwkBHAhHAnEWY5uswcZgG9bxfciypJE0M2/e667aP97cM5JlE7LfAvXVN/NeT1e/+nV1V1dXv0Fv1/3wcSL6v1bg700fO8A671oAAAAzF/61X45HaqesbLbwbyVbWpgvi11UkzwgoFG4XKNF1wI9or+PbGmhZD7zoZZtEDSAKSN7RKsUUFHXfniy3diwp7JaxJb59Wg1L+3TD0u4qPJRy2ooHtLHRPJBEB8zYMwbzD2VzQLuYc915dJKew1LxItKSit0r2sPZY/wXA1Qbkh3SyIAAHh08/woZEWOsfGeyGooO4d71PYxyvVI9kNr/Fjm8LH2fk9lP9T2/0ZO6/8PaQFbEIqUC1r8WVF+pHQvi4UOtYufMj8iAEjmOZj5kLJPzsmiiCACAKZrZtsq474wY+FcbOPLFAwNKfPEvKW/G1kGpYhF2AqSrw8WNJADlHZnWd0ERHKwy/Y2gggDsBUiQswbqgJSJiwRAdAopqCJMj4durJuSU0ptCKSwpa2ZDQcjFZQKmmU6mqKFa86AgggKGkTll0g/X7UARXsFeJkylrGgtbKx2EkBcRSTFyusCyxiCgCgPS9NUZVBn/9/DunL3+g3eFQVBtjs79281wQFjGKMBBEQVuqgDHWWhMMqXBd2Ao8/eym3ftiWhMz57XGZZUnEAZgEJ8FhAEkfZsrz9xmS0AylfMqIMfaHeZ0oYgFhrfe3ffquu0Llvxs176OcFXQc71y7Rc8l4W1xoOH4lfe8LxrGNPlwtYaYwg5XB0OVYa3bj98yx2vTjnjR7f+5E8N/So9z0WQMjrnlBcA0eA7rXx/LpmvgvJ834GFdQAALXO4Krrq2c2v/WXvPbefmTwc10rZeOL1N3cT4bqNu+de8LNf37d08sT+ydZOHdD57VtmRZRtU1hQhd55/8DCTw8Lh9E4nh9OhCIBCAfbmxMvvrTpV09tfGH1+wnHBYA1T1wSCSunPaUUdalzplynu/bIhCIiAFQwDXNzTyGYjsS5p4187Y29h/e11VQElYade9q2bG9mloCmv+5tmb/0l4/++IIFnxnhNHcqrXxZIghUBm3C5bQHQEIxieTJ0/oGwyEnngyFFEbD4PGGzU2PPrv5iefe2b7rMAAQEREuO2PCrFmNqdZ2pbrCUhhalt8tFUkgiEggoJDISxnDFgQRARExL5Cz1lZUBr64bELz4c7aqhoI0ltbDiaSLhF6hhVRS0fyzOW/+vlt51y4ZEKypUMhKa1iHam1q3eePGNgKEAiDAAiwgxaIaAb7h05tL/jd79958GnNr+ydoe1FgAUISIKQCigv7niJHYcAegJEADQWCbuLyZhIa127411OnbU0JpIZRQIwFhwjeexYfbxE6Ebd8d/qsYYdhw3UhFY8+ZuACBEBrHMROhZueiaX+9vav/ql050Yh1kJBjAG37wp0d/uHj44EonaRElHNIQDXDC/nn9gYefeeepF7bub2pPq6uIWSyLUmCtXHrh8aPH1zuHO5WmHoaj3cTSeQsSAwEYgUXLn6iu0hNG95s8tu+UMfWjR9QOaIhEqsKA4uN3PfFcRgQREMdd99Y+AJDMOs4siEhEX7v1pYNNHbdff4qXTIYUrbxsRkPvoLhepCoIinbv7Hjqxfcffmbz62/u8QWVUgDCzMYyABARs9TVRL92yQzbGUfiklChq/UV0Nt0ZQZW0V4zdycA1nK4ruL+/9z0heuey7bRqzIyYnDNxNF1U8f3nTKmYeSQ6n59IhDWvj9sO5gaufAXza0JRJQ8hRBBERnLF5457me3LQyhASKIBNx2949rDzz09DvPvvJ+aywJAIhIhP5aU2AlpYy13716zsqrZzqH41pTof7p76Lb9NPdjV/KNlQS8OUA+/YJ94qccfFvn1u9PRjQnrHMBdOhtjo6cmjvSWP6TB5bP2vqgF174ud86ckitFkKaOUZu2DWsIfuWtQecx9dte2x57Zs2tqUhSQiVqQ0yiNCERnaWPPm0xdFQpYtUqZSV4ALItrUxstKtclRXsTCDMGIem97fPpnH0mkXBAQEEQkTC8tRbpFw4GE45VrFH0vqBRZy4P71cQ6nVinAwCEiATMULaPfFKEluXnN5+6/MLxyZaE1lQcbEvBIpv/XAAgFOmOIXetUNyO1Oix1ddffjyzEJEIMIuxbCyLACIqQq1IKwKALtACIPpwrGUi3HWgLdbpaEVEyCLWFg/gUrRTxjZcdO5It61TkQBzNzoXMqMw5YVgPlsRW3KbLkGNTlv86uUTpo3rZ6xVhYuyiNgMfugirUFEIDxxdN+GuioAEAFCRERjmbmnu/6brpwZCLGxbNkwmBII3TGBGBAD4mXYgti8EpstEfGEPbFeMODdfd2Jvhm7yaeUt5MIAF536ZTqCuUX+MFuT3AqRZZlwQmDz5zf6MTi0ZBEakIBnYWQ1dkUspfPlMGTjT8tiAWwuVuwCBbEapJwVCmUZMw54YSGK5dNsCyKyhzWFMYjeRoTssjsKf3Onj8g5TKUzDWi8oKZvhJF9O0VU4FdQdjf6q68Zd3K768PRBVbmxfqW4DMbUloTdmouoCl4JqZSUFLLPXqa/uQEBW67Z03fnnSiIHVloWoSEf0baYUldX+6n8aH45SKKggDzEiaqWYRQRIqXLmRWZZuuhTs2Y0pDodtvyXDc2D+kbOWzDEOi5iZhOS1T8HsgCLlh6leARFmPnAoUQy6UTCyktBdW99x1ePX3zVS0S5KAcRFOKY4XXv7WxLeSarqAgoQmaZPLruzLkDTCJVFc2hykxjO2ZY7aeG9H5u9Y7SpZtZKsKBG754HDtxQQigPXNeA0T6Q8qmkh4C9mxaAKGYIzIJW+PVV9OSxYMiARFrtTJOa/zshQOWLhxhLStFmXUbWSQQoMe+P3/5eWMCSlkrIqAVIZEAXHPR+GDEEngVEQUAhKAVsYhlvnzp2F/dOmfTtiZmLhoZikgEln921KhxVam4q8CgWCeZTDbHnbiDwtADFGksBUO8CxaxIGw947QlJT3PGUBs0rn92kn1NWERQULIRJEb3m36zn1/ufMb0zc+fdYVS8bW1kSMZWPsmKG9zzu1fyrmkMZIRBMhIBrLo4fU/ObueffcOutrt6/Zua9DIRat6f7N3qa4pDxEP0PABKKICbjQBx2BCfxoRjLzVkqmcd6vpNIZCwAhZCfuNQ4O3bJiMrNkJzILaKXWv908e+mqAXXBH90y7Y1HTv32iskDGyq+/LlR0WpyjQXimgrNLMBwzYXjX3tw/jnnDbzh5jf+sP5AQClTMjp9mz/zyu6t77WHQsDMXep8JEZn3TmFjXef2U1n2thCIEhaQSJhIpXhzyxf/Yf1+/2owK+nFRnL08bUr7p3dt96BaSaDrjhIESC4BqpqA3/wxVr3v6f9vtumjF7Wg2gfeW/2hZc9kcAsVx+kdIKjZVvXTbxxqvHxFtSOp0eKz0rLoVQUI6ptWcfzSmPCIBW2NJur/ju2zdePnbU4CAFcPN7zvHLXvKshbzlN6iVa+zsKX2f/MHMXiHRCljSrkhpWruxY8ywyrp6lYoblwMzlr28dWeMMNdlReTvIkYNrt7w+LwAGZaen8akM4LpdkAssMmsXRbAZNhfjf1PA2IAjB+BWOv1isIVSwZ5bsoKx9tTE6dW3v6ViQB+XI1EqBW5xgLAnzccvPI7b+ogecYIGwSLYK3nnjQlWh018TYHA+rz163fsiMGQCygFWmF/hY/31bMQoTbdsVeWdsUiCprrYiRnNp5XKozZ67BaEkfiOelqTLWh/yCnO2QGVjMnOm9gBAUhEPBbZtjbR02oIlFUJgZGCQcDMw7vs/S0xvnTK7xUilCybM/JhMeAITDtGtvhzE8bkTNjr2JhOMam586w3xzEwIDPLBq5+nz6xg8BZQ/oIqMmv7KpbjSWwx01pza06EB6X2M1hCMaAC1/2DqxddbHn9h/x/WH0qmcluFiSOrL1jQeO4pfcePiIISThnPSpH2mT6UgELVKwgOtLR5u/an3t0Z37it861t7W9u69h/qD2/MiIKSFUksPGxOYP7KzclePTv5Gjw97T+mUZe4xmN0ncCQgCRsIKQirfJy39qffzF/b/786GmloRfsSISGDmocvHcfucv6Hvc+F5QgZB0IWHBE0KlkI01iJjnQQQEgkHluNi8Pd4Wc5vauKnFOXDYiyc9RFGERYkLEVEKOxLeky8f+Mq/DLIJV/sN+j1ZeFqSQZR/DgQAgM6aBeW7Iju005WFRW/ZkXzy5YNPvrxvy45036v0jommjas7eWptXRV2xL3DMdsRt65nXWNdz3YmeMzQip9cP9a4xj9KAEARDob0ilu2vLz+cHPMbY25pWdImD0uypDvuiaNqln34Ili3YJTr/JHXJLpiPS9Bsy+uVRo4TwbE0k8Bdfctu3+Z7enxTSBgGWx1o9MZe2mg2s3HSzfdwDzZvbR0YDrSSgQYGBrmAUpGgZS23Z1ZMAApR2ViABLmTSAnxXbuC322lsdc2dWJ+KeIizYspWuVljglQhRdc9ESkRXhPTNV42957ppk0bVAoAxLJC/sxFEUIRa5VhlPqNh/blFg8WVaGXFspUbH1rVHK6NWFbAcNan+yOiVoQAzGCsv532V+Py65MiFJAHV+2BQBBAIWpEynBZCBpR526ddYsLrYt5vZItEhEMaKRoIBGzj72470cPv/ff7/rZcESArhZPpdBamT+j//P3nqiDdNXNm+56ZEt978iaB+cNawywkcNtMv68F1raHT/RWUp+++lIU0B81yVQVx16+8kFfXorz2Tmbs/WZQJQAApIARFghv1CUAAEQIIKiDyLiTZPK/nC+UPWPDjv4dtOPmFig58lJkJVvEnM0Wc/M1D3r/zWXVvvemRLKKiaW5PLv/mGYMiz0K9fZPr4Oh9YOVH0208Hkf54IwwHVWtH6tnVh1RliBnK6twVZwaDEELmGjDH6ZL0r1orEErGPGBedlbj6gfm/eYHc+dOH+CrVRT7IIK1Eg3rixcP+8W92266d6PW5HkS0Gr1hoM33PVOtFeFEM6Z3qdr88i0sQ0zJzQM7FtRGQmJgGU2lh3XMMvdD211E6iVhvR4LtS5C9bp0YCQc3M5xYuPbf0wjRR5lm3MKA3nnNp/8bwBv3/90L/d8dabW5sob6PjJ58/d/rw1ze1X3LjGn94i4BY0Ypu/eXbJ03pc8bZjbMn90Eojih9/xzU6pHvzR45ItLanIrFubklceBwak+Ts/dA555Dzp4DiR07EyOHh1JOpq8xX+fyJ9u6JCtVtJaXyWZorUK9o6mYY40kOw2zXXjmoJfXHNiwpUkp5HSohJYlEFC9e1UuufYVBv94IB1sMQsAXvrttW9MWDRlYl1jQ+Wepg5CyKJGAmEYN7z3kMZQqjNVVUE1VTR0YG9QBCoTcrriJF3PRaKiHEY+hCL8kD/0fcauGAFFUAf1vib381e/ds9Df2VQShGitjGz70BnYY+KCBDSjx99u7nNyVrez1qxgCLcdyh+8crXq/r2OmFSPRZOYz85NOf4vsGKoGViRhGV6DSJmJds9RKtqWRrKpV0NSICAnYPoaCQes6CBEiIyEBDGysvPn9EKIQiREQKMdZpSwaQpFwv4biIyMIAqIjSWSskY1kremHNnnt/uvmC04ZL7sQAANKmPmVmfxAgIgHafygVra2MVgZJYUBrpTWSZlSCBHAUKKgkf4eFTPkMiK4LjX2DN107pVcUrZG0d7PYHvegBDFkjloBQCuyzGOG1EaCmoWJ0Fgmwmu+t7Y9LrXVYWs57UsQmLl3r/DM8fXWsQykw/r1zW0XXP7qxm0dFNJGpETtshB8tQsKjxh9F7Xm+15ItCSNTWelEdG43N7plcMLIoCAWpOxduFJg9Y9ddbDt58SDQWYRSkSgYRjvvPTDZXRSHaiEREAHD+uvt+AsOsaRWBS5rxFg6cfV59ImkyM3ROSUo2O8S8A2fdxRIAQkq5pj6egHGJEUoqM4eXnjn7mP+aFwDtnYeOq+07tUx2xlv1M7l/3tO7aH/PfsMmghlNm9YMAcCYSdjpTX18xftbEWjdpu17yj0x/g/88EEEyxZ1Jfw4Xri6IiGKsvf7SqT+/9STruWwl3urMPaH+pfsXDWvsZfyMJ2ImPe6fywkizpneF1zOYkPERJuTSpnuUvU90faDCEN6a0FJxzolR2dKkf/20D3Xz/73r09JtieFgZCUwnhrauLYyj8+sGjKmD4+5kxjQogiMmxArwmjqj2nAF5mn9DTdFRZIgT+QCyMJJ2dJpkqeKNPKbSWKyOBJ384//KLRyQPdyoEhQBiw0EV1JKIpYb00y/9csH8GY3GWJ3GDP7RzUlTGiqrg8ZYwg+mXglTT1Kb3TIDckenYyxnO18rslb610df+Omp5y4aEG9OKAIBK8JE8Or6JkYKakjGvZoIP3vvKUsWjvBXKUy/gwfzZjYAWPmgupVhyh06geRd95QFGAjbOl2AdC4+oJSxfNyI3q88cNoJ06sTLcmARgAmBGaro8Fv3PnWQ8/s0FUBQHZdqyT1yPdPXLFsnLGsFDJzKKhPmlQvrkvUlUrHoqrPOpPFTmdf0tuwbEIkN0zLuAoBAGZAiXWkAAARtELP2rnT+j9+x8l9aine6gQ1CTMiJFMcCYIbT86aWNuvLmRTHoIQAnvgmsTdN07t2zv0zXs2IMLk0bXDB0XdpEtdnMYKZHXOlUmBkr63LyOdPQdjP8eQvfU7siSrz/kXfgUAaO0wkE6+y5LThj1375y6apuMpwIaBVhr7kja3716UAfJeubOlRNPn9tgkh4hADASA0Ay1nn9VePuu/FEEThxUr2qQMsMmH1i5kTbH1OFOue9CCIZ4/s3ZWR79GJaNyQiADbW4SFCyrX/+o9j7lw5yXWclMOKSMQyS7Aq+Pzvdz/x4p6l5w+UhJuMOwBIlFMTAAgh3tJxyYWDg5ob60PiphDKnUF8EA8tAOX+mdZ928WDBEUApOlwhwjcce3Uq/95hBNLAIBGFGEEQBD2TFVYz5xQy45L4J9ClWbsIECSbI5/fnF/9tjrdFWZBahgxJabZd30RzZrufb0gvpld5HFuc4cWSuR6tCKG94ePaLqy5cMjx9KKELy8zWYFhWWUCQASE7SJSynVF6qka2gH4l00+GlacoegfUBrzmt64rdUEEft3Zwv4ZQMu6VewHCt7Kwb3bAzBzrylxd+siufy1rn/Kyx/w3noIH96nGZKeT9yZAUV1EAC1ZO3aP8EMGXDTEjsopZGWNEUU52ZIhJpA+GJBS2UyNoicXZXwKirrSOVOtO1n9gd1eGRV60uZRPbe7zjhSeVHhx+4f4p8A/qjTJ4A/6vQJ4I86fQL4o06fAP6o08cO8P8Ctb1QenSV5QcAAAAASUVORK5CYII=" class="logo-img" alt="Fleek"/>
+  <div class="brand">FLEEK</div>
+  <div class="tagline">Seller Support — Monthly NPS Survey</div>
   <h1 class="survey-title">How likely are you to recommend <em>Fleek</em> to other sellers?</h1>
 </div>
 
-<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+<div class="progress-bar"><div class="prog" id="prog"></div></div>
 
-<form id="surveyForm">
-
-  <!-- NPS Score -->
-  <div class="card">
-    <div class="section-label">01 / NPS Score</div>
-    <p class="nps-question">On a scale of 0–10, how likely are you to recommend Fleek to a fellow seller or business partner? <span class="required">*</span></p>
-    <div class="nps-scale" id="npsScale">
-      <button type="button" class="nps-btn" data-score="0">0</button>
-      <button type="button" class="nps-btn" data-score="1">1</button>
-      <button type="button" class="nps-btn" data-score="2">2</button>
-      <button type="button" class="nps-btn" data-score="3">3</button>
-      <button type="button" class="nps-btn" data-score="4">4</button>
-      <button type="button" class="nps-btn" data-score="5">5</button>
-      <button type="button" class="nps-btn" data-score="6">6</button>
-      <button type="button" class="nps-btn" data-score="7">7</button>
-      <button type="button" class="nps-btn" data-score="8">8</button>
-      <button type="button" class="nps-btn" data-score="9">9</button>
-      <button type="button" class="nps-btn" data-score="10">10</button>
-    </div>
-    <div class="nps-labels"><span>Not at all likely</span><span>Extremely likely</span></div>
-    <p class="error-msg" id="scoreError">Please select a score to continue.</p>
-  </div>
-
-  <!-- Seller Info -->
-  <div class="card">
-    <div class="section-label">02 / Your Information</div>
-    <div class="field">
-      <label>Seller / Business Name <span class="required">*</span></label>
-      <input type="text" id="sellerName" placeholder="e.g. Ahmed Traders" required/>
-    </div>
-    <div class="field">
-      <label>Department / Team handling your account <span class="required">*</span></label>
-      <select id="department" required>
-        <option value="">Select department...</option>
-        <option value="Seller Support">Seller Support</option>
-        <option value="Quality Check">Quality Check (QC)</option>
-        <option value="Payments">Payments</option>
-        <option value="Shipping & Logistics">Shipping & Logistics</option>
-        <option value="Vendor App">Vendor App</option>
-        <option value="Sales & Visibility">Sales & Visibility</option>
-        <option value="Other">Other</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Geography / Zone <span class="required">*</span></label>
-      <select id="geography" required>
-        <option value="">Select your zone...</option>
-        <option value="PK Zone">PK Zone (Pakistan - Metro Cities)</option>
-        <option value="PK Non-Zone">PK Non-Zone (Pakistan - Other Cities)</option>
-        <option value="India">India</option>
-        <option value="ROW">ROW (Rest of World)</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>City</label>
-      <input type="text" id="city" placeholder="e.g. Karachi, Lahore, Delhi..."/>
-    </div>
-  </div>
-
-  <!-- Feedback -->
-  <div class="card">
-    <div class="section-label">03 / Your Feedback</div>
-    <div class="field">
-      <label>What is the main reason for your score?</label>
-      <textarea id="mainReason" placeholder="Tell us what's working well or what needs improvement..."></textarea>
-    </div>
-    <div class="field">
-      <label>Which area needs the most improvement?</label>
-      <select id="mainIssue">
-        <option value="">Select area...</option>
-        <option value="Refund Policy">Refund Policy</option>
-        <option value="Seller Support">Seller Support responsiveness</option>
-        <option value="Quality Check">Quality Check process</option>
-        <option value="Vendor App">Vendor App experience</option>
-        <option value="Sales & Visibility">Sales & Visibility tools</option>
-        <option value="Shipping & Logistics">Shipping & Logistics speed</option>
-        <option value="Payment Timeline">Payment Timeline</option>
-        <option value="None">No major issues</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Anything else you'd like to share?</label>
-      <textarea id="extraComment" placeholder="Additional comments, suggestions, or praise..."></textarea>
-    </div>
-  </div>
-
-  <!-- Importance Ratings -->
-  <div class="card">
-    <div class="section-label">04 / What Matters Most</div>
-    <p style="margin-bottom:16px;font-size:0.9rem;color:var(--muted)">Rate how important each area is to your business (1–5 stars)</p>
-    <div class="importance-grid" id="importanceGrid">
-      <div class="importance-row"><span class="topic">Fast payments</span><div class="star-row" data-topic="fastPayments"><span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span></div></div>
-      <div class="importance-row"><span class="topic">Quality check accuracy</span><div class="star-row" data-topic="qcAccuracy"><span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span></div></div>
-      <div class="importance-row"><span class="topic">Delivery speed</span><div class="star-row" data-topic="deliverySpeed"><span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span></div></div>
-      <div class="importance-row"><span class="topic">Seller app usability</span><div class="star-row" data-topic="appUsability"><span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span></div></div>
-      <div class="importance-row"><span class="topic">Product visibility & sales</span><div class="star-row" data-topic="salesVisibility"><span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span></div></div>
-    </div>
-  </div>
-
-  <!-- Submit -->
-  <div class="card" style="text-align:center">
-    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:20px">Your feedback helps Fleek improve the seller experience. All responses are confidential.</p>
-    <button type="submit" class="submit-btn" id="submitBtn">SUBMIT MY FEEDBACK →</button>
-    <p class="error-msg" id="formError" style="display:none;text-align:center;margin-top:12px">Please fill in all required fields.</p>
-  </div>
-
-</form>
-
-<!-- Success Screen -->
-<div class="card success-screen" id="successScreen">
-  <div class="success-icon">🎉</div>
-  <div class="success-title">Thank You!</div>
-  <p class="success-msg">Your feedback has been recorded.<br/>Fleek's team reviews every response to keep improving your experience.</p>
+<div class="supplier-notice">
+  <span class="icon">🔒</span>
+  <span>This survey is <strong>for Fleek sellers only</strong>. Your responses are confidential and used solely to improve the seller experience. This is not a login page — just share your honest feedback below.</span>
 </div>
 
+<form id="form">
+  <div class="card">
+    <div class="section-label">01 — NPS Score</div>
+    <p class="nps-question">On a scale of 0–10, how likely are you to recommend Fleek to a fellow seller or business partner? <span class="req">*</span></p>
+    <div class="nps-scale" id="npsScale">
+      <button type="button" class="nps-btn" data-s="0">0</button>
+      <button type="button" class="nps-btn" data-s="1">1</button>
+      <button type="button" class="nps-btn" data-s="2">2</button>
+      <button type="button" class="nps-btn" data-s="3">3</button>
+      <button type="button" class="nps-btn" data-s="4">4</button>
+      <button type="button" class="nps-btn" data-s="5">5</button>
+      <button type="button" class="nps-btn" data-s="6">6</button>
+      <button type="button" class="nps-btn" data-s="7">7</button>
+      <button type="button" class="nps-btn" data-s="8">8</button>
+      <button type="button" class="nps-btn" data-s="9">9</button>
+      <button type="button" class="nps-btn" data-s="10">10</button>
+    </div>
+    <div class="nps-labels"><span>Not at all likely</span><span>Extremely likely</span></div>
+    <p class="err-msg" id="scoreErr">Please select a score to continue.</p>
+  </div>
+
+  <div class="card">
+    <div class="section-label">02 — Your Information</div>
+    <div class="field"><label>Seller / Business Name <span class="req">*</span></label><input type="text" id="fName" placeholder="e.g. Ahmed Traders" required/></div>
+    <div class="field">
+      <label>Primary Team / Department <span class="req">*</span></label>
+      <select id="fDept" required>
+        <option value="">Select department...</option>
+        <option>Seller Support</option><option>Quality Check</option><option>Payments</option>
+        <option>Shipping &amp; Logistics</option><option>Vendor App</option><option>Sales &amp; Visibility</option><option>Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Zone / Geography <span class="req">*</span></label>
+      <select id="fGeo" required>
+        <option value="">Select zone...</option>
+        <option value="PK Zone">PK Zone — Pakistan (Metro Cities)</option>
+        <option value="PK Non-Zone">PK Non-Zone — Pakistan (Other Cities)</option>
+        <option value="India">India</option>
+        <option value="ROW">ROW — Rest of World</option>
+      </select>
+    </div>
+    <div class="field"><label>City</label><input type="text" id="fCity" placeholder="e.g. Karachi, Lahore, Delhi..."/></div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">03 — Your Feedback</div>
+    <div class="field"><label>Main reason for your score?</label><textarea id="fReason" placeholder="What's working well or needs improvement..."></textarea></div>
+    <div class="field">
+      <label>Biggest area needing improvement?</label>
+      <select id="fIssue">
+        <option value="">Select area...</option>
+        <option>Refund Policy</option><option>Seller Support responsiveness</option><option>Quality Check process</option>
+        <option>Vendor App experience</option><option>Sales &amp; Visibility tools</option>
+        <option>Shipping &amp; Logistics speed</option><option>Payment Timeline</option><option>No major issues</option>
+      </select>
+    </div>
+    <div class="field"><label>Additional comments</label><textarea id="fExtra" placeholder="Suggestions, praise, or anything else..."></textarea></div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">04 — What Matters Most</div>
+    <p style="margin-bottom:18px;font-size:0.88rem;color:var(--muted)">Rate how important each area is to your business (tap to rate 1–5 stars)</p>
+    <div class="star-grid">
+      <div class="star-row"><span class="topic">Fast payments</span><div class="stars" data-t="fastPayments"><span class="star" data-v="1">★</span><span class="star" data-v="2">★</span><span class="star" data-v="3">★</span><span class="star" data-v="4">★</span><span class="star" data-v="5">★</span></div></div>
+      <div class="star-row"><span class="topic">Quality check accuracy</span><div class="stars" data-t="qcAccuracy"><span class="star" data-v="1">★</span><span class="star" data-v="2">★</span><span class="star" data-v="3">★</span><span class="star" data-v="4">★</span><span class="star" data-v="5">★</span></div></div>
+      <div class="star-row"><span class="topic">Delivery speed</span><div class="stars" data-t="deliverySpeed"><span class="star" data-v="1">★</span><span class="star" data-v="2">★</span><span class="star" data-v="3">★</span><span class="star" data-v="4">★</span><span class="star" data-v="5">★</span></div></div>
+      <div class="star-row"><span class="topic">Vendor app usability</span><div class="stars" data-t="appUsability"><span class="star" data-v="1">★</span><span class="star" data-v="2">★</span><span class="star" data-v="3">★</span><span class="star" data-v="4">★</span><span class="star" data-v="5">★</span></div></div>
+      <div class="star-row"><span class="topic">Product visibility &amp; sales</span><div class="stars" data-t="salesVisibility"><span class="star" data-v="1">★</span><span class="star" data-v="2">★</span><span class="star" data-v="3">★</span><span class="star" data-v="4">★</span><span class="star" data-v="5">★</span></div></div>
+    </div>
+  </div>
+
+  <div class="card" style="text-align:center">
+    <p style="color:var(--muted);font-size:0.83rem;margin-bottom:20px;line-height:1.7">Your feedback is anonymous and goes directly to Fleek's Seller Support team.<br/>We review every response to improve your selling experience.</p>
+    <button type="submit" class="submit-btn" id="submitBtn">SUBMIT FEEDBACK →</button>
+    <p class="err-msg" id="formErr" style="text-align:center;margin-top:12px">Please complete all required fields marked with *</p>
+  </div>
+</form>
+
+<div class="card success-card" id="successCard">
+  <div class="success-icon">🎉</div>
+  <div class="success-ttl">Thank You!</div>
+  <p class="success-msg">Your feedback has been received by Fleek's Seller Support team.<br/>We review every response and use it to improve your experience.<br/><br/>You can now close this page.</p>
+</div>
+
+<footer>
+  <img src="data:image/png;base64,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" alt="Fleek"/> © Fleek — Seller Support Team · This survey link was shared with you by Fleek
+</footer>
+
 <script>
+  // Block direct navigation to dashboard from survey page
+  // Suppliers should only see this form
   let selectedScore = null;
-  const importanceRatings = {};
-  
-  // Get period from URL params (auto-set when distributed)
+  const importance = {};
   const urlParams = new URLSearchParams(window.location.search);
-  const surveyPeriod = urlParams.get('period') || getCurrentPeriod();
-  
-  function getCurrentPeriod() {
-    const now = new Date();
-    return now.toLocaleString('en-US', { month: 'short' }) + ' ' + now.getFullYear();
-  }
-  
-  // NPS score selection
+  const period = urlParams.get('period') || (() => { const d=new Date(); return d.toLocaleString('en-US',{month:'short'})+' '+d.getFullYear(); })();
+
   document.getElementById('npsScale').addEventListener('click', e => {
     const btn = e.target.closest('.nps-btn');
     if (!btn) return;
-    const score = parseInt(btn.dataset.score);
-    selectedScore = score;
-    document.querySelectorAll('.nps-btn').forEach(b => {
-      b.classList.remove('selected', 'detractor', 'passive', 'promoter');
-    });
-    const cat = score >= 9 ? 'promoter' : score >= 7 ? 'passive' : 'detractor';
-    btn.classList.add('selected', cat);
-    document.getElementById('scoreError').style.display = 'none';
-    updateProgress();
+    const s = parseInt(btn.dataset.s);
+    selectedScore = s;
+    document.querySelectorAll('.nps-btn').forEach(b => b.classList.remove('selected','pro','pas','det'));
+    btn.classList.add('selected', s>=9?'pro':s>=7?'pas':'det');
+    document.getElementById('scoreErr').style.display='none';
+    updateProg();
   });
-  
-  // Star ratings
-  document.querySelectorAll('.star-row').forEach(row => {
-    const topic = row.dataset.topic;
-    importanceRatings[topic] = 0;
-    row.querySelectorAll('.star').forEach(star => {
-      star.addEventListener('click', () => {
-        const val = parseInt(star.dataset.val);
-        importanceRatings[topic] = val;
-        row.querySelectorAll('.star').forEach(s => {
-          s.classList.toggle('active', parseInt(s.dataset.val) <= val);
-        });
-        updateProgress();
+
+  document.querySelectorAll('.stars').forEach(row => {
+    const t = row.dataset.t; importance[t] = 0;
+    row.querySelectorAll('.star').forEach(s => {
+      s.addEventListener('click', () => {
+        const v = parseInt(s.dataset.v); importance[t] = v;
+        row.querySelectorAll('.star').forEach(x => x.classList.toggle('on', parseInt(x.dataset.v)<=v));
       });
     });
   });
-  
-  function updateProgress() {
-    const filled = [
-      selectedScore !== null,
-      document.getElementById('sellerName').value.trim(),
-      document.getElementById('department').value,
-      document.getElementById('geography').value
-    ].filter(Boolean).length;
-    document.getElementById('progressFill').style.width = (filled / 4 * 100) + '%';
+
+  ['fName','fDept','fGeo'].forEach(id => {
+    document.getElementById(id).addEventListener('change', updateProg);
+    document.getElementById(id).addEventListener('input', updateProg);
+  });
+
+  function updateProg() {
+    const n = [selectedScore!==null, document.getElementById('fName').value.trim(), document.getElementById('fDept').value, document.getElementById('fGeo').value].filter(Boolean).length;
+    document.getElementById('prog').style.width = (n/4*100)+'%';
   }
-  
-  document.querySelectorAll('#sellerName,#department,#geography').forEach(el => {
-    el.addEventListener('input', updateProgress);
-    el.addEventListener('change', updateProgress);
-  });
-  
-  // Submit
-  document.getElementById('surveyForm').addEventListener('submit', async e => {
+
+  document.getElementById('form').addEventListener('submit', async e => {
     e.preventDefault();
-    
-    if (selectedScore === null) {
-      document.getElementById('scoreError').style.display = 'block';
-      document.getElementById('npsScale').scrollIntoView({ behavior: 'smooth' });
-      return;
-    }
-    
-    const sellerName = document.getElementById('sellerName').value.trim();
-    const department = document.getElementById('department').value;
-    const geography = document.getElementById('geography').value;
-    
-    if (!sellerName || !department || !geography) {
-      document.getElementById('formError').style.display = 'block';
-      return;
-    }
-    
-    const payload = {
-      seller: sellerName,
-      score: selectedScore,
-      department,
-      geography,
-      city: document.getElementById('city').value.trim(),
-      comment: document.getElementById('mainReason').value.trim(),
-      mainIssue: document.getElementById('mainIssue').value,
-      extraComment: document.getElementById('extraComment').value.trim(),
-      importance: importanceRatings,
-      period: surveyPeriod,
-      submittedAt: new Date().toISOString()
-    };
-    
+    if (selectedScore === null) { document.getElementById('scoreErr').style.display='block'; document.getElementById('npsScale').scrollIntoView({behavior:'smooth'}); return; }
+    const name = document.getElementById('fName').value.trim();
+    const dept = document.getElementById('fDept').value;
+    const geo = document.getElementById('fGeo').value;
+    if (!name||!dept||!geo) { document.getElementById('formErr').style.display='block'; return; }
     const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.textContent = 'SUBMITTING...';
-    
+    btn.disabled=true; btn.textContent='SUBMITTING...';
+    const payload = { seller:name, score:selectedScore, department:dept, geography:geo, city:document.getElementById('fCity').value.trim(), comment:document.getElementById('fReason').value.trim(), mainIssue:document.getElementById('fIssue').value, extraComment:document.getElementById('fExtra').value.trim(), importance, period, submittedAt:new Date().toISOString() };
     try {
-      const res = await fetch('/api/survey-submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      
-      if (res.ok) {
-        document.getElementById('surveyForm').style.display = 'none';
-        document.getElementById('progressFill').style.width = '100%';
-        const successEl = document.getElementById('successScreen');
-        successEl.style.display = 'block';
-        successEl.scrollIntoView({ behavior: 'smooth' });
-      } else {
-        throw new Error('Server error');
-      }
+      const res = await fetch('/api/survey-submit', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+      if (!res.ok) throw new Error();
     } catch(err) {
-      // Fallback: store locally if API fails
-      try {
-        const existing = JSON.parse(localStorage.getItem('fleek_nps_data') || '[]');
-        existing.unshift(payload);
-        localStorage.setItem('fleek_nps_data', JSON.stringify(existing));
-      } catch(e) {}
-      document.getElementById('surveyForm').style.display = 'none';
-      document.getElementById('successScreen').style.display = 'block';
+      try { const ex=JSON.parse(localStorage.getItem('fleek_nps_v2')||'[]'); ex.unshift(payload); localStorage.setItem('fleek_nps_v2',JSON.stringify(ex)); } catch(e){}
     }
+    document.getElementById('prog').style.width='100%';
+    document.getElementById('form').style.display='none';
+    document.querySelector('.supplier-notice').style.display='none';
+    const sc = document.getElementById('successCard');
+    sc.style.display='block'; sc.scrollIntoView({behavior:'smooth'});
   });
 </script>
-
 </body>
 </html>
