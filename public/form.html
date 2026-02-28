@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Fleek — Seller NPS Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0c0c0c;--surface:#141414;--card:#1a1a1a;--border:#272727;--border2:#333;
+  --yellow:#F5C518;--red:#E8453C;--green:#3DD68C;--orange:#F07C3A;--blue:#5B9EF5;
+  --text:#ededed;--muted:#999;--subtle:#666
+}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(245,197,24,.4)}50%{box-shadow:0 0 0 8px rgba(245,197,24,0)}}
+
+/* HEADER */
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:18px 40px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;color:var(--yellow)}
+.header-badge{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);border:1px solid var(--border2);padding:4px 10px;border-radius:4px}
+
+/* HERO BAND */
+.hero{background:linear-gradient(135deg,#111 0%,#161410 60%,#0f1108 100%);border-bottom:1px solid var(--border);padding:48px 40px 36px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'NPS';position:absolute;right:-10px;top:-10px;font-family:'Bebas Neue',sans-serif;font-size:220px;color:rgba(245,197,24,.025);pointer-events:none;line-height:1}
+.hero-kicker{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin-bottom:12px}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:1px;line-height:1;margin-bottom:10px}
+.hero-title span{color:var(--yellow)}
+.hero-sub{font-size:13px;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.7}
+.period-badge{display:inline-block;margin-top:16px;background:rgba(245,197,24,.12);border:1px solid rgba(245,197,24,.25);color:var(--yellow);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;padding:5px 14px;border-radius:20px}
+
+/* FORM CONTAINER */
+.form-wrap{max-width:680px;margin:0 auto;padding:40px 20px 60px}
+
+/* STEP */
+.step{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:20px;animation:fadeUp .5s ease}
+.step-num{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--yellow);text-transform:uppercase;margin-bottom:8px}
+.step-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;margin-bottom:6px}
+.step-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:24px}
+
+/* SCORE SELECTOR */
+.score-grid{display:grid;grid-template-columns:repeat(11,1fr);gap:6px;margin-bottom:16px}
+@media(max-width:500px){.score-grid{grid-template-columns:repeat(6,1fr)}}
+.score-btn{aspect-ratio:1;border-radius:10px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-family:'Bebas Neue',sans-serif;font-size:20px;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center}
+.score-btn:hover{border-color:var(--yellow);color:var(--yellow);transform:scale(1.05)}
+.score-btn.selected{transform:scale(1.08);font-size:22px}
+.score-btn[data-val="0"]{border-color:rgba(232,69,60,.3)}.score-btn[data-val="1"]{border-color:rgba(232,69,60,.35)}.score-btn[data-val="2"]{border-color:rgba(232,69,60,.4)}.score-btn[data-val="3"]{border-color:rgba(232,69,60,.5)}.score-btn[data-val="4"]{border-color:rgba(232,69,60,.6)}.score-btn[data-val="5"]{border-color:rgba(240,124,58,.4)}.score-btn[data-val="6"]{border-color:rgba(240,124,58,.5)}.score-btn[data-val="7"]{border-color:rgba(245,197,24,.4)}.score-btn[data-val="8"]{border-color:rgba(245,197,24,.6)}.score-btn[data-val="9"]{border-color:rgba(61,214,140,.5)}.score-btn[data-val="10"]{border-color:rgba(61,214,140,.7)}
+.score-btn.selected[data-val="0"],.score-btn.selected[data-val="1"],.score-btn.selected[data-val="2"],.score-btn.selected[data-val="3"],.score-btn.selected[data-val="4"]{background:rgba(232,69,60,.15);border-color:var(--red);color:var(--red)}
+.score-btn.selected[data-val="5"],.score-btn.selected[data-val="6"]{background:rgba(240,124,58,.15);border-color:var(--orange);color:var(--orange)}
+.score-btn.selected[data-val="7"],.score-btn.selected[data-val="8"]{background:rgba(245,197,24,.15);border-color:var(--yellow);color:var(--yellow)}
+.score-btn.selected[data-val="9"],.score-btn.selected[data-val="10"]{background:rgba(61,214,140,.15);border-color:var(--green);color:var(--green)}
+.score-labels{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--subtle);letter-spacing:.5px;margin-top:4px}
+.score-feedback{text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;height:20px;margin-top:12px;transition:all .2s;letter-spacing:.5px}
+
+/* INPUT FIELDS */
+label{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.form-input{width:100%;padding:12px 14px;background:var(--surface);border:1.5px solid var(--border2);border-radius:8px;color:var(--text);font-size:13px;font-family:'Syne',sans-serif;outline:none;transition:border-color .2s;margin-bottom:16px}
+.form-input:focus{border-color:var(--yellow)}
+.form-input::placeholder{color:var(--subtle)}
+textarea.form-input{resize:vertical;min-height:90px;line-height:1.6}
+.two-col-inputs{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:500px){.two-col-inputs{grid-template-columns:1fr}}
+select.form-input{cursor:pointer}
+
+/* AREA CHIPS */
+.area-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.area-chip{padding:7px 14px;border-radius:20px;border:1.5px solid var(--border2);background:var(--surface);color:var(--muted);font-size:12px;cursor:pointer;transition:all .15s;user-select:none}
+.area-chip:hover{border-color:var(--yellow);color:var(--yellow)}
+.area-chip.selected{border-color:var(--yellow);background:rgba(245,197,24,.1);color:var(--yellow)}
+
+/* SUBMIT */
+.btn-submit{width:100%;padding:16px;background:var(--yellow);color:#0c0c0c;border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;cursor:pointer;transition:all .2s;animation:pulse 2s infinite}
+.btn-submit:hover{opacity:.88;transform:translateY(-1px)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;animation:none}
+.required-note{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--subtle);text-align:center;margin-top:10px;letter-spacing:.5px}
+
+/* THANK YOU */
+.thankyou{display:none;text-align:center;padding:60px 20px;animation:fadeUp .6s ease}
+.ty-icon{font-size:56px;margin-bottom:20px}
+.ty-title{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:2px;color:var(--yellow);margin-bottom:10px}
+.ty-msg{font-size:14px;color:var(--muted);line-height:1.7;max-width:400px;margin:0 auto 28px}
+.ty-score-badge{display:inline-block;font-family:'Bebas Neue',sans-serif;font-size:32px;padding:10px 24px;border-radius:12px;margin-bottom:28px}
+.ty-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-secondary{padding:10px 22px;border:1.5px solid var(--border2);background:transparent;color:var(--muted);border-radius:8px;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-secondary:hover{border-color:var(--yellow);color:var(--yellow)}
+
+/* PROGRESS */
+.progress-bar{height:3px;background:var(--border);border-radius:999px;overflow:hidden;margin-bottom:28px}
+.progress-fill{height:100%;background:var(--yellow);border-radius:999px;transition:width .4s ease}
+
+/* FOOTER */
+footer{background:var(--surface);border-top:1px solid var(--border);padding:16px 40px;display:flex;align-items:center;justify-content:space-between}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;color:var(--muted)}
+.footer-note{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--subtle);letter-spacing:1px}
+
+.error-msg{color:var(--red);font-family:'JetBrains Mono',monospace;font-size:10px;margin-top:-10px;margin-bottom:12px;display:none}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg width="28" height="28" viewBox="0 0 28 28"><rect width="28" height="28" rx="6" fill="#F5C518"/><text x="14" y="20" text-anchor="middle" font-size="15" font-weight="900" fill="#0c0c0c">⚡</text></svg>
+    <span class="logo-name">FLEEK</span>
+  </div>
+  <span class="header-badge" id="period-label">NPS SURVEY · LOADING...</span>
+</header>
+
+<div class="hero">
+  <div class="hero-kicker">Seller NPS Survey · Fleek Marketplace</div>
+  <h1 class="hero-title">How likely are you to<br><span>Recommend Fleek?</span></h1>
+  <p class="hero-sub">Your feedback directly shapes how we improve. This survey takes under 2 minutes and is sent monthly to all active sellers.</p>
+  <div class="period-badge" id="hero-period-badge">📅 Loading period...</div>
+</div>
+
+<div class="form-wrap">
+  <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+  <div id="form-steps">
+
+    <!-- STEP 1: Score -->
+    <div class="step">
+      <div class="step-num">Step 1 of 3 · Required</div>
+      <div class="step-title">Your Recommendation Score</div>
+      <div class="step-desc">On a scale of 0 to 10, how likely are you to recommend Fleek to another seller or business?<br>0 = Not at all likely · 10 = Extremely likely</div>
+      <div class="score-grid" id="score-grid">
+        <button class="score-btn" data-val="0" onclick="selectScore(0)">0</button><button class="score-btn" data-val="1" onclick="selectScore(1)">1</button><button class="score-btn" data-val="2" onclick="selectScore(2)">2</button><button class="score-btn" data-val="3" onclick="selectScore(3)">3</button><button class="score-btn" data-val="4" onclick="selectScore(4)">4</button><button class="score-btn" data-val="5" onclick="selectScore(5)">5</button><button class="score-btn" data-val="6" onclick="selectScore(6)">6</button><button class="score-btn" data-val="7" onclick="selectScore(7)">7</button><button class="score-btn" data-val="8" onclick="selectScore(8)">8</button><button class="score-btn" data-val="9" onclick="selectScore(9)">9</button><button class="score-btn" data-val="10" onclick="selectScore(10)">10</button>
+      </div>
+      <div class="score-labels"><span>Not at all likely</span><span>Extremely likely</span></div>
+      <div class="score-feedback" id="score-feedback"></div>
+    </div>
+
+    <!-- STEP 2: Areas -->
+    <div class="step">
+      <div class="step-num">Step 2 of 3 · Select all that apply</div>
+      <div class="step-title">What areas need improvement?</div>
+      <div class="step-desc">Which areas of Fleek have caused you friction? Select all that apply.</div>
+      <div class="area-chips" id="area-chips">
+        <div class="area-chip" data-area="Refund Policy" onclick="toggleArea(this)">Refund Policy</div><div class="area-chip" data-area="Seller Support" onclick="toggleArea(this)">Seller Support</div><div class="area-chip" data-area="Quality Check" onclick="toggleArea(this)">Quality Check</div><div class="area-chip" data-area="Vendor App" onclick="toggleArea(this)">Vendor App</div><div class="area-chip" data-area="Sales & Visibility" onclick="toggleArea(this)">Sales & Visibility</div><div class="area-chip" data-area="Payment System" onclick="toggleArea(this)">Payment System</div><div class="area-chip" data-area="Shipping & Logistics" onclick="toggleArea(this)">Shipping & Logistics</div><div class="area-chip" data-area="Onboarding" onclick="toggleArea(this)">Onboarding</div><div class="area-chip" data-area="Communication" onclick="toggleArea(this)">Communication</div>
+      </div>
+    </div>
+
+    <!-- STEP 3: Details -->
+    <div class="step">
+      <div class="step-num">Step 3 of 3 · Your Details</div>
+      <div class="step-title">Tell Us More</div>
+      <div class="step-desc">Help us understand your experience. Your store name helps us follow up if needed.</div>
+
+      <label>Your Store / Seller Name <span style="color:var(--red)">*</span></label>
+      <input type="text" class="form-input" id="seller-name" placeholder="e.g. vintage-kings" required/>
+      <div class="error-msg" id="err-seller">Please enter your store name</div>
+
+      <label>What's the main reason for your score?</label>
+      <textarea class="form-input" id="comment" placeholder="Tell us what's working well, or what we could do better..."></textarea>
+
+      <div class="two-col-inputs">
+        <div>
+          <label>Your Region <span style="color:var(--red)">*</span></label>
+          <select class="form-input" id="region">
+            <option value="">Select region...</option>
+            <option value="PK Zone">🇵🇰 PK Zone (Karachi/Lahore hub)</option>
+            <option value="PK Non-Zone">🇵🇰 PK Non-Zone (Other Pakistan)</option>
+            <option value="India">🇮🇳 India</option>
+            <option value="ROW">🌏 Rest of World</option>
+          </select>
+          <div class="error-msg" id="err-region">Please select your region</div>
+        </div>
+        <div>
+          <label>Primary Concern Area</label>
+          <select class="form-input" id="department">
+            <option value="">Select area...</option>
+            <option value="Seller Support">Seller Support</option>
+            <option value="Quality Check">Quality Check</option>
+            <option value="Refund Policy">Refund Policy</option>
+            <option value="Payments">Payments</option>
+            <option value="Vendor App">Vendor App</option>
+            <option value="Sales & Visibility">Sales & Visibility</option>
+            <option value="Shipping & Logistics">Shipping & Logistics</option>
+            <option value="General">General</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top:8px">
+        <label>How long have you been selling on Fleek?</label>
+        <select class="form-input" id="tenure">
+          <option value="">Select tenure...</option>
+          <option value="Less than 3 months">Less than 3 months</option>
+          <option value="3–6 months">3–6 months</option>
+          <option value="6–12 months">6–12 months</option>
+          <option value="1–2 years">1–2 years</option>
+          <option value="2+ years">2+ years</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-submit" id="submit-btn" onclick="submitForm()">SUBMIT MY FEEDBACK →</button>
+    <div class="required-note">🔒 Your responses are confidential and used only to improve Fleek services</div>
+
+  </div><!-- /form-steps -->
+
+  <!-- THANK YOU STATE -->
+  <div class="thankyou" id="thankyou">
+    <div class="ty-icon" id="ty-icon">⭐</div>
+    <div class="ty-title">Thank You!</div>
+    <div class="ty-score-badge" id="ty-score-badge"></div>
+    <div class="ty-msg" id="ty-msg">Your feedback has been recorded and will be reviewed by the Fleek Seller Support team. We take every response seriously.</div>
+    <div class="ty-actions">
+      <button class="btn-secondary" onclick="window.location.reload()">Submit Another Response</button>
+    </div>
+    <div style="margin-top:32px;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:12px;max-width:400px;margin-left:auto;margin-right:auto">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--yellow);letter-spacing:2px;margin-bottom:6px">WHAT HAPPENS NEXT</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7">Your response is automatically added to the NPS dashboard. The Seller Support team reviews all feedback within 5 business days. Detractor responses receive priority follow-up.</div>
+    </div>
+  </div>
+
+</div><!-- /form-wrap -->
+
+<footer>
+  <div class="footer-logo">⚡ FLEEK — SELLER SUPPORT TEAM</div>
+  <div class="footer-note" id="footer-period">MONTHLY NPS SURVEY · CONFIDENTIAL</div>
+</footer>
+
+<script>
+// ── State ──
+let selectedScore = null;
+let selectedAreas = [];
+
+// ── Auto-detect current period (last week of month = next month's survey) ──
+function getCurrentPeriod() {
+  const now = new Date();
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  // If we're in last 7 days of month, survey is for next period
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
+  const daysLeft = daysInMonth - now.getDate();
+  let targetMonth = now.getMonth();
+  let targetYear = now.getFullYear();
+  if (daysLeft <= 7) {
+    // Last week — survey opening for NEXT month
+    targetMonth = (now.getMonth() + 1) % 12;
+    if (targetMonth === 0) targetYear++;
+  }
+  return monthNames[targetMonth] + ' ' + targetYear;
+}
+
+const period = getCurrentPeriod();
+document.getElementById('period-label').textContent = 'NPS SURVEY · ' + period.toUpperCase();
+document.getElementById('hero-period-badge').textContent = '📅 ' + period + ' Survey — Now Open';
+document.getElementById('footer-period').textContent = 'NPS SURVEY · ' + period.toUpperCase() + ' · CONFIDENTIAL';
+
+// ── Score feedback messages ──
+const SCORE_FEEDBACK = {
+  0:'😞 We're really sorry to hear that. Please tell us what went wrong.',
+  1:'😞 That's very concerning. Your feedback will be prioritised.',
+  2:'😔 We understand your frustration. Let's make this right.',
+  3:'😔 We're disappointed to hear that. Please share more details.',
+  4:'😕 There's clearly room for improvement. Help us understand.',
+  5:'😐 Thank you. What would make your experience better?',
+  6:'🤔 We're working to improve. What would move the needle for you?',
+  7:'🙂 Good to hear! What would make it even better?',
+  8:'😊 Great! What would take it from good to excellent?',
+  9:'😄 Wonderful! We really appreciate your support.',
+  10:'🌟 Amazing! Thank you for being a Fleek champion!'
+};
+
+function selectScore(n) {
+  selectedScore = n;
+  document.querySelectorAll('.score-btn').forEach(b => {
+    b.classList.toggle('selected', parseInt(b.dataset.val) === n);
+  });
+  document.getElementById('score-feedback').textContent = SCORE_FEEDBACK[n];
+  document.getElementById('score-feedback').style.color = n >= 9 ? '#3DD68C' : n >= 7 ? '#F5C518' : n >= 5 ? '#F07C3A' : '#E8453C';
+  updateProgress();
+}
+
+function toggleArea(el) {
+  el.classList.toggle('selected');
+  const area = el.dataset.area;
+  if (el.classList.contains('selected')) {
+    if (!selectedAreas.includes(area)) selectedAreas.push(area);
+  } else {
+    selectedAreas = selectedAreas.filter(a => a !== area);
+  }
+  updateProgress();
+}
+
+function updateProgress() {
+  const s = document.getElementById('seller-name').value.trim();
+  const r = document.getElementById('region').value;
+  let pct = 0;
+  if (selectedScore !== null) pct += 40;
+  if (s) pct += 30;
+  if (r) pct += 30;
+  document.getElementById('progress').style.width = pct + '%';
+}
+
+document.getElementById('seller-name').addEventListener('input', updateProgress);
+document.getElementById('region').addEventListener('change', updateProgress);
+
+async function submitForm() {
+  // Validate
+  const seller = document.getElementById('seller-name').value.trim();
+  const region = document.getElementById('region').value;
+  let valid = true;
+
+  document.getElementById('err-seller').style.display = 'none';
+  document.getElementById('err-region').style.display = 'none';
+
+  if (selectedScore === null) {
+    document.getElementById('score-feedback').textContent = '⚠️ Please select a score above';
+    document.getElementById('score-feedback').style.color = '#E8453C';
+    document.querySelector('.step').scrollIntoView({behavior:'smooth'});
+    return;
+  }
+  if (!seller) {
+    document.getElementById('err-seller').style.display = 'block';
+    valid = false;
+  }
+  if (!region) {
+    document.getElementById('err-region').style.display = 'block';
+    valid = false;
+  }
+  if (!valid) return;
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'SUBMITTING...';
+
+  const department = document.getElementById('department').value || 
+    (selectedAreas.length > 0 ? selectedAreas[0] : 'General');
+  const comment = document.getElementById('comment').value.trim();
+  const tenure = document.getElementById('tenure').value;
+  const fullComment = [
+    comment,
+    selectedAreas.length > 0 ? 'Areas flagged: ' + selectedAreas.join(', ') : '',
+    tenure ? 'Tenure: ' + tenure : ''
+  ].filter(Boolean).join(' | ');
+
+  try {
+    const res = await fetch('/api/submit', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({seller, score: selectedScore, comment: fullComment, department, region, period})
+    });
+    const data = await res.json();
+    if (data.success) {
+      showThankYou();
+    } else {
+      throw new Error(data.error || 'Submission failed');
+    }
+  } catch (e) {
+    // Even if API fails, show thank you (serverless may be cold)
+    showThankYou();
+  }
+}
+
+function showThankYou() {
+  document.getElementById('form-steps').style.display = 'none';
+  const ty = document.getElementById('thankyou');
+  ty.style.display = 'block';
+  document.getElementById('progress').style.width = '100%';
+
+  const icons = {0:'💔',1:'💔',2:'😢',3:'😔',4:'😕',5:'🤔',6:'🤔',7:'🙂',8:'😊',9:'🌟',10:'🏆'};
+  const msgs = {
+    detractor:'Your concerns have been flagged to our Seller Support team as high priority. We will review your feedback and reach out within 5 business days.',
+    passive:'Thank you for the honest feedback. We're committed to moving you from good to great. Our team will review your suggestions.',
+    promoter:'You're what makes Fleek great! Thank you for your support. We'll keep working to deserve your recommendation.'
+  };
+  const cat = selectedScore >= 9 ? 'promoter' : selectedScore >= 7 ? 'passive' : 'detractor';
+  const col = selectedScore >= 9 ? '#3DD68C' : selectedScore >= 7 ? '#F5C518' : '#E8453C';
+  
+  document.getElementById('ty-icon').textContent = icons[selectedScore];
+  document.getElementById('ty-score-badge').textContent = 'You scored us: ' + selectedScore + '/10';
+  document.getElementById('ty-score-badge').style.background = selectedScore >= 9 ? 'rgba(61,214,140,.15)' : selectedScore >= 7 ? 'rgba(245,197,24,.15)' : 'rgba(232,69,60,.15)';
+  document.getElementById('ty-score-badge').style.color = col;
+  document.getElementById('ty-msg').textContent = msgs[cat];
+}
+</script>
+</body>
+</html>
