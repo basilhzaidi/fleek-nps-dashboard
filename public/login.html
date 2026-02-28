@@ -1,43 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Fleek NPS - Login</title>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;align-items:center;justify-content:center;min-height:100vh}
-    .card{background:#fff;border-radius:20px;padding:48px 40px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.2);text-align:center}
-    .logo{font-size:2.2rem;font-weight:900;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
-    .subtitle{color:#6b7280;margin-bottom:32px;font-size:0.95rem}
-    input{width:100%;padding:13px 16px;border:1.5px solid #e5e7eb;border-radius:10px;font-size:1rem;margin-bottom:14px;outline:none;transition:border-color 0.2s}
-    input:focus{border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,0.15)}
-    button{width:100%;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;transition:opacity 0.2s}
-    button:hover{opacity:0.9}
-    .error{color:#dc2626;font-size:0.85rem;margin:-6px 0 12px;display:none}
-    .hint{margin-top:20px;font-size:0.8rem;color:#9ca3af}
-  </style>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Fleek — NPS Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0c0c0c;--surface:#141414;--card:#1a1a1a;--border:#272727;--yellow:#F5C518;--red:#E8453C;--green:#3DD68C;--text:#ededed;--muted:#999}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:20px 40px;display:flex;align-items:center;gap:12px}
+.logo-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:var(--yellow)}
+.main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;background:radial-gradient(ellipse at 50% 0%,rgba(245,197,24,0.05) 0%,transparent 60%)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:48px 40px;width:100%;max-width:440px}
+.card-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--text);margin-bottom:4px}
+.card-sub{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:32px;text-transform:uppercase}
+.tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:28px}
+.tab{flex:1;padding:10px;text-align:center;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;background:transparent;color:var(--muted);border:none;font-family:'Syne',sans-serif;transition:all 0.2s}
+.tab.active{background:var(--yellow);color:#0c0c0c}
+label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+input{width:100%;padding:13px 16px;background:#111;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;margin-bottom:16px;outline:none;font-family:'Syne',sans-serif;transition:border-color 0.2s}
+input:focus{border-color:var(--yellow)}
+.btn{width:100%;padding:14px;background:var(--yellow);color:#0c0c0c;border:none;border-radius:8px;font-size:14px;font-weight:800;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'Syne',sans-serif;transition:opacity 0.2s}
+.btn:hover{opacity:0.88}
+.error{color:var(--red);font-family:'JetBrains Mono',monospace;font-size:11px;margin:-8px 0 12px;display:none}
+.hint{margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#444;text-align:center}
+.hint b{color:#555}
+footer{padding:20px 40px;border-top:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:#444;letter-spacing:1px}
+</style>
 </head>
 <body>
+<header>
+  <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#F5C518"/><text x="14" y="20" text-anchor="middle" font-size="16" font-weight="900" fill="#0c0c0c">⚡</text></svg>
+  <span class="logo-name">FLEEK</span>
+</header>
+<div class="main">
   <div class="card">
-    <div class="logo">⚡ Fleek</div>
-    <p class="subtitle">NPS Dashboard — Admin Login</p>
-    <input type="text" id="username" placeholder="Username" autocomplete="username"/>
-    <input type="password" id="password" placeholder="Password" autocomplete="current-password"/>
+    <div class="card-title">NPS Portal</div>
+    <div class="card-sub">Seller Insights Dashboard · 2026</div>
+    <div class="tabs">
+      <button class="tab active" onclick="setMode('admin')" id="tab-admin">Admin</button>
+      <button class="tab" onclick="setMode('viewer')" id="tab-viewer">Viewer</button>
+    </div>
+    <div id="fields-admin">
+      <label>Username</label>
+      <input type="text" id="admin-user" placeholder="admin" autocomplete="username"/>
+      <label>Password</label>
+      <input type="password" id="admin-pass" placeholder="••••••••" autocomplete="current-password"/>
+    </div>
+    <div id="fields-viewer" style="display:none">
+      <label>Viewer Code</label>
+      <input type="password" id="viewer-pass" placeholder="Enter viewer access code" autocomplete="current-password"/>
+    </div>
     <p class="error" id="error">Invalid credentials. Please try again.</p>
-    <button onclick="login()">Login →</button>
-    <p class="hint">Default: admin / fleek2024</p>
+    <button class="btn" onclick="login()">Login →</button>
+    <div class="hint">Admin: <b>admin / fleek2024</b> &nbsp;|&nbsp; Viewer: <b>view2026</b></div>
   </div>
-  <script>
-    function login(){
-      const u=document.getElementById('username').value.trim();
-      const p=document.getElementById('password').value;
-      const err=document.getElementById('error');
-      if(u==='admin'&&p==='fleek2024'){sessionStorage.setItem('nps_auth','true');window.location.href='/dashboard';}
-      else{err.style.display='block';}
-    }
-    document.addEventListener('keydown',e=>{if(e.key==='Enter')login();});
-    if(sessionStorage.getItem('nps_auth')==='true')window.location.href='/dashboard';
-  </script>
+</div>
+<footer>FLEEK — NPS DASHBOARD · SELLER SUPPORT TEAM · CONFIDENTIAL</footer>
+<script>
+let mode = 'admin';
+function setMode(m){
+  mode = m;
+  document.getElementById('tab-admin').classList.toggle('active', m==='admin');
+  document.getElementById('tab-viewer').classList.toggle('active', m==='viewer');
+  document.getElementById('fields-admin').style.display = m==='admin'?'block':'none';
+  document.getElementById('fields-viewer').style.display = m==='viewer'?'block':'none';
+  document.getElementById('error').style.display='none';
+}
+function login(){
+  const err = document.getElementById('error');
+  if(mode==='admin'){
+    const u=document.getElementById('admin-user').value.trim();
+    const p=document.getElementById('admin-pass').value;
+    if(u==='admin'&&p==='fleek2024'){sessionStorage.setItem('nps_role','admin');window.location.href='/dashboard';}
+    else{err.style.display='block';}
+  } else {
+    const p=document.getElementById('viewer-pass').value;
+    if(p==='view2026'){sessionStorage.setItem('nps_role','viewer');window.location.href='/view';}
+    else{err.style.display='block';}
+  }
+}
+document.addEventListener('keydown',e=>{if(e.key==='Enter')login();});
+const role=sessionStorage.getItem('nps_role');
+if(role==='admin')window.location.href='/dashboard';
+if(role==='viewer')window.location.href='/view';
+</script>
 </body>
 </html>
