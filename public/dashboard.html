@@ -148,7 +148,7 @@
 </head>
 <body>
   <div class="topbar">
-    <div class="brand"><img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek" style="height:32px;vertical-align:middle;margin-right:10px"/><span style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:600;opacity:0.6;color:var(--text)">NPS Dashboard</span></div>
+    <div class="brand"><img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek" style="height:32px;vertical-align:middle;margin-right:10px;filter:brightness(0) invert(1)"/><span style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:600;opacity:0.6;color:var(--text)">NPS Dashboard</span></div>
     <div class="topbar-right">
       <a href="/survey" target="_blank" class="survey-link">📋 Survey Form</a>
       <button class="logout-btn" onclick="logout()">Logout</button>
@@ -921,7 +921,7 @@
     else if (id === 'upload') renderUploadLog();
     else if (id === 'responses') renderResponses();
     else if (id === 'automation') renderAutomation();
-    else if (id === 'report') renderReport();
+    else if (id === 'report') { renderReport(); }
   }
   
   // ===================== INIT =====================
@@ -1076,7 +1076,7 @@ ${includeGeo && geoRows ? `<div class="section">
   function generateReport() {
     const periodFilter = document.getElementById('reportPeriod')?.value || 'all';
     const title = 'NPS REPORT';
-    const subtitle = document.getElementById('reportAuthor')?.value || 'Seller Support Team';
+    const subtitle = (document.getElementById('reportAuthor')?.value || 'Seller Support Team') + (document.getElementById('reportNote')?.value ? ' · ' + document.getElementById('reportNote').value : '');
     const includeGeo = true;
     const includeDept = true;
     
@@ -1093,7 +1093,7 @@ ${includeGeo && geoRows ? `<div class="section">
   function previewReport() {
     const periodFilter = document.getElementById('reportPeriod')?.value || 'all';
     const title = 'NPS REPORT';
-    const subtitle = document.getElementById('reportAuthor')?.value || 'Seller Support Team';
+    const subtitle = (document.getElementById('reportAuthor')?.value || 'Seller Support Team') + (document.getElementById('reportNote')?.value ? ' · ' + document.getElementById('reportNote').value : '');
     const includeGeo = true;
     const includeDept = true;
     
