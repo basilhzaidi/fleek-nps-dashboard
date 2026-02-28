@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fleek Seller NPS Survey</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#0c0c0c;--card:#161616;--border:#252525;--yellow:#F5C518;--red:#E8453C;--green:#3DD68C;--text:#f0f0f0;--muted:#888}
+    body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 16px 60px}
+    
+    .header{width:100%;max-width:640px;text-align:center;padding:48px 0 32px}
+    .logo{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--yellow);letter-spacing:2px;display:flex;align-items:center;justify-content:center;gap:12px}
+    .logo span{font-size:2rem}
+    .tagline{color:var(--muted);margin-top:8px;font-size:1rem}
+    .survey-title{font-size:1.5rem;font-weight:800;margin-top:16px;line-height:1.3}
+    .survey-title em{color:var(--yellow);font-style:normal}
+    
+    .card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;width:100%;max-width:640px;margin-bottom:20px}
+    .section-label{font-family:'Bebas Neue',sans-serif;font-size:0.8rem;letter-spacing:2px;color:var(--yellow);margin-bottom:16px}
+    
+    /* NPS Score Selector */
+    .nps-question{font-size:1.1rem;font-weight:700;margin-bottom:20px;line-height:1.4}
+    .nps-scale{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;margin-bottom:12px}
+    .nps-btn{flex:1;min-width:44px;height:52px;border-radius:10px;border:2px solid var(--border);background:transparent;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all 0.15s}
+    .nps-btn:hover{border-color:var(--yellow);color:var(--yellow);transform:translateY(-2px)}
+    .nps-btn.selected.detractor{background:var(--red);border-color:var(--red);color:#fff}
+    .nps-btn.selected.passive{background:#F59E0B;border-color:#F59E0B;color:#fff}
+    .nps-btn.selected.promoter{background:var(--green);border-color:var(--green);color:#0c0c0c}
+    .nps-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:0.75rem;margin-top:6px}
+    
+    /* Form fields */
+    .field{margin-bottom:20px}
+    .field label{display:block;font-weight:700;font-size:0.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+    .field input,.field select,.field textarea{width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.95rem;padding:12px 16px;outline:none;transition:border-color 0.2s}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--yellow)}
+    .field select option{background:#0c0c0c}
+    .field textarea{resize:vertical;min-height:90px}
+    .required{color:var(--red)}
+    
+    /* Star importance ratings */
+    .importance-grid{display:grid;gap:12px}
+    .importance-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .importance-row .topic{font-size:0.9rem;flex:1}
+    .star-row{display:flex;gap:4px}
+    .star{font-size:1.3rem;cursor:pointer;color:var(--border);transition:color 0.1s}
+    .star.active{color:var(--yellow)}
+    
+    /* Submit */
+    .submit-btn{width:100%;padding:18px;background:var(--yellow);color:#0c0c0c;border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;cursor:pointer;transition:opacity 0.2s;margin-top:8px}
+    .submit-btn:hover{opacity:0.9}
+    .submit-btn:disabled{opacity:0.4;cursor:not-allowed}
+    
+    /* Success */
+    .success-screen{display:none;text-align:center;padding:60px 32px}
+    .success-icon{font-size:4rem;margin-bottom:20px}
+    .success-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--green);letter-spacing:2px}
+    .success-msg{color:var(--muted);margin-top:12px;font-size:1rem;line-height:1.6}
+    
+    .progress-bar{height:3px;background:var(--border);border-radius:2px;width:100%;max-width:640px;margin-bottom:32px}
+    .progress-fill{height:100%;background:var(--yellow);border-radius:2px;transition:width 0.3s;width:0%}
+
+    .error-msg{color:var(--red);font-size:0.82rem;margin-top:6px;display:none}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo"><span>⚡</span> FLEEK</div>
+  <p class="tagline">Seller Experience Survey</p>
+  <h1 class="survey-title">How likely are you to recommend <em>Fleek</em> to other sellers?</h1>
+</div>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<form id="surveyForm">
+
+  <!-- NPS Score -->
+  <div class="card">
+    <div class="section-label">01 / NPS Score</div>
+    <p class="nps-question">On a scale of 0–10, how likely are you to recommend Fleek to a fellow seller or business partner? <span class="required">*</span></p>
+    <div class="nps-scale" id="npsScale">
+      <button type="button" class="nps-btn" data-score="0">0</button>
+      <button type="button" class="nps-btn" data-score="1">1</button>
+      <button type="button" class="nps-btn" data-score="2">2</button>
+      <button type="button" class="nps-btn" data-score="3">3</button>
+      <button type="button" class="nps-btn" data-score="4">4</button>
+      <button type="button" class="nps-btn" data-score="5">5</button>
+      <button type="button" class="nps-btn" data-score="6">6</button>
+      <button type="button" class="nps-btn" data-score="7">7</button>
+      <button type="button" class="nps-btn" data-score="8">8</button>
+      <button type="button" class="nps-btn" data-score="9">9</button>
+      <button type="button" class="nps-btn" data-score="10">10</button>
+    </div>
+    <div class="nps-labels"><span>Not at all likely</span><span>Extremely likely</span></div>
+    <p class="error-msg" id="scoreError">Please select a score to continue.</p>
+  </div>
+
+  <!-- Seller Info -->
+  <div class="card">
+    <div class="section-label">02 / Your Information</div>
+    <div class="field">
+      <label>Seller / Business Name <span class="required">*</span></label>
+      <input type="text" id="sellerName" placeholder="e.g. Ahmed Traders" required/>
+    </div>
+    <div class="field">
+      <label>Department / Team handling your account <span class="required">*</span></label>
+      <select id="department" required>
+        <option value="">Select department...</option>
+        <option value="Seller Support">Seller Support</option>
+        <option value="Quality Check">Quality Check (QC)</option>
+        <option value="Payments">Payments</option>
+        <option value="Shipping & Logistics">Shipping & Logistics</option>
+        <option value="Vendor App">Vendor App</option>
+        <option value="Sales & Visibility">Sales & Visibility</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Geography / Zone <span class="required">*</span></label>
+      <select id="geography" required>
+        <option value="">Select your zone...</option>
+        <option value="PK Zone">PK Zone (Pakistan - Metro Cities)</option>
+        <option value="PK Non-Zone">PK Non-Zone (Pakistan - Other Cities)</option>
+        <option value="India">India</option>
+        <option value="ROW">ROW (Rest of World)</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>City</label>
+      <input type="text" id="city" placeholder="e.g. Karachi, Lahore, Delhi..."/>
+    </div>
+  </div>
+
+  <!-- Feedback -->
+  <div class="card">
+    <div class="section-label">03 / Your Feedback</div>
+    <div class="field">
+      <label>What is the main reason for your score?</label>
+      <textarea id="mainReason" placeholder="Tell us what's working well or what needs improvement..."></textarea>
+    </div>
+    <div class="field">
+      <label>Which area needs the most improvement?</label>
+      <select id="mainIssue">
+        <option value="">Select area...</option>
+        <option value="Refund Policy">Refund Policy</option>
+        <option value="Seller Support">Seller Support responsiveness</option>
+        <option value="Quality Check">Quality Check process</option>
+        <option value="Vendor App">Vendor App experience</option>
+        <option value="Sales & Visibility">Sales & Visibility tools</option>
+        <option value="Shipping & Logistics">Shipping & Logistics speed</option>
+        <option value="Payment Timeline">Payment Timeline</option>
+        <option value="None">No major issues</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Anything else you'd like to share?</label>
+      <textarea id="extraComment" placeholder="Additional comments, suggestions, or praise..."></textarea>
+    </div>
+  </div>
+
+  <!-- Importance Ratings -->
+  <div class="card">
+    <div class="section-label">04 / What Matters Most</div>
+    <p style="margin-bottom:16px;font-size:0.9rem;color:var(--muted)">Rate how important each area is to your business (1–5 stars)</p>
+    <div class="importance-grid" id="importanceGrid">
+      <div class="importance-row"><span class="topic">Fast payments</span><div class="star-row" data-topic="fastPayments"><span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span></div></div>
+      <div class="importance-row"><span class="topic">Quality check accuracy</span><div class="star-row" data-topic="qcAccuracy"><span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span></div></div>
+      <div class="importance-row"><span class="topic">Delivery speed</span><div class="star-row" data-topic="deliverySpeed"><span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span></div></div>
+      <div class="importance-row"><span class="topic">Seller app usability</span><div class="star-row" data-topic="appUsability"><span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span></div></div>
+      <div class="importance-row"><span class="topic">Product visibility & sales</span><div class="star-row" data-topic="salesVisibility"><span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span></div></div>
+    </div>
+  </div>
+
+  <!-- Submit -->
+  <div class="card" style="text-align:center">
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:20px">Your feedback helps Fleek improve the seller experience. All responses are confidential.</p>
+    <button type="submit" class="submit-btn" id="submitBtn">SUBMIT MY FEEDBACK →</button>
+    <p class="error-msg" id="formError" style="display:none;text-align:center;margin-top:12px">Please fill in all required fields.</p>
+  </div>
+
+</form>
+
+<!-- Success Screen -->
+<div class="card success-screen" id="successScreen">
+  <div class="success-icon">🎉</div>
+  <div class="success-title">Thank You!</div>
+  <p class="success-msg">Your feedback has been recorded.<br/>Fleek's team reviews every response to keep improving your experience.</p>
+</div>
+
+<script>
+  let selectedScore = null;
+  const importanceRatings = {};
+  
+  // Get period from URL params (auto-set when distributed)
+  const urlParams = new URLSearchParams(window.location.search);
+  const surveyPeriod = urlParams.get('period') || getCurrentPeriod();
+  
+  function getCurrentPeriod() {
+    const now = new Date();
+    return now.toLocaleString('en-US', { month: 'short' }) + ' ' + now.getFullYear();
+  }
+  
+  // NPS score selection
+  document.getElementById('npsScale').addEventListener('click', e => {
+    const btn = e.target.closest('.nps-btn');
+    if (!btn) return;
+    const score = parseInt(btn.dataset.score);
+    selectedScore = score;
+    document.querySelectorAll('.nps-btn').forEach(b => {
+      b.classList.remove('selected', 'detractor', 'passive', 'promoter');
+    });
+    const cat = score >= 9 ? 'promoter' : score >= 7 ? 'passive' : 'detractor';
+    btn.classList.add('selected', cat);
+    document.getElementById('scoreError').style.display = 'none';
+    updateProgress();
+  });
+  
+  // Star ratings
+  document.querySelectorAll('.star-row').forEach(row => {
+    const topic = row.dataset.topic;
+    importanceRatings[topic] = 0;
+    row.querySelectorAll('.star').forEach(star => {
+      star.addEventListener('click', () => {
+        const val = parseInt(star.dataset.val);
+        importanceRatings[topic] = val;
+        row.querySelectorAll('.star').forEach(s => {
+          s.classList.toggle('active', parseInt(s.dataset.val) <= val);
+        });
+        updateProgress();
+      });
+    });
+  });
+  
+  function updateProgress() {
+    const filled = [
+      selectedScore !== null,
+      document.getElementById('sellerName').value.trim(),
+      document.getElementById('department').value,
+      document.getElementById('geography').value
+    ].filter(Boolean).length;
+    document.getElementById('progressFill').style.width = (filled / 4 * 100) + '%';
+  }
+  
+  document.querySelectorAll('#sellerName,#department,#geography').forEach(el => {
+    el.addEventListener('input', updateProgress);
+    el.addEventListener('change', updateProgress);
+  });
+  
+  // Submit
+  document.getElementById('surveyForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    
+    if (selectedScore === null) {
+      document.getElementById('scoreError').style.display = 'block';
+      document.getElementById('npsScale').scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    
+    const sellerName = document.getElementById('sellerName').value.trim();
+    const department = document.getElementById('department').value;
+    const geography = document.getElementById('geography').value;
+    
+    if (!sellerName || !department || !geography) {
+      document.getElementById('formError').style.display = 'block';
+      return;
+    }
+    
+    const payload = {
+      seller: sellerName,
+      score: selectedScore,
+      department,
+      geography,
+      city: document.getElementById('city').value.trim(),
+      comment: document.getElementById('mainReason').value.trim(),
+      mainIssue: document.getElementById('mainIssue').value,
+      extraComment: document.getElementById('extraComment').value.trim(),
+      importance: importanceRatings,
+      period: surveyPeriod,
+      submittedAt: new Date().toISOString()
+    };
+    
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'SUBMITTING...';
+    
+    try {
+      const res = await fetch('/api/survey-submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      if (res.ok) {
+        document.getElementById('surveyForm').style.display = 'none';
+        document.getElementById('progressFill').style.width = '100%';
+        const successEl = document.getElementById('successScreen');
+        successEl.style.display = 'block';
+        successEl.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        throw new Error('Server error');
+      }
+    } catch(err) {
+      // Fallback: store locally if API fails
+      try {
+        const existing = JSON.parse(localStorage.getItem('fleek_nps_data') || '[]');
+        existing.unshift(payload);
+        localStorage.setItem('fleek_nps_data', JSON.stringify(existing));
+      } catch(e) {}
+      document.getElementById('surveyForm').style.display = 'none';
+      document.getElementById('successScreen').style.display = 'block';
+    }
+  });
+</script>
+
+</body>
+</html>
