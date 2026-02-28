@@ -1,35 +1,24 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "api/**/*.js",
-      "use": "@vercel/node"
+      "source": "/",
+      "destination": "/public/login.html"
     },
     {
-      "src": "public/**",
-      "use": "@vercel/static"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "source": "/dashboard",
+      "destination": "/public/dashboard.html"
     },
     {
-      "src": "/dashboard",
-      "dest": "/public/dashboard.html"
+      "source": "/view",
+      "destination": "/public/view.html"
     },
     {
-      "src": "/view",
-      "dest": "/public/view.html"
+      "source": "/survey",
+      "destination": "/public/survey.html"
     },
     {
-      "src": "/form",
-      "dest": "/public/form.html"
-    },
-    {
-      "src": "/",
-      "dest": "/public/login.html"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     }
   ]
 }
