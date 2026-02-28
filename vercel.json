@@ -24,6 +24,10 @@
       "dest": "/public/view.html"
     },
     {
+      "src": "/form",
+      "dest": "/public/form.html"
+    },
+    {
       "src": "/",
       "dest": "/public/login.html"
     }
