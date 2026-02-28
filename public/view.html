@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Fleek — NPS Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0c0c0c;--surface:#141414;--card:#1a1a1a;--border:#272727;--border2:#333;--yellow:#F5C518;--red:#E8453C;--red-dim:rgba(232,69,60,.13);--green:#3DD68C;--green-dim:rgba(61,214,140,.12);--orange:#F07C3A;--blue:#5B9EF5;--text:#ededed;--muted:#999;--subtle:#666}
+body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;overflow-x:hidden}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes barGrow{from{width:0}to{width:var(--w)}}
+.reveal{opacity:0;animation:fadeUp .6s ease forwards}
+.reveal:nth-child(1){animation-delay:.05s}.reveal:nth-child(2){animation-delay:.12s}.reveal:nth-child(3){animation-delay:.19s}.reveal:nth-child(4){animation-delay:.26s}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;color:var(--yellow)}
+.header-right{text-align:right}
+.report-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px}
+.report-sub{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--muted);margin-top:2px}
+.btn-logout{background:transparent;border:1px solid var(--border2);color:var(--muted);padding:7px 14px;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;transition:all 0.2s}
+.btn-logout:hover{border-color:var(--yellow);color:var(--yellow)}
+.hero{background:linear-gradient(135deg,#111 0%,#161410 50%,#0f1108 100%);border-bottom:1px solid var(--border);padding:56px 40px 44px;position:relative;overflow:hidden}
+.hero::after{content:'NPS';position:absolute;right:-20px;top:-20px;font-family:'Bebas Neue',sans-serif;font-size:260px;letter-spacing:-4px;color:rgba(245,197,24,.03);pointer-events:none;line-height:1}
+.hero-kicker{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);margin-bottom:10px}
+.hero-heading{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:1px;line-height:1;margin-bottom:8px}
+.hero-heading span{color:var(--yellow)}
+.hero-sub{color:var(--muted);font-size:14px;max-width:520px;line-height:1.6;margin-bottom:36px}
+.hero-stats{display:flex;gap:40px;align-items:flex-end;flex-wrap:wrap}
+.hs-val{font-family:'Bebas Neue',sans-serif;font-size:48px;line-height:1}
+.hs-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.hero-div{width:1px;height:56px;background:var(--border2)}
+.page{padding:32px 40px;max-width:1360px;margin:0 auto}
+.sec-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--yellow);margin-bottom:6px;text-transform:uppercase}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;margin-bottom:24px}
+.sec-divider{border:none;border-top:1px solid var(--border);margin:44px 0 36px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
+@media(max-width:900px){.two-col{grid-template-columns:1fr}}
+/* Trend cards */
+.trend-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+@media(max-width:700px){.trend-grid{grid-template-columns:1fr}}
+.trend-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 18px}
+.trend-card.active{border-color:var(--yellow);background:linear-gradient(135deg,#1e1c10,#1a1a1a)}
+.tc-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted)}
+.tc-score{font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1}
+.tc-n{font-size:10px;color:var(--subtle);margin-top:-2px;margin-bottom:8px}
+.tc-bar-row{display:flex;align-items:center;gap:8px;font-size:10px;margin-bottom:4px}
+.tc-bar-bg{flex:1;height:4px;background:var(--border2);border-radius:999px;overflow:hidden}
+.tc-bar-fill{height:100%;border-radius:999px;animation:barGrow .9s .3s ease both;width:var(--w)}
+/* Dist bars */
+.dist-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
+.dist-row:last-child{border-bottom:none}
+.dist-score{font-family:'Bebas Neue',sans-serif;font-size:18px;width:24px;flex-shrink:0;text-align:center}
+.dist-cat{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;width:60px;flex-shrink:0}
+.cat-pro{color:var(--green)}.cat-pass{color:var(--yellow)}.cat-det{color:var(--red)}
+.dist-bar-bg{flex:1;height:5px;background:var(--border2);border-radius:999px;overflow:hidden}
+.dist-bar-fill{height:100%;border-radius:999px;animation:barGrow .9s .3s ease both;width:var(--w)}
+.dist-count{font-size:12px;color:var(--muted);width:24px;text-align:right;flex-shrink:0}
+.dist-pct{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--subtle);width:38px;text-align:right;flex-shrink:0}
+/* Donut */
+.donut-wrap{position:relative;width:180px;height:180px;flex-shrink:0}
+.donut-wrap svg{width:100%;height:100%;transform:rotate(-90deg)}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-num{font-family:'Bebas Neue',sans-serif;font-size:44px;line-height:1;color:var(--red)}
+.donut-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px}
+.dl-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.dl-item:last-child{border-bottom:none}
+.dl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dl-label{flex:1;font-size:13px}
+.dl-vals{font-family:'Bebas Neue',sans-serif;font-size:20px}
+.dl-pct{font-size:11px;color:var(--muted)}
+/* Dept */
+.dept-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:28px}
+.dept-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px}
+.dept-name{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1px;margin-bottom:4px}
+.dept-nps{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;margin-bottom:10px}
+/* Problems */
+.prob-row{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--border)}
+.prob-row:last-child{border-bottom:none}
+.prob-rank{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--yellow);width:32px;flex-shrink:0}
+.prob-name{font-weight:700;font-size:13px;margin-bottom:1px}
+.prob-desc{font-size:11px;color:var(--muted)}
+.impact-badge{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;padding:3px 7px;border-radius:4px;flex-shrink:0}
+.impact-critical{background:var(--red-dim);color:var(--red)}
+.impact-high{background:rgba(240,124,58,0.13);color:var(--orange)}
+.impact-medium{background:rgba(91,158,245,0.12);color:var(--blue)}
+.prob-pct{font-family:'Bebas Neue',sans-serif;font-size:22px;margin-left:auto;flex-shrink:0}
+/* VOD */
+.vod-cat-title{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;padding:10px 0 10px;border-bottom:1px solid var(--border);margin-bottom:0}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--subtle);text-transform:uppercase;padding:10px 14px;border-bottom:1px solid var(--border)}
+td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.02)}
+/* Val cards */
+.val-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:28px}
+.val-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.val-area{font-size:12px;color:var(--muted);margin-bottom:6px}
+.val-pct{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;margin-bottom:8px}
+.val-status{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;padding:3px 8px;border-radius:4px;display:inline-block;margin-bottom:8px}
+.s-strength{background:var(--green-dim);color:var(--green)}.s-opportunity{background:rgba(91,158,245,0.12);color:var(--blue)}.s-mixed{background:rgba(245,197,24,0.12);color:var(--yellow)}.s-broken{background:var(--red-dim);color:var(--red)}
+.val-meter{height:3px;background:var(--border2);border-radius:999px;overflow:hidden;margin-top:4px}
+.val-meter-fill{height:100%;border-radius:999px;animation:barGrow .9s .3s ease both;width:var(--w)}
+footer{background:var(--surface);border-top:1px solid var(--border);padding:18px 40px;display:flex;align-items:center;justify-content:space-between}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:var(--muted)}
+.footer-note{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--subtle);letter-spacing:1px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#F5C518"/><text x="14" y="20" text-anchor="middle" font-size="16" font-weight="900" fill="#0c0c0c">⚡</text></svg>
+    <span class="logo-name">FLEEK</span>
+  </div>
+  <div class="header-right">
+    <div class="report-title">SELLER NPS REPORT</div>
+    <div class="report-sub">JANUARY 2026 · SELLER SUPPORT TEAM · 147 RESPONDENTS</div>
+  </div>
+  <button class="btn-logout" onclick="logout()">Logout</button>
+</header>
+
+<div class="hero">
+  <div class="hero-kicker">WHERE WE STAND TODAY → WHERE WE CAN BE → HOW TO GET THERE</div>
+  <h1 class="hero-heading">Supplier <span>Sentiment</span><br>at an Inflection Point</h1>
+  <p class="hero-sub">147 suppliers responded to our January NPS survey. The data highlights key friction points — and a clear roadmap for targeted improvement.</p>
+  <div class="hero-stats">
+    <div><div class="hs-val" style="color:var(--yellow)">+1</div><div class="hs-label">Jan NPS Score</div></div>
+    <div class="hero-div"></div>
+    <div><div class="hs-val" style="color:var(--green)">53</div><div class="hs-label">Promoters</div></div>
+    <div class="hero-div"></div>
+    <div><div class="hs-val" style="color:var(--muted)">43</div><div class="hs-label">Passives</div></div>
+    <div class="hero-div"></div>
+    <div><div class="hs-val" style="color:var(--red)">51</div><div class="hs-label">Detractors</div></div>
+    <div class="hero-div"></div>
+    <div><div class="hs-val" style="color:var(--blue)">$1.02M</div><div class="hs-label">Dec GMV</div></div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- SCORE TREND -->
+  <div class="sec-tag">PART ONE · WHERE WE STAND TODAY</div>
+  <div class="sec-title">NPS Score Trend</div>
+  <div class="trend-grid reveal">
+    <div class="trend-card">
+      <div class="tc-label">SEPTEMBER 2025</div>
+      <div class="tc-score" style="color:var(--red)">–10</div>
+      <div class="tc-n">n = 203 respondents</div>
+      <div class="tc-bar-row"><span style="width:60px;color:var(--green);font-size:10px">Promoters</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:33%;background:var(--green)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">33%</span></div>
+      <div class="tc-bar-row"><span style="width:60px;color:var(--yellow);font-size:10px">Passives</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:24%;background:var(--yellow)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">24%</span></div>
+      <div class="tc-bar-row"><span style="width:60px;color:var(--red);font-size:10px">Detractors</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:43%;background:var(--red)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">43%</span></div>
+    </div>
+    <div class="trend-card">
+      <div class="tc-label">NOVEMBER 2025</div>
+      <div class="tc-score" style="color:var(--green)">+4</div>
+      <div class="tc-n">n = 84 respondents</div>
+      <div class="tc-bar-row"><span style="width:60px;color:var(--green);font-size:10px">Promoters</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:35.7%;background:var(--green)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">35.7%</span></div>
+      <div class="tc-bar-row"><span style="width:60px;color:var(--yellow);font-size:10px">Passives</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:32.1%;background:var(--yellow)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">32.1%</span></div>
+      <div class="tc-bar-row"><span style="width:60px;color:var(--red);font-size:10px">Detractors</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:32.1%;background:var(--red)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">32.1%</span></div>
+    </div>
+    <div class="trend-card active">
+      <div class="tc-label">JANUARY 2026 ← CURRENT</div>
+      <div class="tc-score" style="color:var(--yellow)">+1</div>
+      <div class="tc-n">n = 147 respondents</div>
+      <div class="tc-bar-row"><span style="width:60px;color:var(--green);font-size:10px">Promoters</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:36.1%;background:var(--green)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">36.1%</span></div>
+      <div class="tc-bar-row"><span style="width:60px;color:var(--yellow);font-size:10px">Passives</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:29.3%;background:var(--yellow)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">29.3%</span></div>
+      <div class="tc-bar-row"><span style="width:60px;color:var(--red);font-size:10px">Detractors</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:34.7%;background:var(--red)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">34.7%</span></div>
+    </div>
+  </div>
+
+  <div class="reveal" style="margin-top:12px;background:var(--card);border:1px solid var(--yellow);border-radius:12px;padding:20px 18px;display:flex;align-items:center;gap:20px;background:linear-gradient(135deg,#1e1c10,#1a1a1a)">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted)">OVERALL NPS</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1;color:var(--red)">–3</div>
+    <div style="font-size:12px;color:var(--subtle)">Cumulative across all periods</div>
+  </div>
+
+  <hr class="sec-divider">
+
+  <!-- DIST + DONUT -->
+  <div class="two-col reveal">
+    <div>
+      <div class="sec-tag">SCORE BREAKDOWN</div>
+      <div class="sec-title" style="margin-bottom:16px">Score Distribution</div>
+      <div>
+        <div class="dist-row"><div class="dist-score" style="color:var(--yellow)">10</div><div class="dist-cat cat-pro">PROMOTER</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:100%;background:var(--green)"></div></div><div class="dist-count">38</div><div class="dist-pct">25.9%</div></div>
+        <div class="dist-row"><div class="dist-score" style="color:var(--yellow)">9</div><div class="dist-cat cat-pro">PROMOTER</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:39.5%;background:var(--green)"></div></div><div class="dist-count">15</div><div class="dist-pct">10.2%</div></div>
+        <div class="dist-row"><div class="dist-score" style="color:var(--yellow)">8</div><div class="dist-cat cat-pass">PASSIVE</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:73.7%;background:var(--yellow)"></div></div><div class="dist-count">28</div><div class="dist-pct">19.0%</div></div>
+        <div class="dist-row"><div class="dist-score" style="color:var(--yellow)">7</div><div class="dist-cat cat-pass">PASSIVE</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:39.5%;background:var(--yellow)"></div></div><div class="dist-count">15</div><div class="dist-pct">10.2%</div></div>
+        <div class="dist-row"><div class="dist-score" style="color:var(--red)">6</div><div class="dist-cat cat-det">DETRACTOR</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:26.3%;background:var(--red)"></div></div><div class="dist-count">10</div><div class="dist-pct">6.8%</div></div>
+        <div class="dist-row"><div class="dist-score" style="color:var(--red)">5</div><div class="dist-cat cat-det">DETRACTOR</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:39.5%;background:var(--red)"></div></div><div class="dist-count">15</div><div class="dist-pct">10.2%</div></div>
+        <div class="dist-row"><div class="dist-score" style="color:var(--red)">4</div><div class="dist-cat cat-det">DETRACTOR</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:23.7%;background:var(--red)"></div></div><div class="dist-count">9</div><div class="dist-pct">6.1%</div></div>
+        <div class="dist-row"><div class="dist-score" style="color:var(--red)">3</div><div class="dist-cat cat-det">DETRACTOR</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:21.1%;background:var(--red)"></div></div><div class="dist-count">8</div><div class="dist-pct">5.4%</div></div>
+        <div class="dist-row"><div class="dist-score" style="color:var(--red)">1</div><div class="dist-cat cat-det">DETRACTOR</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:21.1%;background:var(--red)"></div></div><div class="dist-count">8</div><div class="dist-pct">5.4%</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="sec-tag">VISUAL BREAKDOWN</div>
+      <div class="sec-title" style="margin-bottom:16px">January 2026 NPS</div>
+      <div class="card">
+        <div style="display:flex;gap:24px;align-items:center">
+          <div class="donut-wrap">
+            <svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" fill="none" stroke="#E8453C" stroke-width="28" stroke-dasharray="174.3 327.4" stroke-dashoffset="0"></circle><circle cx="100" cy="100" r="80" fill="none" stroke="#F5C518" stroke-width="28" stroke-dasharray="147.3 354.4" stroke-dashoffset="-174.3"></circle><circle cx="100" cy="100" r="80" fill="none" stroke="#3DD68C" stroke-width="28" stroke-dasharray="181.6 320.1" stroke-dashoffset="-321.6"></circle></svg>
+            <div class="donut-center"><div class="donut-num">+1</div><div class="donut-sub">NPS</div></div>
+          </div>
+          <div style="flex:1">
+            <div class="dl-item"><div class="dl-dot" style="background:var(--green)"></div><div class="dl-label">Promoters</div><div class="dl-vals" style="color:var(--green)">53 <span class="dl-pct">36.1%</span></div></div>
+            <div class="dl-item"><div class="dl-dot" style="background:var(--yellow)"></div><div class="dl-label">Passives</div><div class="dl-vals" style="color:var(--yellow)">43 <span class="dl-pct">29.3%</span></div></div>
+            <div class="dl-item"><div class="dl-dot" style="background:var(--red)"></div><div class="dl-label">Detractors</div><div class="dl-vals" style="color:var(--red)">51 <span class="dl-pct">34.7%</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="sec-divider">
+
+  <!-- TOP PROBLEMS -->
+  <div class="sec-tag reveal">EXECUTIVE SUMMARY</div>
+  <div class="sec-title reveal">Top 5 Problems Driving Detractor Scores</div>
+  <div class="card reveal" style="margin-bottom:28px">
+    <div class="prob-row"><div class="prob-rank">01</div><div><div class="prob-name">Refund Policy</div><div class="prob-desc">Perceived as unfair to sellers — most cited issue by far</div></div><span class="impact-badge impact-critical">CRITICAL</span><div class="prob-pct" style="color:var(--red)">33.3%</div></div>
+    <div class="prob-row"><div class="prob-rank">02</div><div><div class="prob-name">Seller Support</div><div class="prob-desc">Slow response times, unhelpful resolutions</div></div><span class="impact-badge impact-high">HIGH</span><div class="prob-pct" style="color:var(--orange)">25.2%</div></div>
+    <div class="prob-row"><div class="prob-rank">03</div><div><div class="prob-name">Quality Check</div><div class="prob-desc">Inconsistent QC — items wrongly flagged or rejected</div></div><span class="impact-badge impact-high">HIGH</span><div class="prob-pct" style="color:var(--orange)">19.0%</div></div>
+    <div class="prob-row"><div class="prob-rank">04</div><div><div class="prob-name">Vendor App</div><div class="prob-desc">Performance issues, crashes, poor UX</div></div><span class="impact-badge impact-high">HIGH</span><div class="prob-pct" style="color:var(--orange)">17.7%</div></div>
+    <div class="prob-row"><div class="prob-rank">05</div><div><div class="prob-name">Sales &amp; Visibility</div><div class="prob-desc">New sellers struggle with discoverability</div></div><span class="impact-badge impact-medium">MEDIUM</span><div class="prob-pct" style="color:var(--blue)">17.7%</div></div>
+  </div>
+
+  <hr class="sec-divider">
+
+  <!-- DEPT -->
+  <div class="sec-tag reveal">DEPARTMENT VIEW</div>
+  <div class="sec-title reveal">NPS by Department — Jan 2026</div>
+  <div class="dept-grid reveal">
+    <div class="dept-card">
+      <div class="dept-name">Seller Support</div>
+      <div class="dept-nps" style="color:var(--red)">–18</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:10px">OPPORTUNITY · 47 RESPONSES</div>
+      <div style="height:4px;background:var(--border2);border-radius:999px;overflow:hidden"><div style="height:100%;width:41%;background:var(--red);border-radius:999px"></div></div>
+    </div>
+    <div class="dept-card">
+      <div class="dept-name">Quality Check</div>
+      <div class="dept-nps" style="color:var(--yellow)">–5</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:10px">MIXED · 28 RESPONSES</div>
+      <div style="height:4px;background:var(--border2);border-radius:999px;overflow:hidden"><div style="height:100%;width:40%;background:var(--yellow);border-radius:999px"></div></div>
+    </div>
+    <div class="dept-card">
+      <div class="dept-name">Payments</div>
+      <div class="dept-nps" style="color:var(--red)">–12</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:10px">BROKEN · 22 RESPONSES</div>
+      <div style="height:4px;background:var(--border2);border-radius:999px;overflow:hidden"><div style="height:100%;width:33.8%;background:var(--blue);border-radius:999px"></div></div>
+    </div>
+    <div class="dept-card">
+      <div class="dept-name">Shipping & Logistics</div>
+      <div class="dept-nps" style="color:var(--green)">+42</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:10px">STRENGTH · 18 RESPONSES</div>
+      <div style="height:4px;background:var(--border2);border-radius:999px;overflow:hidden"><div style="height:100%;width:33.1%;background:var(--green);border-radius:999px"></div></div>
+    </div>
+    <div class="dept-card">
+      <div class="dept-name">Vendor App</div>
+      <div class="dept-nps" style="color:var(--red)">–20</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:10px">HIGH PRIORITY · 20 RESPONSES</div>
+      <div style="height:4px;background:var(--border2);border-radius:999px;overflow:hidden"><div style="height:100%;width:17%;background:var(--red);border-radius:999px"></div></div>
+    </div>
+    <div class="dept-card">
+      <div class="dept-name">Sales & Visibility</div>
+      <div class="dept-nps" style="color:var(--yellow)">+10</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:10px">CORE VALUE · 12 RESPONSES</div>
+      <div style="height:4px;background:var(--border2);border-radius:999px;overflow:hidden"><div style="height:100%;width:30.3%;background:var(--yellow);border-radius:999px"></div></div>
+    </div>
+  </div>
+
+  <hr class="sec-divider">
+
+  <!-- VALUE DRIVERS -->
+  <div class="sec-tag reveal">PART TWO · WHAT DRIVES VALUE</div>
+  <div class="sec-title reveal">What Sellers Tell Us They Value</div>
+  <div class="val-grid reveal">
+    <div class="val-card"><div class="val-area">Reliable Payments</div><div class="val-pct" style="color:var(--green)">51.7%</div><span class="val-status s-strength">STRENGTH</span><div style="font-size:11px;color:var(--muted);margin-bottom:8px">Sellers' #1 value driver — must never slip</div><div class="val-meter"><div class="val-meter-fill" style="--w:51.7%;background:var(--green)"></div></div></div>
+    <div class="val-card"><div class="val-area">Quality Assurance</div><div class="val-pct" style="color:var(--yellow)">40.1%</div><span class="val-status s-mixed">MIXED</span><div style="font-size:11px;color:var(--muted);margin-bottom:8px">Fix inconsistencies, keep rigor</div><div class="val-meter"><div class="val-meter-fill" style="--w:40%;background:var(--yellow)"></div></div></div>
+    <div class="val-card"><div class="val-area">Seller Support</div><div class="val-pct" style="color:var(--blue)">33.8%</div><span class="val-status s-opportunity">OPPORTUNITY</span><div style="font-size:11px;color:var(--muted);margin-bottom:8px">Fixing issues will amplify perceived value</div><div class="val-meter"><div class="val-meter-fill" style="--w:33.8%;background:var(--blue)"></div></div></div>
+    <div class="val-card"><div class="val-area">Shipping & Logistics</div><div class="val-pct" style="color:var(--green)">33.1%</div><span class="val-status s-strength">STRENGTH</span><div style="font-size:11px;color:var(--muted);margin-bottom:8px">Continue operational excellence</div><div class="val-meter"><div class="val-meter-fill" style="--w:33.1%;background:var(--green)"></div></div></div>
+    <div class="val-card"><div class="val-area">Sales Channel</div><div class="val-pct" style="color:var(--yellow)">30.3%</div><span class="val-status s-mixed">CORE VALUE</span><div style="font-size:11px;color:var(--muted);margin-bottom:8px">Access to global buyers is why they're here</div><div class="val-meter"><div class="val-meter-fill" style="--w:30.3%;background:var(--yellow)"></div></div></div>
+    <div class="val-card"><div class="val-area">Refund Process</div><div class="val-pct" style="color:var(--red)">13.1%</div><span class="val-status s-broken">BROKEN</span><div style="font-size:11px;color:var(--muted);margin-bottom:8px">Valued by 13.1% — significant redesign opportunity</div><div class="val-meter"><div class="val-meter-fill" style="--w:13.1%;background:var(--red)"></div></div></div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-logo">⚡ FLEEK — SELLER SUPPORT TEAM</div>
+  <div class="footer-note">NPS REPORT · JANUARY 2026 · 147 RESPONDENTS · CONFIDENTIAL</div>
+</footer>
+
+<script>
+if(sessionStorage.getItem('nps_role')!=='viewer'&&sessionStorage.getItem('nps_role')!=='admin') window.location.href='/';
+function logout(){sessionStorage.removeItem('nps_role');window.location.href='/';}
+</script>
+</body>
+</html>
