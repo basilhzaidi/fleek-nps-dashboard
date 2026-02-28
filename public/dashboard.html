@@ -148,7 +148,7 @@
 </head>
 <body>
   <div class="topbar">
-    <div class="brand">⚡ FLEEK <span>NPS Dashboard</span></div>
+    <div class="brand"><img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek" style="height:32px;vertical-align:middle;margin-right:10px"/><span style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:600;opacity:0.6;color:var(--text)">NPS Dashboard</span></div>
     <div class="topbar-right">
       <a href="/survey" target="_blank" class="survey-link">📋 Survey Form</a>
       <button class="logout-btn" onclick="logout()">Logout</button>
@@ -163,6 +163,7 @@
     <button class="tab" onclick="showTab('upload')">⬆️ Upload CSV</button>
     <button class="tab" onclick="showTab('responses')">📋 Responses</button>
     <button class="tab" onclick="showTab('automation')">⚙️ Automation</button>
+    <button class="tab" onclick="showTab('report')">📄 Report</button>
   </div>
 
   <div class="main">
@@ -323,6 +324,68 @@
       </div>
     </div>
 
+
+    <!-- REPORT GENERATOR TAB -->
+    <div class="tab-content" id="tab-report">
+      <div class="auto-card">
+        <h3>📄 Generate NPS Report</h3>
+        <p class="desc">Generate a shareable internal report in the same style as the official Fleek NPS Report. Configure below and click Generate — a full HTML report will download instantly, ready to share with leadership.</p>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px">
+          <div class="field-group">
+            <label style="display:block;font-size:0.78rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700">Report Period</label>
+            <select id="reportPeriod" style="width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.9rem;padding:10px 14px;outline:none">
+              <option value="all">All Time</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label style="display:block;font-size:0.78rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700">Prepared By</label>
+            <input type="text" id="reportAuthor" placeholder="e.g. Seller Support Team" value="Seller Support Team" style="width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.9rem;padding:10px 14px;outline:none"/>
+          </div>
+        </div>
+
+        <div style="margin-top:16px">
+          <label style="display:block;font-size:0.78rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700">Executive Note <span style="font-size:0.7rem;color:var(--muted);text-transform:none;letter-spacing:0">(optional — appears at top of report)</span></label>
+          <textarea id="reportNote" placeholder="Add a brief executive summary or key highlights..." style="width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;resize:vertical;min-height:80px"></textarea>
+        </div>
+
+        <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap">
+          <button onclick="generateReport()" style="flex:1;min-width:180px;padding:14px 24px;background:var(--yellow);color:#0c0c0c;border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;cursor:pointer;transition:opacity 0.2s">⬇ DOWNLOAD REPORT</button>
+          <button onclick="previewReport()" style="flex:1;min-width:180px;padding:14px 24px;background:transparent;color:var(--text);border:1.5px solid var(--border);border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;cursor:pointer;transition:all 0.2s">👁 PREVIEW REPORT</button>
+        </div>
+      </div>
+
+      <div class="auto-card">
+        <h3>📋 What's Included in the Report</h3>
+        <p class="desc">The generated report is a self-contained HTML file with the official Fleek design, matching the format used for leadership presentations.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">
+          <div style="background:#0c0c0c;border-radius:10px;padding:14px;border:1px solid var(--border)">
+            <div style="color:var(--yellow);font-weight:700;font-size:0.85rem;margin-bottom:6px">📊 NPS Overview</div>
+            <p style="color:var(--muted);font-size:0.82rem;line-height:1.5">Overall NPS score, promoter/passive/detractor breakdown with animated counters</p>
+          </div>
+          <div style="background:#0c0c0c;border-radius:10px;padding:14px;border:1px solid var(--border)">
+            <div style="color:var(--yellow);font-weight:700;font-size:0.85rem;margin-bottom:6px">📈 Score Trend</div>
+            <p style="color:var(--muted);font-size:0.82rem;line-height:1.5">Month-over-month NPS trend across all historical periods</p>
+          </div>
+          <div style="background:#0c0c0c;border-radius:10px;padding:14px;border:1px solid var(--border)">
+            <div style="color:var(--yellow);font-weight:700;font-size:0.85rem;margin-bottom:6px">🌍 Geography Breakdown</div>
+            <p style="color:var(--muted);font-size:0.82rem;line-height:1.5">NPS by zone: PK Zone, PK Non-Zone, India, and ROW with response counts</p>
+          </div>
+          <div style="background:#0c0c0c;border-radius:10px;padding:14px;border:1px solid var(--border)">
+            <div style="color:var(--yellow);font-weight:700;font-size:0.85rem;margin-bottom:6px">🏢 Departments</div>
+            <p style="color:var(--muted);font-size:0.82rem;line-height:1.5">NPS score per department with visual progress bars</p>
+          </div>
+          <div style="background:#0c0c0c;border-radius:10px;padding:14px;border:1px solid var(--border)">
+            <div style="color:var(--yellow);font-weight:700;font-size:0.85rem;margin-bottom:6px">💬 Top Feedback</div>
+            <p style="color:var(--muted);font-size:0.82rem;line-height:1.5">Most common improvement areas and verbatim seller comments</p>
+          </div>
+          <div style="background:#0c0c0c;border-radius:10px;padding:14px;border:1px solid var(--border)">
+            <div style="color:var(--yellow);font-weight:700;font-size:0.85rem;margin-bottom:6px">🔒 Shareable</div>
+            <p style="color:var(--muted);font-size:0.82rem;line-height:1.5">Single HTML file — email it, upload to Drive, or open in any browser</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="toast" id="toast"></div>
