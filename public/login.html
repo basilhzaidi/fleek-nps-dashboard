@@ -1,89 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Fleek — NPS Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0c0c0c;--surface:#141414;--card:#1a1a1a;--border:#272727;--yellow:#F5C518;--red:#E8453C;--green:#3DD68C;--text:#ededed;--muted:#999}
-body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;display:flex;flex-direction:column}
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:20px 40px;display:flex;align-items:center;gap:12px}
-.logo-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:var(--yellow)}
-.main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;background:radial-gradient(ellipse at 50% 0%,rgba(245,197,24,0.05) 0%,transparent 60%)}
-.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:48px 40px;width:100%;max-width:440px}
-.card-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--text);margin-bottom:4px}
-.card-sub{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:32px;text-transform:uppercase}
-.tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:28px}
-.tab{flex:1;padding:10px;text-align:center;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;background:transparent;color:var(--muted);border:none;font-family:'Syne',sans-serif;transition:all 0.2s}
-.tab.active{background:var(--yellow);color:#0c0c0c}
-label{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
-input{width:100%;padding:13px 16px;background:#111;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;margin-bottom:16px;outline:none;font-family:'Syne',sans-serif;transition:border-color 0.2s}
-input:focus{border-color:var(--yellow)}
-.btn{width:100%;padding:14px;background:var(--yellow);color:#0c0c0c;border:none;border-radius:8px;font-size:14px;font-weight:800;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'Syne',sans-serif;transition:opacity 0.2s}
-.btn:hover{opacity:0.88}
-.error{color:var(--red);font-family:'JetBrains Mono',monospace;font-size:11px;margin:-8px 0 12px;display:none}
-.hint{margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#444;text-align:center}
-.hint b{color:#555}
-footer{padding:20px 40px;border-top:1px solid var(--border);text-align:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:#444;letter-spacing:1px}
-</style>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fleek NPS — Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#0c0c0c;--card:#161616;--border:#252525;--yellow:#F5C518;--red:#E8453C;--green:#3DD68C;--text:#f0f0f0;--muted:#888}
+    body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .wrap{width:100%;max-width:420px}
+    .logo-area{text-align:center;margin-bottom:36px}
+    .logo-img{width:52px;height:52px;object-fit:cover;border-radius:10px;margin-bottom:12px}
+    .brand{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--yellow);letter-spacing:4px}
+    .brand-sub{color:var(--muted);font-size:0.82rem;margin-top:4px;letter-spacing:1px;text-transform:uppercase}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px 32px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+    .tabs{display:flex;gap:6px;margin-bottom:28px;background:#0c0c0c;border-radius:10px;padding:4px}
+    .tab-btn{flex:1;padding:10px;border:none;border-radius:8px;background:transparent;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s}
+    .tab-btn.active{background:var(--card);color:var(--yellow);border:1px solid var(--border)}
+    .field{margin-bottom:16px}
+    .field label{display:block;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px}
+    .field input{width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.95rem;padding:13px 16px;outline:none;transition:border-color 0.2s}
+    .field input:focus{border-color:var(--yellow)}
+    .submit-btn{width:100%;padding:15px;background:var(--yellow);color:#0c0c0c;border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;cursor:pointer;margin-top:8px;transition:opacity 0.2s}
+    .submit-btn:hover{opacity:0.88}
+    .err{color:var(--red);font-size:0.82rem;margin-top:12px;text-align:center;display:none;padding:10px;background:rgba(232,69,60,0.08);border-radius:8px}
+    .viewer-info{font-size:0.82rem;color:var(--muted);text-align:center;line-height:1.6;padding:16px;background:#0c0c0c;border-radius:10px;margin-bottom:16px}
+    .tab-panel{display:none}.tab-panel.active{display:block}
+  </style>
 </head>
 <body>
-<header>
-  <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="#F5C518"/><text x="14" y="20" text-anchor="middle" font-size="16" font-weight="900" fill="#0c0c0c">⚡</text></svg>
-  <span class="logo-name">FLEEK</span>
-</header>
-<div class="main">
+<div class="wrap">
+  <div class="logo-area">
+    <img src="data:image/png;base64,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" class="logo-img" alt="Fleek"/>
+    <div class="brand">FLEEK</div>
+    <div class="brand-sub">NPS Intelligence Portal</div>
+  </div>
   <div class="card">
-    <div class="card-title">NPS Portal</div>
-    <div class="card-sub">Seller Insights Dashboard · 2026</div>
     <div class="tabs">
-      <button class="tab active" onclick="setMode('admin')" id="tab-admin">Admin</button>
-      <button class="tab" onclick="setMode('viewer')" id="tab-viewer">Viewer</button>
+      <button class="tab-btn active" onclick="switchTab('admin',this)">Admin</button>
+      <button class="tab-btn" onclick="switchTab('viewer',this)">Viewer</button>
     </div>
-    <div id="fields-admin">
-      <label>Username</label>
-      <input type="text" id="admin-user" placeholder="admin" autocomplete="username"/>
-      <label>Password</label>
-      <input type="password" id="admin-pass" placeholder="••••••••" autocomplete="current-password"/>
+    <div class="tab-panel active" id="panel-admin">
+      <div class="field"><label>Username</label><input type="text" id="admin-u" autocomplete="username" placeholder="Enter username"/></div>
+      <div class="field"><label>Password</label><input type="password" id="admin-p" autocomplete="current-password" placeholder="Enter password"/></div>
+      <button class="submit-btn" onclick="loginAdmin()">LOGIN →</button>
+      <div class="err" id="admin-err">Invalid credentials. Please try again.</div>
     </div>
-    <div id="fields-viewer" style="display:none">
-      <label>Viewer Code</label>
-      <input type="password" id="viewer-pass" placeholder="Enter viewer access code" autocomplete="current-password"/>
+    <div class="tab-panel" id="panel-viewer">
+      <div class="viewer-info">Enter your access code to view the NPS report.<br/>Contact Seller Support if you need access.</div>
+      <div class="field"><label>Access Code</label><input type="password" id="viewer-code" placeholder="Enter access code"/></div>
+      <button class="submit-btn" onclick="loginViewer()">VIEW REPORT →</button>
+      <div class="err" id="viewer-err">Invalid access code. Please try again.</div>
     </div>
-    <p class="error" id="error">Invalid credentials. Please try again.</p>
-    <button class="btn" onclick="login()">Login →</button>
-    <div class="hint">Admin: <b>admin / fleek2024</b> &nbsp;|&nbsp; Viewer: <b>view2026</b></div>
   </div>
 </div>
-<footer>FLEEK — NPS DASHBOARD · SELLER SUPPORT TEAM · CONFIDENTIAL</footer>
 <script>
-let mode = 'admin';
-function setMode(m){
-  mode = m;
-  document.getElementById('tab-admin').classList.toggle('active', m==='admin');
-  document.getElementById('tab-viewer').classList.toggle('active', m==='viewer');
-  document.getElementById('fields-admin').style.display = m==='admin'?'block':'none';
-  document.getElementById('fields-viewer').style.display = m==='viewer'?'block':'none';
-  document.getElementById('error').style.display='none';
-}
-function login(){
-  const err = document.getElementById('error');
-  if(mode==='admin'){
-    const u=document.getElementById('admin-user').value.trim();
-    const p=document.getElementById('admin-pass').value;
-    if(u==='admin'&&p==='fleek2024'){sessionStorage.setItem('nps_role','admin');window.location.href='/dashboard';}
-    else{err.style.display='block';}
-  } else {
-    const p=document.getElementById('viewer-pass').value;
-    if(p==='view2026'){sessionStorage.setItem('nps_role','viewer');window.location.href='/view';}
+  if(sessionStorage.getItem('nps_role')==='admin'||sessionStorage.getItem('nps_auth')==='true') window.location.href='/dashboard';
+  else if(sessionStorage.getItem('nps_role')==='viewer') window.location.href='/view';
+  function switchTab(t,btn){
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+t).classList.add('active');
+  }
+  function loginAdmin(){
+    const u=document.getElementById('admin-u').value.trim();
+    const p=document.getElementById('admin-p').value;
+    const err=document.getElementById('admin-err');
+    if(u==='admin'&&p==='fleek2024'){sessionStorage.setItem('nps_role','admin');sessionStorage.setItem('nps_auth','true');window.location.href='/dashboard';}
     else{err.style.display='block';}
   }
-}
-document.addEventListener('keydown',e=>{if(e.key==='Enter')login();});
-const role=sessionStorage.getItem('nps_role');
-if(role==='admin')window.location.href='/dashboard';
-if(role==='viewer')window.location.href='/view';
+  function loginViewer(){
+    const c=document.getElementById('viewer-code').value.trim();
+    const err=document.getElementById('viewer-err');
+    if(c==='view2026'){sessionStorage.setItem('nps_role','viewer');window.location.href='/view';}
+    else{err.style.display='block';}
+  }
+  document.addEventListener('keydown',e=>{if(e.key==='Enter'){const ap=document.getElementById('panel-admin');ap.classList.contains('active')?loginAdmin():loginViewer();}});
 </script>
 </body>
 </html>
