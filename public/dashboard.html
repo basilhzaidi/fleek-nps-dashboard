@@ -933,7 +933,7 @@
 
   // ===================== REPORT GENERATOR =====================
   function renderReport() {
-    const allData = getAll();
+    const allData = getData();
     const periods = [...new Set(allData.map(e => e.period))].sort();
     const sel = document.getElementById('reportPeriod');
     if (!sel) return;
@@ -942,7 +942,7 @@
   }
 
   function buildReportHTML(periodFilter, title, subtitle, includeGeo, includeDept) {
-    const allData = getAll();
+    const allData = getData();
     const filtered = periodFilter === 'all' ? allData : allData.filter(e => e.period === periodFilter);
     const { nps, total, pro, pass, det } = calcNPS(filtered);
     
