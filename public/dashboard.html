@@ -2,323 +2,350 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Fleek — Admin NPS Dashboard</title>
+<title>Fleek — NPS Admin Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0c0c0c;--surface:#141414;--card:#1a1a1a;--border:#272727;--border2:#333;--yellow:#F5C518;--red:#E8453C;--red-dim:rgba(232,69,60,.13);--green:#3DD68C;--green-dim:rgba(61,214,140,.12);--orange:#F07C3A;--blue:#5B9EF5;--text:#ededed;--muted:#999;--subtle:#666}
 body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;min-height:100vh}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.reveal{opacity:0;animation:fadeUp .5s ease forwards}
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.logo{display:flex;align-items:center;gap:10px}
-.logo-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;color:var(--yellow)}
-.badge-admin{background:rgba(245,197,24,.15);color:var(--yellow);border:1px solid rgba(245,197,24,.3);padding:3px 10px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px}
-.btn-sm{background:transparent;border:1px solid var(--border2);color:var(--muted);padding:7px 14px;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;transition:all .2s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.rev{opacity:0;animation:fadeUp .5s ease forwards}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 36px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:12px}
+.logo{display:flex;align-items:center;gap:9px}
+.logo-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:4px;color:var(--yellow)}
+.badge-admin{background:rgba(245,197,24,.15);color:var(--yellow);border:1px solid rgba(245,197,24,.3);padding:3px 9px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px}
+.hdr-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.btn-sm{background:transparent;border:1px solid var(--border2);color:var(--muted);padding:6px 12px;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;transition:all .2s;text-decoration:none;display:inline-block}
 .btn-sm:hover{border-color:var(--yellow);color:var(--yellow)}
-.btn-sm.danger:hover{border-color:var(--red);color:var(--red)}
-.nav-tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 40px;display:flex;gap:0;overflow-x:auto}
-.nav-tab{padding:13px 18px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;transition:all .2s}
-.nav-tab:hover{color:var(--text)}
-.nav-tab.active{color:var(--yellow);border-bottom-color:var(--yellow)}
-.page{padding:28px 40px;max-width:1400px;margin:0 auto}
-.tab-content{display:none}.tab-content.active{display:block}
-.sec-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--yellow);margin-bottom:5px;text-transform:uppercase}
-.sec-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;margin-bottom:20px}
-.sec-div{border:none;border-top:1px solid var(--border);margin:36px 0 28px}
-.row-between{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px}
-/* stat cards */
-.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:24px}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px}
-.stat-card.hl{border-color:var(--yellow);background:linear-gradient(135deg,#1e1c10,#1a1a1a)}
-.sc-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:7px}
-.sc-val{font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:1}
-.sc-sub{font-size:11px;color:var(--subtle);margin-top:3px}
+.btn-danger:hover{border-color:var(--red)!important;color:var(--red)!important}
+.nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 36px;display:flex;overflow-x:auto}
+.ntab{padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap;transition:all .2s}
+.ntab:hover{color:var(--text)}
+.ntab.active{color:var(--yellow);border-bottom-color:var(--yellow)}
+.page{padding:24px 36px;max-width:1400px;margin:0 auto}
+.tc{display:none}.tc.active{display:block}
+.stag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin-bottom:4px}
+.stitle{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;margin-bottom:18px}
+.sdiv{border:none;border-top:1px solid var(--border);margin:32px 0 24px}
+.rb{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+/* stats */
+.sr{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:16px}
+.sc.hl{border-color:var(--yellow);background:linear-gradient(135deg,#1e1c10,#1a1a1a)}
+.sc-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.sc-val{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1}
+.sc-sub{font-size:10px;color:var(--subtle);margin-top:2px}
 /* charts */
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
-.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
-@media(max-width:900px){.two-col,.three-col{grid-template-columns:1fr}}
-.chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px}
-.chart-card h3{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:var(--muted);margin-bottom:16px}
-/* geo */
-.geo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:20px}
-.geo-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
-.geo-flag{font-size:22px;margin-bottom:6px}
-.geo-name{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;margin-bottom:2px}
-.geo-nps{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;margin-bottom:4px}
-.geo-meta{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:10px}
-.geo-bar-row{display:flex;align-items:center;gap:6px;margin-bottom:4px}
-.geo-bar-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:56px}
-.geo-bar-bg{flex:1;height:4px;background:var(--border2);border-radius:999px;overflow:hidden}
-.geo-bar-fill{height:100%;border-radius:999px;transition:width .8s ease}
-.geo-bar-pct{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:30px;text-align:right}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px}
+@media(max-width:860px){.g2,.g3{grid-template-columns:1fr}}
+.cc{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:20px}
+.cc h3{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--muted);margin-bottom:14px}
+/* geo cards */
+.geo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:18px}
+.gc{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:18px}
+.gc-flag{font-size:20px;margin-bottom:5px}
+.gc-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;margin-bottom:2px}
+.gc-nps{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;margin-bottom:3px}
+.gc-meta{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;margin-bottom:10px}
+.bar-row{display:flex;align-items:center;gap:5px;margin-bottom:3px}
+.bar-lbl{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);width:52px}
+.bar-bg{flex:1;height:4px;background:var(--border2);border-radius:999px;overflow:hidden}
+.bar-fill{height:100%;border-radius:999px}
+.bar-pct{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);width:26px;text-align:right}
 /* region table */
-.region-table{width:100%;border-collapse:collapse;margin-bottom:20px}
-.region-table th{text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--subtle);text-transform:uppercase;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--surface)}
-.region-table td{padding:11px 14px;border-bottom:1px solid var(--border);font-size:13px}
-.region-table tr:last-child td{border-bottom:none;background:rgba(245,197,24,.04);font-weight:700}
-.nps-badge{font-family:'Bebas Neue',sans-serif;font-size:16px;padding:2px 8px;border-radius:4px}
-.nps-pos{background:var(--green-dim);color:var(--green)}
-.nps-neg{background:var(--red-dim);color:var(--red)}
+.rtbl{width:100%;border-collapse:collapse;margin-bottom:18px}
+.rtbl th{text-align:left;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--subtle);text-transform:uppercase;padding:10px 12px;border-bottom:1px solid var(--border);background:var(--surface)}
+.rtbl td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:12px}
+.rtbl tr:last-child td{background:rgba(245,197,24,.03);font-weight:700}
+.nb{font-family:'Bebas Neue',sans-serif;font-size:15px;padding:2px 7px;border-radius:4px}
+.npos{background:var(--green-dim);color:var(--green)}
+.nneg{background:var(--red-dim);color:var(--red)}
+.nneu{background:rgba(245,197,24,.12);color:var(--yellow)}
 /* dept */
-.dept-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:20px}
-.dept-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
-.dept-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;margin-bottom:3px}
-.dept-nps{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;margin-bottom:3px}
-/* satisfaction */
-.sat-row{padding:14px 0;border-bottom:1px solid var(--border)}
+.dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:18px}
+.dc{background:var(--card);border:1px solid var(--border);border-radius:11px;padding:18px}
+.dc-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;margin-bottom:2px}
+.dc-nps{font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:1;margin-bottom:3px}
+/* sat */
+.sat-row{padding:12px 0;border-bottom:1px solid var(--border)}
 .sat-row:last-child{border-bottom:none}
-.sat-name{font-size:13px;font-weight:700;margin-bottom:2px}
-.sat-meta{font-size:11px;color:var(--muted);margin-bottom:8px}
-.sat-bar{display:flex;height:6px;border-radius:999px;overflow:hidden;gap:1px}
-.sat-seg{height:100%;border-radius:999px}
+.sat-name{font-size:12px;font-weight:700;margin-bottom:1px}
+.sat-meta{font-size:10px;color:var(--muted);margin-bottom:7px}
+.sat-bar{display:flex;height:5px;border-radius:999px;overflow:hidden;gap:1px}
 /* tables */
-.tbl-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px}
-.tbl-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.tbl-head h3{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:var(--muted)}
+.tw{background:var(--card);border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:18px}
+.th2{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.th2 h3{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--muted)}
 table{width:100%;border-collapse:collapse}
-th{text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--subtle);text-transform:uppercase;padding:10px 14px;border-bottom:1px solid var(--border)}
-td{padding:11px 14px;border-bottom:1px solid var(--border);font-size:12px}
+th{text-align:left;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--subtle);text-transform:uppercase;padding:9px 12px;border-bottom:1px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:11px}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(255,255,255,.02)}
-.badge{display:inline-block;padding:2px 7px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;font-weight:700;text-transform:uppercase}
-.b-pro{background:var(--green-dim);color:var(--green)}
-.b-pas{background:rgba(245,197,24,.12);color:var(--yellow)}
-.b-det{background:var(--red-dim);color:var(--red)}
+tr:hover td{background:rgba(255,255,255,.015)}
+.bdg{display:inline-block;padding:2px 6px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1px;font-weight:700;text-transform:uppercase}
+.b-pro{background:var(--green-dim);color:var(--green)}.b-pas{background:rgba(245,197,24,.12);color:var(--yellow)}.b-det{background:var(--red-dim);color:var(--red)}
 /* upload */
-.upload-zone{border:2px dashed var(--border2);border-radius:12px;padding:36px;text-align:center;cursor:pointer;transition:all .2s;background:var(--card);margin-bottom:16px}
-.upload-zone:hover,.upload-zone.drag{border-color:var(--yellow);background:rgba(245,197,24,.03)}
-.upload-icon{font-size:28px;margin-bottom:10px}
-.upload-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;margin-bottom:4px}
-.upload-sub{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px}
-.btn-yellow{background:var(--yellow);color:#0c0c0c;border:none;padding:9px 20px;border-radius:6px;font-weight:800;font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'Syne',sans-serif;transition:opacity .2s}
-.btn-yellow:hover{opacity:.88}
-.csv-hint{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:16px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)}
-.csv-hint code{color:var(--yellow);display:block;margin-top:4px;font-size:11px}
+.uz{border:2px dashed var(--border2);border-radius:11px;padding:32px;text-align:center;cursor:pointer;transition:all .2s;background:var(--card);margin-bottom:14px}
+.uz:hover,.uz.drag{border-color:var(--yellow);background:rgba(245,197,24,.03)}
+.uz-icon{font-size:26px;margin-bottom:8px}
+.uz-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;margin-bottom:3px}
+.uz-sub{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px}
+.btn-y{background:var(--yellow);color:#0c0c0c;border:none;padding:8px 18px;border-radius:6px;font-weight:800;font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'Syne',sans-serif;transition:opacity .2s;margin-top:10px}
+.btn-y:hover{opacity:.88}
+.csv-hint{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted)}
+.csv-hint code{color:var(--yellow);display:block;margin-top:4px;font-size:10px}
 /* problems */
-.prob-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
-.prob-row:last-child{border-bottom:none}
-.prob-rank{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--yellow);width:28px;flex-shrink:0}
-.prob-name{font-weight:700;font-size:13px;margin-bottom:1px}
-.prob-desc{font-size:11px;color:var(--muted)}
-.impact{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;padding:2px 7px;border-radius:4px;flex-shrink:0}
+.pr{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)}
+.pr:last-child{border-bottom:none}
+.pr-rk{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--yellow);width:26px;flex-shrink:0}
+.pr-name{font-weight:700;font-size:12px;margin-bottom:1px}
+.pr-desc{font-size:10px;color:var(--muted)}
+.imp{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1px;padding:2px 6px;border-radius:3px;flex-shrink:0}
 .i-crit{background:var(--red-dim);color:var(--red)}.i-high{background:rgba(240,124,58,.13);color:var(--orange)}.i-med{background:rgba(91,158,245,.12);color:var(--blue)}
-.prob-pct{font-family:'Bebas Neue',sans-serif;font-size:20px;margin-left:auto;flex-shrink:0}
+.pr-pct{font-family:'Bebas Neue',sans-serif;font-size:18px;margin-left:auto;flex-shrink:0}
+/* form link */
+.form-box{background:var(--surface);border:1px solid var(--yellow);border-radius:10px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.form-url{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--yellow);word-break:break-all}
 /* toast */
-.toast{position:fixed;bottom:20px;right:20px;background:var(--green);color:#0c0c0c;padding:10px 18px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1px;z-index:999;transform:translateY(60px);transition:transform .3s}
+.toast{position:fixed;bottom:18px;right:18px;background:var(--green);color:#0c0c0c;padding:9px 16px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1px;z-index:999;transform:translateY(60px);transition:transform .3s}
 .toast.show{transform:translateY(0)}
-.empty-state{text-align:center;padding:48px 20px;color:var(--subtle);font-family:'JetBrains Mono',monospace;font-size:11px}
-select{background:var(--card);border:1px solid var(--border2);color:var(--text);padding:8px 12px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:10px;cursor:pointer;outline:none}
-.form-link-box{background:var(--surface);border:1px solid var(--yellow);border-radius:10px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
-.form-link-url{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--yellow);letter-spacing:.5px;word-break:break-all}
+.empty{text-align:center;padding:40px 20px;color:var(--subtle);font-family:'JetBrains Mono',monospace;font-size:10px}
+sel{background:var(--card);border:1px solid var(--border2);color:var(--text);padding:7px 11px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:9px;cursor:pointer;outline:none}
+.auto-badge{background:rgba(61,214,140,.12);color:var(--green);border:1px solid rgba(61,214,140,.25);padding:3px 9px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;margin-left:8px}
 </style>
 </head>
 <body>
 <header>
   <div class="logo">
-    <svg width="26" height="26" viewBox="0 0 26 26"><rect width="26" height="26" rx="5" fill="#F5C518"/><text x="13" y="19" text-anchor="middle" font-size="14" font-weight="900" fill="#0c0c0c">⚡</text></svg>
+    <svg width="24" height="24" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="#F5C518"/><text x="12" y="17" text-anchor="middle" font-size="13" font-weight="900" fill="#0c0c0c">⚡</text></svg>
     <span class="logo-name">FLEEK</span>
-    <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-left:6px">NPS ADMIN</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px">NPS ADMIN</span>
   </div>
-  <div style="display:flex;align-items:center;gap:10px">
-    <a href="/form" target="_blank" style="text-decoration:none"><button class="btn-sm">📋 Open Survey Form</button></a>
+  <div class="hdr-right">
+    <a href="/form" target="_blank" class="btn-sm">📋 Survey Form</a>
     <span class="badge-admin">ADMIN</span>
-    <button class="btn-sm danger" onclick="logout()">Logout</button>
+    <button class="btn-sm btn-danger" onclick="logout()">Logout</button>
   </div>
 </header>
 
-<div class="nav-tabs">
-  <button class="nav-tab active" onclick="switchTab('overview')" id="nt-overview">Overview</button>
-  <button class="nav-tab" onclick="switchTab('geo')" id="nt-geo">Geography</button>
-  <button class="nav-tab" onclick="switchTab('departments')" id="nt-departments">Departments</button>
-  <button class="nav-tab" onclick="switchTab('history')" id="nt-history">History</button>
-  <button class="nav-tab" onclick="switchTab('upload')" id="nt-upload">Upload CSV</button>
-  <button class="nav-tab" onclick="switchTab('responses')" id="nt-responses">Responses</button>
+<div class="nav">
+  <button class="ntab active" onclick="sw('overview')" id="nt-overview">Overview</button>
+  <button class="ntab" onclick="sw('geo')" id="nt-geo">Geography</button>
+  <button class="ntab" onclick="sw('departments')" id="nt-departments">Departments</button>
+  <button class="ntab" onclick="sw('history')" id="nt-history">History</button>
+  <button class="ntab" onclick="sw('upload')" id="nt-upload">Upload CSV</button>
+  <button class="ntab" onclick="sw('responses')" id="nt-responses">Responses</button>
 </div>
 
 <div class="page">
 
-<!-- ═══ OVERVIEW ═══ -->
-<div class="tab-content active" id="tab-overview">
-  <div class="row-between reveal">
-    <div><div class="sec-tag">Fleek · Seller NPS · <span id="cur-period">All Time</span></div><div class="sec-title" style="margin-bottom:0">NPS Overview</div></div>
-    <div style="display:flex;gap:10px;align-items:center">
-      <select id="period-filter" onchange="applyFilter()"><option value="all">All Periods</option></select>
-      <button class="btn-yellow" onclick="switchTab('upload')">+ Upload CSV</button>
+<!-- OVERVIEW -->
+<div class="tc active" id="tab-overview">
+  <div class="rb rev">
+    <div>
+      <div class="stag">Fleek · Seller NPS · <span id="cur-period">All Time</span></div>
+      <div class="stitle" style="margin-bottom:0">Dashboard Overview</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <select id="pf" onchange="applyFilter()" style="background:var(--card);border:1px solid var(--border2);color:var(--text);padding:7px 11px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:9px;cursor:pointer;outline:none"><option value="all">All Periods</option></select>
+      <button class="btn-y" onclick="sw('upload')">+ Import CSV</button>
     </div>
   </div>
 
-  <div class="stats-row reveal">
-    <div class="stat-card hl"><div class="sc-label">NPS Score</div><div class="sc-val" id="ov-nps" style="color:var(--yellow)">—</div><div class="sc-sub" id="ov-total">No data</div></div>
-    <div class="stat-card"><div class="sc-label">Promoters (9–10)</div><div class="sc-val" id="ov-pro" style="color:var(--green)">—</div><div class="sc-sub" id="ov-pro-pct">—</div></div>
-    <div class="stat-card"><div class="sc-label">Passives (7–8)</div><div class="sc-val" id="ov-pass" style="color:var(--yellow)">—</div><div class="sc-sub" id="ov-pass-pct">—</div></div>
-    <div class="stat-card"><div class="sc-label">Detractors (0–6)</div><div class="sc-val" id="ov-det" style="color:var(--red)">—</div><div class="sc-sub" id="ov-det-pct">—</div></div>
-    <div class="stat-card"><div class="sc-label">Avg Score</div><div class="sc-val" id="ov-avg" style="color:var(--blue)">—</div><div class="sc-sub">mean</div></div>
-    <div class="stat-card"><div class="sc-label">Total Responses</div><div class="sc-val" id="ov-count" style="color:var(--text)">—</div><div class="sc-sub">respondents</div></div>
+  <div class="sr rev">
+    <div class="sc hl"><div class="sc-lbl">Overall NPS</div><div class="sc-val" id="ov-nps" style="color:var(--red)">–3</div><div class="sc-sub" id="ov-ctx">Sep 2025 + Nov 2025 + Jan 2026</div></div>
+    <div class="sc"><div class="sc-lbl">Jan 2026 NPS</div><div class="sc-val" style="color:var(--yellow)">+1</div><div class="sc-sub">147 respondents</div></div>
+    <div class="sc"><div class="sc-lbl">Promoters</div><div class="sc-val" id="ov-pro" style="color:var(--green)">—</div><div class="sc-sub" id="ov-pro-s">—</div></div>
+    <div class="sc"><div class="sc-lbl">Passives</div><div class="sc-val" id="ov-pass" style="color:var(--yellow)">—</div><div class="sc-sub" id="ov-pass-s">—</div></div>
+    <div class="sc"><div class="sc-lbl">Detractors</div><div class="sc-val" id="ov-det" style="color:var(--red)">—</div><div class="sc-sub" id="ov-det-s">—</div></div>
+    <div class="sc"><div class="sc-lbl">Total Responses</div><div class="sc-val" id="ov-tot" style="color:var(--text)">—</div><div class="sc-sub">respondents</div></div>
   </div>
 
-  <div class="two-col reveal">
-    <div class="chart-card"><h3>Score Distribution (0–10)</h3><canvas id="distChart" height="200"></canvas></div>
-    <div class="chart-card"><h3>Segment Breakdown</h3><canvas id="segChart" height="200"></canvas></div>
+  <div class="g2 rev">
+    <div class="cc"><h3>Score Distribution — Jan 2026</h3><canvas id="distChart" height="200"></canvas></div>
+    <div class="cc"><h3>Segment Breakdown — Jan 2026</h3><canvas id="segChart" height="200"></canvas></div>
   </div>
+  <div class="cc rev" style="margin-bottom:18px"><h3>NPS Trend: Sep 2025 → Now</h3><canvas id="trendChart" height="90"></canvas></div>
 
-  <div class="chart-card reveal" style="margin-bottom:20px"><h3>NPS Trend Over All Periods</h3><canvas id="trendChart" height="90"></canvas></div>
-
-  <div class="reveal">
-    <div class="sec-tag">Top Issues · Jan 2026</div>
-    <div class="sec-title">Problems Driving Detractor Scores</div>
-    <div class="chart-card">
-      <div class="prob-row"><div class="prob-rank">01</div><div><div class="prob-name">Refund Policy</div><div class="prob-desc">Perceived as unfair to sellers — most cited issue</div></div><span class="impact i-crit">CRITICAL</span><div class="prob-pct" style="color:var(--red)">33.3%</div></div>
-      <div class="prob-row"><div class="prob-rank">02</div><div><div class="prob-name">Seller Support</div><div class="prob-desc">Slow response times, unhelpful resolutions</div></div><span class="impact i-high">HIGH</span><div class="prob-pct" style="color:var(--orange)">25.2%</div></div>
-      <div class="prob-row"><div class="prob-rank">03</div><div><div class="prob-name">Quality Check</div><div class="prob-desc">Inconsistent QC — items wrongly flagged or rejected</div></div><span class="impact i-high">HIGH</span><div class="prob-pct" style="color:var(--orange)">19.0%</div></div>
-      <div class="prob-row"><div class="prob-rank">04</div><div><div class="prob-name">Vendor App</div><div class="prob-desc">Performance issues, crashes, poor UX</div></div><span class="impact i-high">HIGH</span><div class="prob-pct" style="color:var(--orange)">17.7%</div></div>
-      <div class="prob-row"><div class="prob-rank">05</div><div><div class="prob-name">Sales &amp; Visibility</div><div class="prob-desc">New sellers struggle with discoverability</div></div><span class="impact i-med">MEDIUM</span><div class="prob-pct" style="color:var(--blue)">17.7%</div></div>
+  <div class="rev">
+    <div class="stag">Jan 2026 · Verbatim Feedback</div>
+    <div class="stitle">Top 5 Issues Driving Detractors</div>
+    <div class="cc">
+      <div class="pr"><div class="pr-rk">01</div><div><div class="pr-name">Refund Policy</div><div class="pr-desc">Perceived as unfair to sellers — most cited issue by far</div></div><span class="imp i-crit">CRITICAL</span><div class="pr-pct" style="color:var(--red)">33.3%</div></div>
+      <div class="pr"><div class="pr-rk">02</div><div><div class="pr-name">Seller Support</div><div class="pr-desc">Slow response times, unhelpful resolutions</div></div><span class="imp i-high">HIGH</span><div class="pr-pct" style="color:var(--orange)">25.2%</div></div>
+      <div class="pr"><div class="pr-rk">03</div><div><div class="pr-name">Quality Check</div><div class="pr-desc">Inconsistent QC — items wrongly flagged or rejected</div></div><span class="imp i-high">HIGH</span><div class="pr-pct" style="color:var(--orange)">19.0%</div></div>
+      <div class="pr"><div class="pr-rk">04</div><div><div class="pr-name">Vendor App</div><div class="pr-desc">Performance issues, crashes, poor UX</div></div><span class="imp i-high">HIGH</span><div class="pr-pct" style="color:var(--orange)">17.7%</div></div>
+      <div class="pr"><div class="pr-rk">05</div><div><div class="pr-name">Sales &amp; Visibility</div><div class="pr-desc">New sellers struggle with discoverability</div></div><span class="imp i-med">MEDIUM</span><div class="pr-pct" style="color:var(--blue)">17.7%</div></div>
     </div>
   </div>
 </div>
 
-<!-- ═══ GEOGRAPHY ═══ -->
-<div class="tab-content" id="tab-geo">
-  <div class="sec-tag">Regional Analysis · Jan 2026</div>
-  <div class="sec-title">NPS by Geography</div>
-
-  <div class="geo-grid reveal">
-    <div class="geo-card" style="border-color:rgba(91,158,245,.3)">
-      <div class="geo-flag">🇵🇰</div>
-      <div class="geo-name">PK Zone</div>
-      <div class="geo-nps" style="color:var(--red)">–9</div>
-      <div class="geo-meta">11 SELLERS · $164K GMV · $792K L3 GMV</div>
-      <div class="geo-bar-row"><span class="geo-bar-label" style="color:var(--green)">Promoters</span><div class="geo-bar-bg"><div class="geo-bar-fill" style="width:9%;background:var(--green)"></div></div><span class="geo-bar-pct">9%</span></div>
-      <div class="geo-bar-row"><span class="geo-bar-label" style="color:var(--yellow)">Passives</span><div class="geo-bar-bg"><div class="geo-bar-fill" style="width:73%;background:var(--yellow)"></div></div><span class="geo-bar-pct">73%</span></div>
-      <div class="geo-bar-row"><span class="geo-bar-label" style="color:var(--red)">Detractors</span><div class="geo-bar-bg"><div class="geo-bar-fill" style="width:18%;background:var(--red)"></div></div><span class="geo-bar-pct">18%</span></div>
-      <div style="margin-top:10px;font-size:11px;color:var(--muted)">1 promoter · 8 passives · 2 detractors</div>
+<!-- GEO -->
+<div class="tc" id="tab-geo">
+  <div class="stag">Regional Breakdown · Jan 2026</div>
+  <div class="stitle">NPS by Geography</div>
+  <div class="geo-grid rev">
+    <div class="gc" style="border-color:rgba(91,158,245,.35)">
+      <div class="gc-flag">🇵🇰</div><div class="gc-name">PK Zone</div>
+      <div class="gc-nps" style="color:var(--red)">–9</div>
+      <div class="gc-meta">11 SELLERS · $164K DEC GMV · $792K L3</div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--green)">Promoters</span><div class="bar-bg"><div class="bar-fill" style="width:9%;background:var(--green)"></div></div><span class="bar-pct">9%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--yellow)">Passives</span><div class="bar-bg"><div class="bar-fill" style="width:73%;background:var(--yellow)"></div></div><span class="bar-pct">73%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--red)">Detractors</span><div class="bar-bg"><div class="bar-fill" style="width:18%;background:var(--red)"></div></div><span class="bar-pct">18%</span></div>
+      <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--subtle)">1 promoter · 8 passives · 2 detractors</div>
     </div>
-    <div class="geo-card" style="border-color:rgba(61,214,140,.3)">
-      <div class="geo-flag">🇵🇰</div>
-      <div class="geo-name">PK Non-Zone</div>
-      <div class="geo-nps" style="color:var(--green)">+4</div>
-      <div class="geo-meta">122 SELLERS · $748K GMV · $2.55M L3 GMV</div>
-      <div class="geo-bar-row"><span class="geo-bar-label" style="color:var(--green)">Promoters</span><div class="geo-bar-bg"><div class="geo-bar-fill" style="width:39%;background:var(--green)"></div></div><span class="geo-bar-pct">39%</span></div>
-      <div class="geo-bar-row"><span class="geo-bar-label" style="color:var(--yellow)">Passives</span><div class="geo-bar-bg"><div class="geo-bar-fill" style="width:25%;background:var(--yellow)"></div></div><span class="geo-bar-pct">25%</span></div>
-      <div class="geo-bar-row"><span class="geo-bar-label" style="color:var(--red)">Detractors</span><div class="geo-bar-bg"><div class="geo-bar-fill" style="width:35%;background:var(--red)"></div></div><span class="geo-bar-pct">35%</span></div>
-      <div style="margin-top:10px;font-size:11px;color:var(--muted)">48 promoters · 31 passives · 43 detractors</div>
+    <div class="gc" style="border-color:rgba(61,214,140,.3)">
+      <div class="gc-flag">🇵🇰</div><div class="gc-name">PK Non-Zone</div>
+      <div class="gc-nps" style="color:var(--green)">+4</div>
+      <div class="gc-meta">122 SELLERS · $748K DEC GMV · $2.55M L3</div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--green)">Promoters</span><div class="bar-bg"><div class="bar-fill" style="width:39%;background:var(--green)"></div></div><span class="bar-pct">39%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--yellow)">Passives</span><div class="bar-bg"><div class="bar-fill" style="width:25%;background:var(--yellow)"></div></div><span class="bar-pct">25%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--red)">Detractors</span><div class="bar-bg"><div class="bar-fill" style="width:35%;background:var(--red)"></div></div><span class="bar-pct">35%</span></div>
+      <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--subtle)">48 promoters · 31 passives · 43 detractors</div>
     </div>
-    <div class="geo-card" style="border-color:rgba(240,124,58,.3)">
-      <div class="geo-flag">🌏</div>
-      <div class="geo-name">India &amp; ROW</div>
-      <div class="geo-nps" style="color:var(--red)">–14</div>
-      <div class="geo-meta">14 SELLERS · $110K GMV · $332K L3 GMV</div>
-      <div class="geo-bar-row"><span class="geo-bar-label" style="color:var(--green)">Promoters</span><div class="geo-bar-bg"><div class="geo-bar-fill" style="width:29%;background:var(--green)"></div></div><span class="geo-bar-pct">29%</span></div>
-      <div class="geo-bar-row"><span class="geo-bar-label" style="color:var(--yellow)">Passives</span><div class="geo-bar-bg"><div class="geo-bar-fill" style="width:29%;background:var(--yellow)"></div></div><span class="geo-bar-pct">29%</span></div>
-      <div class="geo-bar-row"><span class="geo-bar-label" style="color:var(--red)">Detractors</span><div class="geo-bar-bg"><div class="geo-bar-fill" style="width:43%;background:var(--red)"></div></div><span class="geo-bar-pct">43%</span></div>
-      <div style="margin-top:10px;font-size:11px;color:var(--muted)">4 promoters · 4 passives · 6 detractors</div>
+    <div class="gc" style="border-color:rgba(240,124,58,.3)">
+      <div class="gc-flag">🌏</div><div class="gc-name">India &amp; ROW</div>
+      <div class="gc-nps" style="color:var(--red)">–14</div>
+      <div class="gc-meta">14 SELLERS · $110K DEC GMV · $332K L3</div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--green)">Promoters</span><div class="bar-bg"><div class="bar-fill" style="width:29%;background:var(--green)"></div></div><span class="bar-pct">29%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--yellow)">Passives</span><div class="bar-bg"><div class="bar-fill" style="width:29%;background:var(--yellow)"></div></div><span class="bar-pct">29%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--red)">Detractors</span><div class="bar-bg"><div class="bar-fill" style="width:43%;background:var(--red)"></div></div><span class="bar-pct">43%</span></div>
+      <div style="margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--subtle)">4 promoters · 4 passives · 6 detractors</div>
     </div>
   </div>
 
-  <div class="chart-card reveal" style="margin-bottom:20px"><h3>Regional NPS Comparison</h3><canvas id="geoChart" height="100"></canvas></div>
+  <div class="g2 rev">
+    <div class="cc"><h3>Regional NPS Comparison — Jan 2026</h3><canvas id="geoChart" height="180"></canvas></div>
+    <div class="cc"><h3>Dec GMV by Region ($K)</h3><canvas id="gmvChart" height="180"></canvas></div>
+  </div>
 
-  <div class="tbl-wrap reveal">
-    <div class="tbl-head"><h3>Regional Summary Table</h3></div>
-    <table class="region-table">
+  <div class="tw rev">
+    <div class="th2"><h3>Regional Detail Table — Jan 2026</h3></div>
+    <table class="rtbl">
       <thead><tr><th>Region</th><th>Sellers</th><th>Promoters</th><th>Passives</th><th>Detractors</th><th>NPS</th><th>Dec GMV</th><th>L3 GMV</th></tr></thead>
       <tbody>
-        <tr><td>🇵🇰 PK Zone</td><td>11</td><td style="color:var(--green)">1 (9%)</td><td style="color:var(--yellow)">8 (73%)</td><td style="color:var(--red)">2 (18%)</td><td><span class="nps-badge nps-neg">–9</span></td><td>$164K</td><td>$792K</td></tr>
-        <tr><td>🇵🇰 PK Non-Zone</td><td>122</td><td style="color:var(--green)">48 (39%)</td><td style="color:var(--yellow)">31 (25%)</td><td style="color:var(--red)">43 (35%)</td><td><span class="nps-badge nps-pos">+4</span></td><td>$748K</td><td>$2.55M</td></tr>
-        <tr><td>🌏 India &amp; ROW</td><td>14</td><td style="color:var(--green)">4 (29%)</td><td style="color:var(--yellow)">4 (29%)</td><td style="color:var(--red)">6 (43%)</td><td><span class="nps-badge nps-neg">–14</span></td><td>$110K</td><td>$332K</td></tr>
-        <tr><td style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:var(--yellow)">TOTAL</td><td style="font-family:'Bebas Neue',sans-serif;font-size:15px">147</td><td style="color:var(--green);font-weight:700">53 (36%)</td><td style="color:var(--yellow);font-weight:700">43 (29%)</td><td style="color:var(--red);font-weight:700">51 (35%)</td><td><span class="nps-badge nps-pos">+1</span></td><td style="font-weight:700">$1.02M</td><td style="font-weight:700">$3.68M</td></tr>
+        <tr><td>🇵🇰 PK Zone</td><td>11</td><td style="color:var(--green)">1 (9%)</td><td style="color:var(--yellow)">8 (73%)</td><td style="color:var(--red)">2 (18%)</td><td><span class="nb nneg">–9</span></td><td>$164K</td><td>$792K</td></tr>
+        <tr><td>🇵🇰 PK Non-Zone</td><td>122</td><td style="color:var(--green)">48 (39%)</td><td style="color:var(--yellow)">31 (25%)</td><td style="color:var(--red)">43 (35%)</td><td><span class="nb npos">+4</span></td><td>$748K</td><td>$2.55M</td></tr>
+        <tr><td>🌏 India &amp; ROW</td><td>14</td><td style="color:var(--green)">4 (29%)</td><td style="color:var(--yellow)">4 (29%)</td><td style="color:var(--red)">6 (43%)</td><td><span class="nb nneg">–14</span></td><td>$110K</td><td>$332K</td></tr>
+        <tr><td style="font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--yellow)">TOTAL</td><td style="font-family:'Bebas Neue',sans-serif">147</td><td style="color:var(--green)">53 (36%)</td><td style="color:var(--yellow)">43 (29%)</td><td style="color:var(--red)">51 (35%)</td><td><span class="nb nneu">+1</span></td><td>$1.02M</td><td>$3.68M</td></tr>
       </tbody>
     </table>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" class="reveal">
-    <div class="chart-card"><h3>GMV by Region (Dec 2025)</h3><canvas id="gmvChart" height="180"></canvas></div>
-    <div class="chart-card"><h3>Seller Count by Region</h3><canvas id="sellersChart" height="180"></canvas></div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:18px" class="rev">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);margin-bottom:4px">REVENUE AT RISK ANALYSIS</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:10px">
+      <div><div style="font-size:10px;color:var(--muted);margin-bottom:2px">Promoters GMV</div><div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--green)">$278K</div><div style="font-size:9px;color:var(--subtle)">53 sellers · 27.2% of GMV</div></div>
+      <div><div style="font-size:10px;color:var(--muted);margin-bottom:2px">Passives GMV</div><div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--yellow)">$380K</div><div style="font-size:9px;color:var(--subtle)">43 sellers · 37.2% · watching</div></div>
+      <div><div style="font-size:10px;color:var(--muted);margin-bottom:2px">Detractors GMV</div><div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--red)">$365K</div><div style="font-size:9px;color:var(--subtle)">51 sellers · 35.7% · at risk</div></div>
+      <div><div style="font-size:10px;color:var(--muted);margin-bottom:2px">Total Dec GMV</div><div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--yellow)">$1.02M</div><div style="font-size:9px;color:var(--subtle)">L3 GMV: $3.68M</div></div>
+    </div>
   </div>
 </div>
 
-<!-- ═══ DEPARTMENTS ═══ -->
-<div class="tab-content" id="tab-departments">
-  <div class="sec-tag">Department Analysis · Jan 2026</div>
-  <div class="sec-title">NPS by Department</div>
-  <div class="dept-grid reveal" id="dept-grid"></div>
-  <div class="chart-card reveal" style="margin-bottom:20px"><h3>Department NPS Comparison</h3><canvas id="deptChart" height="100"></canvas></div>
-  <div class="sec-div"></div>
-  <div class="sec-tag reveal">Operational Satisfaction · Jan 2026</div>
-  <div class="sec-title reveal">Satisfaction by Area</div>
-  <div class="chart-card reveal">
-    <div class="sat-row"><div class="sat-name">Refund Process</div><div class="sat-meta">32% satisfied · 34% neutral · 34% dissatisfied</div><div class="sat-bar"><div class="sat-seg" style="width:32%;background:var(--green)"></div><div class="sat-seg" style="width:34%;background:var(--yellow)"></div><div class="sat-seg" style="width:34%;background:var(--red)"></div></div></div>
-    <div class="sat-row"><div class="sat-name">Seller Support</div><div class="sat-meta">45.6% satisfied · 29.3% neutral · 25.2% dissatisfied</div><div class="sat-bar"><div class="sat-seg" style="width:45.6%;background:var(--green)"></div><div class="sat-seg" style="width:29.3%;background:var(--yellow)"></div><div class="sat-seg" style="width:25.2%;background:var(--red)"></div></div></div>
-    <div class="sat-row"><div class="sat-name">Quality Check</div><div class="sat-meta">48.3% satisfied · 33.3% neutral · 18.4% dissatisfied</div><div class="sat-bar"><div class="sat-seg" style="width:48.3%;background:var(--green)"></div><div class="sat-seg" style="width:33.3%;background:var(--yellow)"></div><div class="sat-seg" style="width:18.4%;background:var(--red)"></div></div></div>
-    <div class="sat-row"><div class="sat-name">Sales &amp; Visibility</div><div class="sat-meta">43.5% satisfied · 38.8% neutral · 17.7% dissatisfied</div><div class="sat-bar"><div class="sat-seg" style="width:43.5%;background:var(--green)"></div><div class="sat-seg" style="width:38.8%;background:var(--yellow)"></div><div class="sat-seg" style="width:17.7%;background:var(--red)"></div></div></div>
-    <div class="sat-row"><div class="sat-name">Vendor Application</div><div class="sat-meta">49.0% satisfied · 33.3% neutral · 17.7% dissatisfied</div><div class="sat-bar"><div class="sat-seg" style="width:49%;background:var(--green)"></div><div class="sat-seg" style="width:33.3%;background:var(--yellow)"></div><div class="sat-seg" style="width:17.7%;background:var(--red)"></div></div></div>
-    <div class="sat-row"><div class="sat-name">Shipping &amp; Logistics</div><div class="sat-meta">55.9% satisfied · 28.3% neutral · 15.9% dissatisfied</div><div class="sat-bar"><div class="sat-seg" style="width:55.9%;background:var(--green)"></div><div class="sat-seg" style="width:28.3%;background:var(--yellow)"></div><div class="sat-seg" style="width:15.9%;background:var(--red)"></div></div></div>
-    <div class="sat-row"><div class="sat-name">Payment System</div><div class="sat-meta">63.3% satisfied · 21.1% neutral · 15.6% dissatisfied</div><div class="sat-bar"><div class="sat-seg" style="width:63.3%;background:var(--green)"></div><div class="sat-seg" style="width:21.1%;background:var(--yellow)"></div><div class="sat-seg" style="width:15.6%;background:var(--red)"></div></div></div>
-    <div style="display:flex;gap:16px;margin-top:12px;font-size:11px;color:var(--muted)"><span>🟢 Satisfied</span><span>🟡 Neutral</span><span>🔴 Dissatisfied</span></div>
+<!-- DEPARTMENTS -->
+<div class="tc" id="tab-departments">
+  <div class="stag">Operational Analysis · Jan 2026</div>
+  <div class="stitle">NPS by Department</div>
+  <div class="dg rev">
+    <div class="dc"><div class="dc-name">Seller Support</div><div class="dc-nps" style="color:var(--orange)">–18</div><div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);margin-bottom:8px">OPPORTUNITY · HIGHEST VOLUME</div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--green)">Pro</span><div class="bar-bg"><div class="bar-fill" style="width:25%;background:var(--green)"></div></div><span class="bar-pct">25%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--yellow)">Pass</span><div class="bar-bg"><div class="bar-fill" style="width:32%;background:var(--yellow)"></div></div><span class="bar-pct">32%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--red)">Det</span><div class="bar-bg"><div class="bar-fill" style="width:43%;background:var(--red)"></div></div><span class="bar-pct">43%</span></div>
+    </div>
+    <div class="dc"><div class="dc-name">Quality Check</div><div class="dc-nps" style="color:var(--yellow)">–5</div><div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);margin-bottom:8px">MIXED · NEEDS CONSISTENCY</div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--green)">Pro</span><div class="bar-bg"><div class="bar-fill" style="width:30%;background:var(--green)"></div></div><span class="bar-pct">30%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--yellow)">Pass</span><div class="bar-bg"><div class="bar-fill" style="width:35%;background:var(--yellow)"></div></div><span class="bar-pct">35%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--red)">Det</span><div class="bar-bg"><div class="bar-fill" style="width:35%;background:var(--red)"></div></div><span class="bar-pct">35%</span></div>
+    </div>
+    <div class="dc"><div class="dc-name">Refund Policy</div><div class="dc-nps" style="color:var(--red)">–22</div><div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);margin-bottom:8px">CRITICAL · MOST CITED</div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--green)">Pro</span><div class="bar-bg"><div class="bar-fill" style="width:13%;background:var(--green)"></div></div><span class="bar-pct">13%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--yellow)">Pass</span><div class="bar-bg"><div class="bar-fill" style="width:32%;background:var(--yellow)"></div></div><span class="bar-pct">32%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--red)">Det</span><div class="bar-bg"><div class="bar-fill" style="width:55%;background:var(--red)"></div></div><span class="bar-pct">55%</span></div>
+    </div>
+    <div class="dc"><div class="dc-name">Payments</div><div class="dc-nps" style="color:var(--blue)">+10</div><div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);margin-bottom:8px">STRENGTH · VALUED MOST</div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--green)">Pro</span><div class="bar-bg"><div class="bar-fill" style="width:51%;background:var(--green)"></div></div><span class="bar-pct">51%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--yellow)">Pass</span><div class="bar-bg"><div class="bar-fill" style="width:21%;background:var(--yellow)"></div></div><span class="bar-pct">21%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--red)">Det</span><div class="bar-bg"><div class="bar-fill" style="width:28%;background:var(--red)"></div></div><span class="bar-pct">28%</span></div>
+    </div>
+    <div class="dc"><div class="dc-name">Vendor App</div><div class="dc-nps" style="color:var(--red)">–20</div><div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);margin-bottom:8px">HIGH PRIORITY</div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--green)">Pro</span><div class="bar-bg"><div class="bar-fill" style="width:18%;background:var(--green)"></div></div><span class="bar-pct">18%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--yellow)">Pass</span><div class="bar-bg"><div class="bar-fill" style="width:31%;background:var(--yellow)"></div></div><span class="bar-pct">31%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--red)">Det</span><div class="bar-bg"><div class="bar-fill" style="width:51%;background:var(--red)"></div></div><span class="bar-pct">51%</span></div>
+    </div>
+    <div class="dc"><div class="dc-name">Shipping &amp; Logistics</div><div class="dc-nps" style="color:var(--green)">+40</div><div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);margin-bottom:8px">STRENGTH · CONTINUE</div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--green)">Pro</span><div class="bar-bg"><div class="bar-fill" style="width:56%;background:var(--green)"></div></div><span class="bar-pct">56%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--yellow)">Pass</span><div class="bar-bg"><div class="bar-fill" style="width:28%;background:var(--yellow)"></div></div><span class="bar-pct">28%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--red)">Det</span><div class="bar-bg"><div class="bar-fill" style="width:16%;background:var(--red)"></div></div><span class="bar-pct">16%</span></div>
+    </div>
+    <div class="dc"><div class="dc-name">Sales &amp; Visibility</div><div class="dc-nps" style="color:var(--yellow)">+10</div><div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);margin-bottom:8px">CORE VALUE</div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--green)">Pro</span><div class="bar-bg"><div class="bar-fill" style="width:43%;background:var(--green)"></div></div><span class="bar-pct">43%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--yellow)">Pass</span><div class="bar-bg"><div class="bar-fill" style="width:39%;background:var(--yellow)"></div></div><span class="bar-pct">39%</span></div>
+      <div class="bar-row"><span class="bar-lbl" style="color:var(--red)">Det</span><div class="bar-bg"><div class="bar-fill" style="width:18%;background:var(--red)"></div></div><span class="bar-pct">18%</span></div>
+    </div>
+  </div>
+  <div class="cc rev" style="margin-bottom:18px"><h3>Department NPS Chart</h3><canvas id="deptChart" height="100"></canvas></div>
+  <div class="sdiv"></div>
+  <div class="stag rev">Operational Satisfaction · Jan 2026</div><div class="stitle rev">Satisfaction by Area</div>
+  <div class="cc rev">
+    <div class="sat-row"><div class="sat-name">Payment System <span style="float:right;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green)">STRENGTH</span></div><div class="sat-meta">63.3% satisfied · 21.1% neutral · 15.6% dissatisfied</div><div class="sat-bar"><div style="width:63.3%;background:var(--green)"></div><div style="width:21.1%;background:var(--yellow)"></div><div style="width:15.6%;background:var(--red)"></div></div></div>
+    <div class="sat-row"><div class="sat-name">Shipping &amp; Logistics <span style="float:right;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green)">STRENGTH</span></div><div class="sat-meta">55.9% satisfied · 28.3% neutral · 15.9% dissatisfied</div><div class="sat-bar"><div style="width:55.9%;background:var(--green)"></div><div style="width:28.3%;background:var(--yellow)"></div><div style="width:15.9%;background:var(--red)"></div></div></div>
+    <div class="sat-row"><div class="sat-name">Vendor Application <span style="float:right;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--orange)">MEDIUM</span></div><div class="sat-meta">49.0% satisfied · 33.3% neutral · 17.7% dissatisfied</div><div class="sat-bar"><div style="width:49%;background:var(--green)"></div><div style="width:33.3%;background:var(--yellow)"></div><div style="width:17.7%;background:var(--red)"></div></div></div>
+    <div class="sat-row"><div class="sat-name">Quality Check <span style="float:right;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--orange)">MEDIUM</span></div><div class="sat-meta">48.3% satisfied · 33.3% neutral · 18.4% dissatisfied</div><div class="sat-bar"><div style="width:48.3%;background:var(--green)"></div><div style="width:33.3%;background:var(--yellow)"></div><div style="width:18.4%;background:var(--red)"></div></div></div>
+    <div class="sat-row"><div class="sat-name">Seller Support <span style="float:right;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--orange)">HIGH</span></div><div class="sat-meta">45.6% satisfied · 29.3% neutral · 25.2% dissatisfied</div><div class="sat-bar"><div style="width:45.6%;background:var(--green)"></div><div style="width:29.3%;background:var(--yellow)"></div><div style="width:25.2%;background:var(--red)"></div></div></div>
+    <div class="sat-row"><div class="sat-name">Sales &amp; Visibility <span style="float:right;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--orange)">MEDIUM</span></div><div class="sat-meta">43.5% satisfied · 38.8% neutral · 17.7% dissatisfied</div><div class="sat-bar"><div style="width:43.5%;background:var(--green)"></div><div style="width:38.8%;background:var(--yellow)"></div><div style="width:17.7%;background:var(--red)"></div></div></div>
+    <div class="sat-row"><div class="sat-name">Refund Process <span style="float:right;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--red)">CRITICAL</span></div><div class="sat-meta">32% satisfied · 34% neutral · 34% dissatisfied</div><div class="sat-bar"><div style="width:32%;background:var(--green)"></div><div style="width:34%;background:var(--yellow)"></div><div style="width:34%;background:var(--red)"></div></div></div>
+    <div style="display:flex;gap:14px;margin-top:10px;font-size:10px;color:var(--muted)"><span>🟢 Satisfied</span><span>🟡 Neutral</span><span>🔴 Dissatisfied</span></div>
   </div>
 </div>
 
-<!-- ═══ HISTORY ═══ -->
-<div class="tab-content" id="tab-history">
-  <div class="sec-tag">Historical NPS Tracking</div>
-  <div class="sec-title">NPS Over All Periods</div>
-  <div class="chart-card reveal" style="margin-bottom:20px"><h3>Historical NPS Trend</h3><canvas id="histChart" height="100"></canvas></div>
-  <div class="tbl-wrap reveal" id="hist-table-wrap">
-    <div class="tbl-head"><h3>Period Summary</h3></div>
-    <div id="hist-table"></div>
+<!-- HISTORY -->
+<div class="tc" id="tab-history">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+    <div><div class="stag">Historical Tracking</div><div class="stitle" style="margin-bottom:0">NPS Over All Periods</div></div>
+    <span class="auto-badge">Auto-updates with new imports</span>
   </div>
+  <div class="cc rev" style="margin-bottom:18px"><h3>Historical NPS Trend</h3><canvas id="histChart" height="100"></canvas></div>
+  <div class="tw rev"><div class="th2"><h3>Period Summary</h3></div><div id="hist-tbl"></div></div>
 </div>
 
-<!-- ═══ UPLOAD ═══ -->
-<div class="tab-content" id="tab-upload">
-  <div class="sec-tag">Data Import</div>
-  <div class="sec-title">Upload NPS CSV</div>
-  <div class="form-link-box reveal">
+<!-- UPLOAD -->
+<div class="tc" id="tab-upload">
+  <div class="stag">Data Import</div><div class="stitle">Upload NPS Survey CSV</div>
+  <div class="form-box rev">
     <div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted);margin-bottom:4px">SURVEY FORM LINK — SHARE WITH SELLERS</div>
-      <div class="form-link-url" id="form-url-display">https://fleek-nps-dashboard.vercel.app/form</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);margin-bottom:3px">📋 SURVEY FORM — SHARE THIS LINK WITH SELLERS</div>
+      <div class="form-url">https://fleek-nps-dashboard.vercel.app/form</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--subtle);margin-top:3px">Auto-send last week of each month · responses recorded instantly</div>
     </div>
-    <button class="btn-yellow" onclick="copyFormLink()">Copy Link</button>
+    <button class="btn-y" onclick="navigator.clipboard.writeText('https://fleek-nps-dashboard.vercel.app/form');showToast('✓ Link copied!')">Copy Link</button>
   </div>
-  <div class="csv-hint reveal">
-    <strong>Expected CSV columns:</strong>
-    <code>seller, score, comment, department, region, period</code>
-    <div style="margin-top:6px;font-size:10px">region values: "PK Zone" | "PK Non-Zone" | "India" | "ROW"<br>score: 0–10 integer · period: e.g. "Jan 2026"</div>
+  <div class="csv-hint rev"><strong>CSV Format:</strong><code>seller, score, comment, department, region, period</code><div style="margin-top:4px;font-size:9px">region: "PK Zone" | "PK Non-Zone" | "India" | "ROW" · score: integer 0–10</div></div>
+  <div class="uz rev" id="uz" onclick="document.getElementById('fi').click()" ondragover="ev(event)" ondrop="drop(event)">
+    <div class="uz-icon">📂</div><div class="uz-title">Drop CSV Here or Click to Browse</div>
+    <div class="uz-sub">Each upload merges into the historical record</div>
+    <button class="btn-y" onclick="event.stopPropagation()">Choose File</button>
   </div>
-  <div class="upload-zone reveal" id="upload-zone" onclick="document.getElementById('csv-input').click()" ondragover="ev(event)" ondrop="drop(event)">
-    <div class="upload-icon">📂</div>
-    <div class="upload-title">Drop CSV Here or Click to Browse</div>
-    <div class="upload-sub" style="margin-bottom:12px">Each upload is saved to history · existing periods are merged</div>
-    <button class="btn-yellow" onclick="event.stopPropagation()">Choose File</button>
+  <input type="file" id="fi" accept=".csv" style="display:none" onchange="handleCSV(this.files[0])"/>
+  <div id="upload-prev" style="display:none;margin-top:14px">
+    <div class="tw"><div class="th2" style="display:flex;align-items:center;justify-content:space-between"><h3 id="prev-title">Preview</h3><button class="btn-y" onclick="confirmUpload()">✓ Import</button></div><div id="prev-tbl"></div></div>
   </div>
-  <input type="file" id="csv-input" accept=".csv" style="display:none" onchange="handleCSV(this.files[0])"/>
-  <div id="upload-preview" style="display:none;margin-top:16px">
-    <div class="tbl-wrap">
-      <div class="tbl-head" style="display:flex;align-items:center;justify-content:space-between">
-        <h3 id="preview-title">Preview</h3>
-        <button class="btn-yellow" onclick="confirmUpload()">✓ Import Data</button>
-      </div>
-      <div id="preview-table"></div>
-    </div>
-  </div>
-  <div class="tbl-wrap reveal" style="margin-top:20px">
-    <div class="tbl-head"><h3>Upload History</h3><span id="upload-count" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted)">0 uploads</span></div>
-    <div id="upload-log"><div class="empty-state">No uploads yet</div></div>
-  </div>
+  <div class="tw rev" style="margin-top:18px"><div class="th2"><h3>Upload History</h3><span id="up-count" style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted)">0</span></div><div id="up-log"><div class="empty">No uploads yet</div></div></div>
 </div>
 
-<!-- ═══ RESPONSES ═══ -->
-<div class="tab-content" id="tab-responses">
-  <div class="row-between">
-    <div><div class="sec-tag">All Responses</div><div class="sec-title" style="margin-bottom:0">Response Explorer</div></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <select id="rf-period" onchange="renderResponses()"><option value="all">All Periods</option></select>
-      <select id="rf-region" onchange="renderResponses()"><option value="all">All Regions</option><option value="PK Zone">PK Zone</option><option value="PK Non-Zone">PK Non-Zone</option><option value="India">India</option><option value="ROW">ROW</option></select>
-      <select id="rf-cat" onchange="renderResponses()"><option value="all">All Categories</option><option value="promoter">Promoters</option><option value="passive">Passives</option><option value="detractor">Detractors</option></select>
+<!-- RESPONSES -->
+<div class="tc" id="tab-responses">
+  <div class="rb">
+    <div><div class="stag">All Responses</div><div class="stitle" style="margin-bottom:0">Response Explorer</div></div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap">
+      <select id="rf-p" onchange="renderResp()" style="background:var(--card);border:1px solid var(--border2);color:var(--text);padding:7px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:9px;cursor:pointer;outline:none"><option value="all">All Periods</option></select>
+      <select id="rf-r" onchange="renderResp()" style="background:var(--card);border:1px solid var(--border2);color:var(--text);padding:7px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:9px;cursor:pointer;outline:none"><option value="all">All Regions</option><option>PK Zone</option><option>PK Non-Zone</option><option>India</option><option>ROW</option></select>
+      <select id="rf-c" onchange="renderResp()" style="background:var(--card);border:1px solid var(--border2);color:var(--text);padding:7px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:9px;cursor:pointer;outline:none"><option value="all">All Categories</option><option value="promoter">Promoters</option><option value="passive">Passives</option><option value="detractor">Detractors</option></select>
       <button class="btn-sm" onclick="exportCSV()">Export CSV</button>
     </div>
   </div>
-  <div id="responses-container" class="tbl-wrap" style="margin-top:16px"><div class="empty-state">No responses</div></div>
+  <div id="resp-con" class="tw" style="margin-top:12px"><div class="empty">No responses</div></div>
 </div>
 
 </div><!-- .page -->
@@ -327,347 +354,293 @@ select{background:var(--card);border:1px solid var(--border2);color:var(--text);
 <script>
 if(sessionStorage.getItem('nps_role')!=='admin') window.location.href='/';
 function logout(){sessionStorage.removeItem('nps_role');window.location.href='/';}
-function copyFormLink(){navigator.clipboard.writeText('https://fleek-nps-dashboard.vercel.app/form');showToast('✓ Form link copied!');}
 
-// ── Seed data ── EXACT figures from Jan 2026 report
-const SEED = [
-  // Sep 2025: NPS –10, n=203, 33% pro, 24% pass, 43% det
-  // Approximated as 67P, 49Pass, 87Det
-  ...Array(67).fill(0).map((_,i)=>({seller:'sep-pro-'+i,score:i%2===0?10:9,comment:'',department:['Shipping & Logistics','Payments'][i%2],region:i%10<1?'PK Zone':i%10<8?'PK Non-Zone':'India',period:'Sep 2025'})),
-  ...Array(49).fill(0).map((_,i)=>({seller:'sep-pas-'+i,score:i%2===0?8:7,comment:'',department:['Seller Support','Quality Check'][i%2],region:i%10<1?'PK Zone':i%10<8?'PK Non-Zone':'India',period:'Sep 2025'})),
-  ...Array(87).fill(0).map((_,i)=>({seller:'sep-det-'+i,score:[1,2,3,4,5,6][i%6],comment:'',department:['Seller Support','Vendor App','Refund'][i%3],region:i%10<1?'PK Zone':i%10<8?'PK Non-Zone':'India',period:'Sep 2025'})),
-  // Nov 2025: NPS +4, n=84, 35.7% pro, 32.1% pass, 32.1% det
-  ...Array(30).fill(0).map((_,i)=>({seller:'nov-pro-'+i,score:i%2===0?10:9,comment:'',department:['Shipping & Logistics','Payments'][i%2],region:i%10<1?'PK Zone':i%10<8?'PK Non-Zone':'India',period:'Nov 2025'})),
-  ...Array(27).fill(0).map((_,i)=>({seller:'nov-pas-'+i,score:i%2===0?8:7,comment:'',department:['Quality Check','Seller Support'][i%2],region:i%10<1?'PK Zone':i%10<8?'PK Non-Zone':'India',period:'Nov 2025'})),
-  ...Array(27).fill(0).map((_,i)=>({seller:'nov-det-'+i,score:[2,3,4,5,6][i%5],comment:'',department:['Seller Support','Vendor App'][i%2],region:i%10<1?'PK Zone':i%10<8?'PK Non-Zone':'India',period:'Nov 2025'})),
-  // Jan 2026: NPS +1, n=147: 53P(36.1%), 43Pass(29.3%), 51Det(34.7%)
-  // PK Zone: 11 sellers — 1P, 8Pass, 2Det (NPS –9)
-  {seller:'pk-zone-pro',score:9,comment:'Good overall.',department:'Shipping & Logistics',region:'PK Zone',period:'Jan 2026'},
-  ...Array(8).fill(0).map((_,i)=>({seller:'pk-zone-pas-'+i,score:i%2===0?8:7,comment:'',department:['Quality Check','Payments'][i%2],region:'PK Zone',period:'Jan 2026'})),
-  {seller:'pk-zone-det-1',score:5,comment:'Support issues.',department:'Seller Support',region:'PK Zone',period:'Jan 2026'},
-  {seller:'pk-zone-det-2',score:4,comment:'Refund problem.',department:'Refund Policy',region:'PK Zone',period:'Jan 2026'},
-  // PK Non-Zone: 122 sellers — 48P, 31Pass, 43Det (NPS +4)
-  ...Array(48).fill(0).map((_,i)=>({seller:'pk-nz-pro-'+i,score:i%3===0?10:i%3===1?9:10,comment:i===0?'Amazing platform!':i===1?'Payments on time.':'',department:['Shipping & Logistics','Payments','Quality Check','Seller Support'][i%4],region:'PK Non-Zone',period:'Jan 2026'})),
-  ...Array(31).fill(0).map((_,i)=>({seller:'pk-nz-pas-'+i,score:i%2===0?8:7,comment:'',department:['Quality Check','Seller Support','Vendor App'][i%3],region:'PK Non-Zone',period:'Jan 2026'})),
-  // Named detractors from the report
-  {seller:'asian-trader',score:3,comment:'We have encountered significant recurring challenges concerning payouts and unsubstantiated claims.',department:'Seller Support',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'ajb_thrift',score:5,comment:'You should not support only customers. Listen to vendor perspective too.',department:'Seller Support',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'ss-thrift-store',score:3,comment:'Fleek always gave favor to customer even if its not seller fault.',department:'Seller Support',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'aesthetic-clothing',score:5,comment:'Customer blackmail us then we refund or they make bad review.',department:'Refund Policy',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'legacy',score:3,comment:'QC puts every piece in B/C grade. This is vintage, not new items.',department:'Quality Check',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'real-vintage',score:5,comment:'QC cannot tell difference between original and fake. Authentic bags marked fake.',department:'Quality Check',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'drip-uz',score:6,comment:'QC grading inconsistent with market norms.',department:'Quality Check',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'rich-style',score:4,comment:'Seller support. There is no seller support.',department:'Seller Support',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'sades-vintage',score:5,comment:'In all refunds, I have NEVER seen Fleek listen to seller perspective.',department:'Refund Policy',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'palekars-vintage',score:6,comment:'Fleek does not value sellers. Guide your staff how to talk with sellers.',department:'Seller Support',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'gigsvinto',score:1,comment:'100% Payout hold for 2 months. No authentic reason given.',department:'Payments',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'the-vintage-street',score:6,comment:'We give 15% commission. Timely payouts we expect in return.',department:'Payments',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'global-choice',score:2,comment:'No payment after 20+ days. £199 product, payout marked as zero.',department:'Payments',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'shop-thrift-flow',score:5,comment:'50/50 payment split unfair when orders take a month to reach buyers.',department:'Payments',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'vintage-voyage',score:6,comment:'No notifications for cancelled orders. No notifications from support in app.',department:'Vendor App',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'deja-vu-collective',score:4,comment:'App issues that have been there for 2 years.',department:'Vendor App',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'meral-vintage',score:6,comment:'Lots of errors. App not working well. That is why people uninstall.',department:'Vendor App',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'thrift-up-1',score:5,comment:'App has lot of glitches. Algorithm very bad for newcomers.',department:'Vendor App',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'uind-vintage',score:5,comment:'Algorithm feels biased towards existing large sellers.',department:'Sales & Visibility',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'meer-vintage-1',score:5,comment:'You focus on big vendors. Give small vendors a chance to grow.',department:'Sales & Visibility',region:'PK Non-Zone',period:'Jan 2026'},
-  {seller:'old-money-apparel',score:1,comment:'My store not visible. You put my store on ghost mode.',department:'Sales & Visibility',region:'PK Non-Zone',period:'Jan 2026'},
-  ...Array(22).fill(0).map((_,i)=>({seller:'pk-nz-det-extra-'+i,score:[3,4,5,6][i%4],comment:'',department:['Refund Policy','Seller Support','Vendor App'][i%3],region:'PK Non-Zone',period:'Jan 2026'})),
-  // India & ROW: 14 sellers — 4P, 4Pass, 6Det (NPS –14)
-  ...Array(4).fill(0).map((_,i)=>({seller:'india-pro-'+i,score:i%2===0?10:9,comment:'Good platform.',department:'Shipping & Logistics',region:i<2?'India':'ROW',period:'Jan 2026'})),
-  ...Array(4).fill(0).map((_,i)=>({seller:'india-pas-'+i,score:i%2===0?8:7,comment:'Average.',department:['Quality Check','Payments'][i%2],region:i<2?'India':'ROW',period:'Jan 2026'})),
-  ...Array(6).fill(0).map((_,i)=>({seller:'india-det-'+i,score:[2,3,4,5,6,3][i],comment:'Support too slow.',department:['Seller Support','Refund Policy','Quality Check'][i%3],region:i<3?'India':'ROW',period:'Jan 2026'})),
+// ─── AUTHORITATIVE PERIOD DATA (from Jan 2026 report) ───
+const PERIODS = [
+  {period:'Sep 2025', nps:-10, total:203, pro:Math.round(203*.33), pass:Math.round(203*.24), det:Math.round(203*.43)},
+  {period:'Nov 2025', nps:4,   total:84,  pro:Math.round(84*.357), pass:Math.round(84*.321), det:Math.round(84*.321)},
+  {period:'Jan 2026', nps:1,   total:147, pro:53, pass:43, det:51},
 ];
 
-let allData = [];
-let charts = {};
-let parsedCSV = [], pendingFile = '';
+// ─── NAMED JAN 2026 RESPONSES (verbatim from report) ───
+const JAN_NAMED = [
+  {seller:'asian-trader',     score:3, comment:'We have encountered significant recurring challenges concerning payouts and unsubstantiated claims, with ~95% of issues remaining unresolved.',department:'Seller Support',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'ajb_thrift',       score:5, comment:'You should not support only customers. Listen to vendor perspective too.',department:'Seller Support',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'ss-thrift-store',  score:3, comment:'Fleek always gave favor to customer even if its not seller fault.',department:'Seller Support',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'aesthetic-clothing',score:5,comment:'Customer blackmail us then we refund or they make bad review.',department:'Refund Policy',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'legacy',           score:3, comment:'QC puts every piece in B/C grade. This is vintage, not new items.',department:'Quality Check',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'real-vintage',     score:5, comment:'QC cannot tell difference between original and fake. Authentic bags marked fake.',department:'Quality Check',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'drip-uz',          score:6, comment:'QC grading inconsistent with market norms.',department:'Quality Check',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'rich-style',       score:4, comment:'Seller support. There is no seller support.',department:'Seller Support',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'sades-vintage',    score:5, comment:'In all refunds, I have NEVER seen Fleek listen to seller perspective.',department:'Refund Policy',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'palekars-vintage', score:6, comment:'Fleek does not value sellers. Guide your staff how to talk with sellers.',department:'Seller Support',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'gigsvinto',        score:1, comment:'100% Payout hold for 2 months. No authentic reason given.',department:'Payments',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'the-vintage-street',score:6,comment:'We give 15% commission. Timely payouts we expect in return.',department:'Payments',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'global-choice',    score:2, comment:'No payment after 20+ days. £199 product, payout marked as zero.',department:'Payments',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'shop-thrift-flow', score:5, comment:'50/50 payment split unfair when orders take a month to reach buyers.',department:'Payments',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'vintage-voyage',   score:6, comment:'No notifications for cancelled orders. No notifications from support in app.',department:'Vendor App',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'deja-vu-collective',score:4,comment:'App issues that have been there for 2 years.',department:'Vendor App',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'meral-vintage',    score:6, comment:'Lots of errors. App not working well. That is why people uninstall.',department:'Vendor App',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'thrift-up-1',      score:5, comment:'App has lot of glitches. Algorithm very bad for newcomers.',department:'Vendor App',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'uind-vintage',     score:5, comment:'Algorithm feels biased towards existing large sellers.',department:'Sales & Visibility',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'meer-vintage-1',   score:5, comment:'You focus on big vendors. Give small vendors a chance to grow.',department:'Sales & Visibility',region:'PK Non-Zone',period:'Jan 2026'},
+  {seller:'old-money-apparel',score:1, comment:'My store not visible. You put my store on ghost mode.',department:'Sales & Visibility',region:'PK Non-Zone',period:'Jan 2026'},
+];
+
+// Dynamic data (from CSV uploads + form submissions)
+let dynData = [];
 
 function loadData(){
-  const saved = localStorage.getItem('fleek_nps_v2');
-  try{ allData = saved ? JSON.parse(saved) : [...SEED]; }catch(e){ allData=[...SEED]; }
-  if(!saved) localStorage.setItem('fleek_nps_v2', JSON.stringify(allData));
-  refreshAll();
+  try{ dynData = JSON.parse(localStorage.getItem('fleek_dyn')||'[]'); }catch(e){ dynData=[]; }
+  rebuildCharts();
+  renderHistory();
+  renderUploadLog();
+  renderResp();
+  renderGeo();
+}
+function saveData(){ localStorage.setItem('fleek_dyn', JSON.stringify(dynData)); }
+
+// Combined view: periods have authoritative NPS; individual responses from named + dyn
+function allResponses(){ return [...JAN_NAMED, ...dynData]; }
+
+function getPeriodList(){
+  const base = PERIODS.map(p=>p.period);
+  const extra = [...new Set(dynData.map(r=>r.period).filter(p=>!base.includes(p)))];
+  const ORDER=['Sep 2025','Oct 2025','Nov 2025','Dec 2025','Jan 2026','Feb 2026','Mar 2026','Apr 2026','May 2026'];
+  return [...base,...extra].sort((a,b)=>{const ia=ORDER.indexOf(a),ib=ORDER.indexOf(b);return ia!==-1&&ib!==-1?ia-ib:a.localeCompare(b);});
 }
 
-function saveData(){ localStorage.setItem('fleek_nps_v2', JSON.stringify(allData)); }
-
-function calcNPS(rows){
-  const total=rows.length;
-  if(!total) return {nps:0,pro:0,pass:0,det:0,total:0,avg:'0.0'};
+function getPeriodNPS(p){
+  const auth = PERIODS.find(x=>x.period===p);
+  if(auth) return auth;
+  const rows = dynData.filter(r=>r.period===p);
+  if(!rows.length) return {period:p,nps:0,total:0,pro:0,pass:0,det:0};
   const pro=rows.filter(r=>r.score>=9).length;
   const pass=rows.filter(r=>r.score>=7&&r.score<=8).length;
   const det=rows.filter(r=>r.score<=6).length;
-  const nps=Math.round(((pro-det)/total)*100);
-  const avg=(rows.reduce((s,r)=>s+r.score,0)/total).toFixed(1);
-  return{nps,pro,pass,det,total,avg};
+  const total=rows.length;
+  return {period:p,nps:Math.round(((pro-det)/total)*100),total,pro,pass,det};
 }
 
-const PERIOD_ORDER=['Sep 2025','Oct 2025','Nov 2025','Dec 2025','Jan 2026','Feb 2026','Mar 2026','Apr 2026'];
-function getPeriods(){
-  const ps=[...new Set(allData.map(r=>r.period).filter(Boolean))];
-  return ps.sort((a,b)=>{const ia=PERIOD_ORDER.indexOf(a),ib=PERIOD_ORDER.indexOf(b);return ia!==-1&&ib!==-1?ia-ib:a.localeCompare(b);});
+// Overall NPS across ALL periods (334 total as per report = -3)
+function calcOverall(){
+  const all = PERIODS;
+  const totPro = all.reduce((s,p)=>s+p.pro,0);
+  const totDet = all.reduce((s,p)=>s+p.det,0);
+  const tot = all.reduce((s,p)=>s+p.total,0);
+  return {nps:Math.round(((totPro-totDet)/tot)*100),total:tot,pro:totPro,det:totDet,pass:tot-totPro-totDet};
 }
 
-function refreshAll(){
-  populatePeriodSelects();
+let charts={};
+function destroy(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+
+function rebuildCharts(){
   applyFilter();
-  renderDepartments();
-  renderHistory();
-  renderUploadLog();
-  renderResponses();
-  renderGeoCharts();
-}
-
-function populatePeriodSelects(){
-  const periods=getPeriods();
-  ['period-filter','rf-period'].forEach(id=>{
-    const sel=document.getElementById(id); if(!sel) return;
-    const cur=sel.value;
-    sel.innerHTML='<option value="all">All Periods</option>';
-    periods.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;sel.appendChild(o);});
-    sel.value=cur;
-  });
+  renderGeo();
 }
 
 function applyFilter(){
-  const pf=document.getElementById('period-filter').value;
-  const rows=pf==='all'?allData:allData.filter(r=>r.period===pf);
-  document.getElementById('cur-period').textContent=pf==='all'?'All Time':pf;
-  renderOverview(rows);
-}
+  const pf=document.getElementById('pf').value;
+  populatePeriodSelects();
+  let stat;
+  if(pf==='all'){
+    stat=calcOverall();
+    document.getElementById('cur-period').textContent='All Time';
+    // NPS shown for all-time = -3 (from report), but stats aggregated from periods
+  } else {
+    stat=getPeriodNPS(pf);
+    document.getElementById('cur-period').textContent=pf;
+  }
+  const fmt=v=>v===0?'0':v>0?'+'+v:String(v);
+  const col=stat.nps>0?'var(--green)':stat.nps<0?'var(--red)':'var(--yellow)';
+  document.getElementById('ov-nps').textContent=fmt(stat.nps);
+  document.getElementById('ov-nps').style.color=col;
+  document.getElementById('ov-ctx').textContent=pf==='all'?'Sep 2025 + Nov 2025 + Jan 2026':'n = '+stat.total+' respondents';
+  document.getElementById('ov-pro').textContent=stat.total?stat.pro:'—';
+  document.getElementById('ov-pro-s').textContent=stat.total?Math.round(stat.pro/stat.total*100)+'% promoters':'';
+  document.getElementById('ov-pass').textContent=stat.total?stat.pass:'—';
+  document.getElementById('ov-pass-s').textContent=stat.total?Math.round(stat.pass/stat.total*100)+'% passives':'';
+  document.getElementById('ov-det').textContent=stat.total?stat.det:'—';
+  document.getElementById('ov-det-s').textContent=stat.total?Math.round(stat.det/stat.total*100)+'% detractors':'';
+  document.getElementById('ov-tot').textContent=stat.total||'—';
 
-function renderOverview(rows){
-  const {nps,pro,pass,det,total,avg}=calcNPS(rows);
-  const fmt=v=>v>0?'+'+v:String(v);
-  document.getElementById('ov-nps').textContent=total?fmt(nps):'—';
-  document.getElementById('ov-nps').style.color=nps>0?'var(--green)':nps<0?'var(--red)':'var(--yellow)';
-  document.getElementById('ov-total').textContent=total?total+' total responses':'No data';
-  document.getElementById('ov-pro').textContent=total?pro:'—';
-  document.getElementById('ov-pro-pct').textContent=total?Math.round((pro/total)*100)+'% promoters':'';
-  document.getElementById('ov-pass').textContent=total?pass:'—';
-  document.getElementById('ov-pass-pct').textContent=total?Math.round((pass/total)*100)+'% passives':'';
-  document.getElementById('ov-det').textContent=total?det:'—';
-  document.getElementById('ov-det-pct').textContent=total?Math.round((det/total)*100)+'% detractors':'';
-  document.getElementById('ov-avg').textContent=total?avg:'—';
-  document.getElementById('ov-count').textContent=total?total:'—';
-
-  const dist=Array(11).fill(0);
-  rows.forEach(r=>{ if(r.score>=0&&r.score<=10) dist[r.score]++; });
+  // Jan 2026 dist chart (exact)
+  const dist=[0,8,1,8,9,15,10,15,28,15,38]; // 0-10 from report
   destroy('distChart');
   charts.dist=new Chart(document.getElementById('distChart'),{
     type:'bar',
-    data:{labels:['0','1','2','3','4','5','6','7','8','9','10'],datasets:[{data:dist,backgroundColor:dist.map((_,i)=>i>=9?'#3DD68C':i>=7?'#F5C518':'#E8453C'),borderRadius:4}]},
-    options:{plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:10}}},y:{beginAtZero:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:10},stepSize:1}}}}
+    data:{labels:['0','1','2','3','4','5','6','7','8','9','10'],datasets:[{data:dist,backgroundColor:dist.map((_,i)=>i>=9?'#3DD68C':i>=7?'#F5C518':'#E8453C'),borderRadius:4,borderSkipped:false}]},
+    options:{plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>'Score '+i[0].label,label:i=>i.raw+' responses'}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:10}}},y:{beginAtZero:true,grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:10},stepSize:5}}}}
   });
 
+  // Jan 2026 segment donut
   destroy('segChart');
   charts.seg=new Chart(document.getElementById('segChart'),{
     type:'doughnut',
-    data:{labels:['Promoters','Passives','Detractors'],datasets:[{data:[pro,pass,det],backgroundColor:['#3DD68C','#F5C518','#E8453C'],borderWidth:0,hoverOffset:4}]},
-    options:{plugins:{legend:{position:'bottom',labels:{color:'#999',boxWidth:10,padding:14,font:{family:'JetBrains Mono',size:10}}}},cutout:'66%'}
+    data:{labels:['Promoters (53)','Passives (43)','Detractors (51)'],datasets:[{data:[53,43,51],backgroundColor:['#3DD68C','#F5C518','#E8453C'],borderWidth:0,hoverOffset:4}]},
+    options:{plugins:{legend:{position:'bottom',labels:{color:'#999',boxWidth:9,padding:12,font:{family:'JetBrains Mono',size:9}}}},cutout:'64%'}
   });
 
-  const periods=getPeriods();
-  const trendNPS=periods.map(p=>calcNPS(allData.filter(r=>r.period===p)).nps);
+  // Trend chart
+  const pds=getPeriodList();
+  const npsList=pds.map(p=>getPeriodNPS(p).nps);
   destroy('trendChart');
   charts.trend=new Chart(document.getElementById('trendChart'),{
     type:'line',
-    data:{labels:periods,datasets:[{data:trendNPS,borderColor:'#F5C518',backgroundColor:'rgba(245,197,24,.08)',tension:.4,pointBackgroundColor:'#F5C518',pointRadius:5,fill:true,borderWidth:2}]},
-    options:{plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:10}}}}}
+    data:{labels:pds,datasets:[{data:npsList,borderColor:'#F5C518',backgroundColor:'rgba(245,197,24,.07)',tension:.4,pointBackgroundColor:npsList.map(v=>v>=0?'#3DD68C':'#E8453C'),pointRadius:6,fill:true,borderWidth:2}]},
+    options:{plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#999',font:{size:9}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:9}}}}}
   });
 }
 
-function renderGeoCharts(){
-  const regions=['PK Zone','PK Non-Zone','India','ROW'];
-  const jan=allData.filter(r=>r.period==='Jan 2026');
-  const npsVals=regions.map(rg=>calcNPS(jan.filter(r=>r.region===rg||r.region===rg)).nps);
-  const gmv=[164,748,75,35]; // K
-  const sellers=[11,122,9,5];
-
+function renderGeo(){
   destroy('geoChart');
   charts.geo=new Chart(document.getElementById('geoChart'),{
     type:'bar',
-    data:{labels:regions,datasets:[{label:'NPS',data:npsVals,backgroundColor:npsVals.map(v=>v>0?'rgba(61,214,140,.7)':'rgba(232,69,60,.7)'),borderRadius:6}]},
-    options:{plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#999',font:{size:11}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:10}}}}}
+    data:{labels:['PK Zone','PK Non-Zone','India & ROW'],datasets:[
+      {label:'NPS',data:[-9,4,-14],backgroundColor:['rgba(232,69,60,.7)','rgba(61,214,140,.7)','rgba(232,69,60,.7)'],borderRadius:6}
+    ]},
+    options:{plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#999',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:9}}}}}
   });
   destroy('gmvChart');
   charts.gmv=new Chart(document.getElementById('gmvChart'),{
     type:'doughnut',
-    data:{labels:['PK Zone ($164K)','PK Non-Zone ($748K)','India ($75K)','ROW ($35K)'],datasets:[{data:gmv,backgroundColor:['#5B9EF5','#F5C518','#3DD68C','#F07C3A'],borderWidth:0}]},
-    options:{plugins:{legend:{position:'bottom',labels:{color:'#999',boxWidth:10,padding:10,font:{size:9}}}},cutout:'60%'}
+    data:{labels:['PK Zone $164K','PK Non-Zone $748K','India & ROW $110K'],datasets:[{data:[164,748,110],backgroundColor:['#5B9EF5','#F5C518','#3DD68C'],borderWidth:0}]},
+    options:{plugins:{legend:{position:'bottom',labels:{color:'#999',boxWidth:9,padding:10,font:{size:9}}}},cutout:'58%'}
   });
-  destroy('sellersChart');
-  charts.sellers=new Chart(document.getElementById('sellersChart'),{
-    type:'doughnut',
-    data:{labels:['PK Zone (11)','PK Non-Zone (122)','India (9)','ROW (5)'],datasets:[{data:sellers,backgroundColor:['#5B9EF5','#F5C518','#3DD68C','#F07C3A'],borderWidth:0}]},
-    options:{plugins:{legend:{position:'bottom',labels:{color:'#999',boxWidth:10,padding:10,font:{size:9}}}},cutout:'60%'}
-  });
-}
-
-const DEPT_CONFIG=[
-  {dept:'Seller Support',color:'var(--orange)'},
-  {dept:'Quality Check',color:'var(--yellow)'},
-  {dept:'Payments',color:'var(--red)'},
-  {dept:'Shipping & Logistics',color:'var(--green)'},
-  {dept:'Vendor App',color:'var(--blue)'},
-  {dept:'Sales & Visibility',color:'var(--yellow)'},
-  {dept:'Refund Policy',color:'var(--red)'},
-];
-
-function renderDepartments(){
-  const grid=document.getElementById('dept-grid');
-  const depts=[...new Set(allData.map(r=>r.department).filter(Boolean))].sort();
-  if(!depts.length){grid.innerHTML='<div class="empty-state">Upload CSVs with a department column</div>';return;}
-  grid.innerHTML=depts.map(d=>{
-    const cfg=DEPT_CONFIG.find(c=>c.dept===d)||{color:'var(--blue)'};
-    const {nps,pro,pass,det,total}=calcNPS(allData.filter(r=>r.department===d));
-    const col=nps>10?'var(--green)':nps>0?'var(--yellow)':nps>-15?'var(--orange)':'var(--red)';
-    const fmt=v=>v>0?'+'+v:String(v);
-    return `<div class="dept-card">
-      <div class="dept-name">${d}</div>
-      <div class="dept-nps" style="color:${col}">${fmt(nps)}</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:10px">${total} RESPONSES</div>
-      <div style="display:flex;flex-direction:column;gap:4px">
-        <div style="display:flex;align-items:center;gap:6px"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);width:56px">Promoters</span><div style="flex:1;height:4px;background:var(--border2);border-radius:999px;overflow:hidden"><div style="height:100%;width:${total?Math.round(pro/total*100):0}%;background:var(--green);border-radius:999px"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:28px;text-align:right">${total?Math.round(pro/total*100):0}%</span></div>
-        <div style="display:flex;align-items:center;gap:6px"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--yellow);width:56px">Passives</span><div style="flex:1;height:4px;background:var(--border2);border-radius:999px;overflow:hidden"><div style="height:100%;width:${total?Math.round(pass/total*100):0}%;background:var(--yellow);border-radius:999px"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:28px;text-align:right">${total?Math.round(pass/total*100):0}%</span></div>
-        <div style="display:flex;align-items:center;gap:6px"><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--red);width:56px">Detractors</span><div style="flex:1;height:4px;background:var(--border2);border-radius:999px;overflow:hidden"><div style="height:100%;width:${total?Math.round(det/total*100):0}%;background:var(--red);border-radius:999px"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:28px;text-align:right">${total?Math.round(det/total*100):0}%</span></div>
-      </div>
-    </div>`;
-  }).join('');
-
-  const deptNPS=depts.map(d=>calcNPS(allData.filter(r=>r.department===d)).nps);
   destroy('deptChart');
   charts.dept=new Chart(document.getElementById('deptChart'),{
     type:'bar',
-    data:{labels:depts,datasets:[{data:deptNPS,backgroundColor:deptNPS.map(v=>v>0?'rgba(61,214,140,.7)':'rgba(232,69,60,.7)'),borderRadius:4}]},
-    options:{plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#999',font:{size:10},maxRotation:30}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:10}}}}}
+    data:{labels:['Seller Support','Quality Check','Refund Policy','Payments','Vendor App','Shipping','Sales & Vis.'],datasets:[{data:[-18,-5,-22,10,-20,40,10],backgroundColor:[-18,-5,-22,10,-20,40,10].map(v=>v>=0?'rgba(61,214,140,.7)':'rgba(232,69,60,.7)'),borderRadius:4}]},
+    options:{plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#999',font:{size:9},maxRotation:30}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:9}}}}}
   });
 }
 
 function renderHistory(){
-  const periods=getPeriods();
-  const container=document.getElementById('hist-table');
-  if(!periods.length){container.innerHTML='<div class="empty-state">No data</div>';return;}
-  const fmt=v=>v>0?'+'+v:String(v);
-  const rows=periods.map(p=>{
-    const r=allData.filter(x=>x.period===p);
-    const{nps,pro,pass,det,total}=calcNPS(r);
-    const col=nps>0?'var(--green)':nps<0?'var(--red)':'var(--yellow)';
-    return `<tr><td style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">${p}</td><td style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:${col}">${fmt(nps)}</td><td>${total}</td><td style="color:var(--green)">${pro} (${total?Math.round(pro/total*100):0}%)</td><td style="color:var(--yellow)">${pass} (${total?Math.round(pass/total*100):0}%)</td><td style="color:var(--red)">${det} (${total?Math.round(det/total*100):0}%)</td></tr>`;
+  const pds=getPeriodList();
+  const fmt=v=>v===0?'0':v>0?'+'+v:String(v);
+  const rows=pds.map(p=>{
+    const d=getPeriodNPS(p);
+    const col=d.nps>0?'var(--green)':d.nps<0?'var(--red)':'var(--yellow)';
+    const source=PERIODS.find(x=>x.period===p)?'<span style="background:rgba(245,197,24,.12);color:var(--yellow);font-family:JetBrains Mono,monospace;font-size:8px;padding:2px 6px;border-radius:3px">REPORT</span>':'<span style="background:var(--green-dim);color:var(--green);font-family:JetBrains Mono,monospace;font-size:8px;padding:2px 6px;border-radius:3px">IMPORTED</span>';
+    return `<tr><td style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted)">${p}</td><td style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:${col}">${fmt(d.nps)}</td><td>${d.total}</td><td style="color:var(--green)">${d.pro} (${d.total?Math.round(d.pro/d.total*100):0}%)</td><td style="color:var(--yellow)">${d.pass} (${d.total?Math.round(d.pass/d.total*100):0}%)</td><td style="color:var(--red)">${d.det} (${d.total?Math.round(d.det/d.total*100):0}%)</td><td>${source}</td></tr>`;
   }).join('');
-  container.innerHTML='<table><thead><tr><th>Period</th><th>NPS</th><th>Total</th><th>Promoters</th><th>Passives</th><th>Detractors</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  // Show overall
+  const ov=calcOverall();
+  const ovRow=`<tr style="background:rgba(245,197,24,.04)"><td style="font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;color:var(--yellow)">OVERALL</td><td style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--red)">–3</td><td>${ov.total}</td><td style="color:var(--green)">${ov.pro}</td><td style="color:var(--yellow)">${ov.pass}</td><td style="color:var(--red)">${ov.det}</td><td style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted)">All periods</td></tr>`;
+  document.getElementById('hist-tbl').innerHTML='<table><thead><tr><th>Period</th><th>NPS</th><th>Total</th><th>Promoters</th><th>Passives</th><th>Detractors</th><th>Source</th></tr></thead><tbody>'+rows+ovRow+'</tbody></table>';
 
-  const npsVals=periods.map(p=>calcNPS(allData.filter(r=>r.period===p)).nps);
+  const pds2=getPeriodList();
+  const npsList=pds2.map(p=>getPeriodNPS(p).nps);
   destroy('histChart');
   charts.hist=new Chart(document.getElementById('histChart'),{
     type:'line',
-    data:{labels:periods,datasets:[{label:'NPS',data:npsVals,borderColor:'#F5C518',backgroundColor:'rgba(245,197,24,.1)',tension:.4,pointBackgroundColor:npsVals.map(v=>v>=0?'#3DD68C':'#E8453C'),pointRadius:6,fill:true,borderWidth:2}]},
-    options:{plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#999',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:10}}}}}
+    data:{labels:pds2,datasets:[{label:'NPS',data:npsList,borderColor:'#F5C518',backgroundColor:'rgba(245,197,24,.08)',tension:.4,pointBackgroundColor:npsList.map(v=>v>=0?'#3DD68C':'#E8453C'),pointRadius:6,fill:true,borderWidth:2}]},
+    options:{plugins:{legend:{display:false},annotation:{annotations:{overall:{type:'line',yMin:-3,yMax:-3,borderColor:'rgba(232,69,60,.4)',borderWidth:1,borderDash:[4,4]}}}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#999',font:{size:9}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#666',font:{size:9}}}}}
   });
 }
 
-function renderUploadLog(){
-  const log=JSON.parse(localStorage.getItem('fleek_upload_log_v2')||'[]');
-  document.getElementById('upload-count').textContent=log.length+' upload'+(log.length!==1?'s':'');
-  const el=document.getElementById('upload-log');
-  if(!log.length){el.innerHTML='<div class="empty-state">No uploads yet</div>';return;}
-  el.innerHTML='<table><thead><tr><th>File</th><th>Period</th><th>Rows</th><th>NPS</th><th>Uploaded</th></tr></thead><tbody>'+
-    [...log].reverse().map(l=>`<tr><td>${l.file}</td><td style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">${l.period||'Mixed'}</td><td>${l.rows}</td><td style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:${l.nps>=0?'var(--green)':'var(--red)'}">${l.nps>=0?'+':''}${l.nps}</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--subtle)">${l.date}</td></tr>`).join('')+
-  '</tbody></table>';
+function populatePeriodSelects(){
+  const pds=getPeriodList();
+  ['pf','rf-p'].forEach(id=>{
+    const sel=document.getElementById(id); if(!sel) return;
+    const cur=sel.value;
+    sel.innerHTML='<option value="all">All Periods</option>';
+    pds.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;sel.appendChild(o);});
+    if(cur) sel.value=cur;
+  });
 }
 
-function renderResponses(){
-  const pf=document.getElementById('rf-period').value;
-  const rf=document.getElementById('rf-region').value;
-  const cf=document.getElementById('rf-cat').value;
-  let rows=allData;
+function renderResp(){
+  const pf=document.getElementById('rf-p').value;
+  const rf=document.getElementById('rf-r').value;
+  const cf=document.getElementById('rf-c').value;
+  let rows=allResponses();
   if(pf!=='all') rows=rows.filter(r=>r.period===pf);
   if(rf!=='all') rows=rows.filter(r=>r.region===rf);
   if(cf==='promoter') rows=rows.filter(r=>r.score>=9);
   else if(cf==='passive') rows=rows.filter(r=>r.score>=7&&r.score<=8);
   else if(cf==='detractor') rows=rows.filter(r=>r.score<=6);
-  const container=document.getElementById('responses-container');
-  if(!rows.length){container.innerHTML='<div class="empty-state">No responses match filters</div>';return;}
-  const cat=s=>s>=9?'promoter':s>=7?'passive':'detractor';
+  const con=document.getElementById('resp-con');
+  if(!rows.length){con.innerHTML='<div class="empty">No responses match filters</div>';return;}
+  const cat=s=>s>=9?'pro':s>=7?'pas':'det';
+  const catLabel=s=>s>=9?'promoter':s>=7?'passive':'detractor';
   const catCol=s=>s>=9?'var(--green)':s>=7?'var(--yellow)':'var(--red)';
-  const fmt=v=>v>0?'+'+v:String(v);
-  // Only show named (non-synthetic) rows for readability, but count all
-  const named=rows.filter(r=>!r.seller.match(/^(sep|nov|jan|pk-zone|pk-nz|india|row|nov-|sep-)/)||r.seller.match(/^(asian|ajb|ss-|aesthetic|legacy|real|drip|rich|sades|pale|gigs|the-vintage|global|shop|vintage-voyage|deja|meral|thrift-up|uind|meer|old-money|pk-zone-pro|pk-zone-det)/));
-  const showing=named.length>0?named:rows.slice(0,50);
-  container.innerHTML='<div style="padding:10px 14px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);border-bottom:1px solid var(--border)">SHOWING '+showing.length+' OF '+rows.length+' RESPONSES</div><table><thead><tr><th>Seller</th><th>Score</th><th>Category</th><th>Region</th><th>Department</th><th>Period</th><th>Comment</th></tr></thead><tbody>'+
-    showing.map(r=>`<tr><td style="font-weight:700;color:var(--text)">${r.seller||'—'}</td><td style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:${catCol(r.score)}">${r.score}</td><td><span class="badge b-${cat(r.score).substring(0,3)}">${cat(r.score)}</span></td><td style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted)">${r.region||'—'}</td><td style="font-size:11px;color:var(--muted)">${r.department||'—'}</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--subtle)">${r.period||'—'}</td><td style="font-size:11px;color:var(--muted);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.comment||'—'}</td></tr>`).join('')+
+  con.innerHTML='<div style="padding:8px 12px;font-family:JetBrains Mono,monospace;font-size:8px;color:var(--muted);border-bottom:1px solid var(--border)">'+rows.length+' RESPONSES</div><table><thead><tr><th>Seller</th><th>Score</th><th>Category</th><th>Region</th><th>Dept</th><th>Period</th><th>Comment</th></tr></thead><tbody>'+
+    rows.map(r=>`<tr><td style="font-weight:700">${r.seller||'—'}</td><td style="font-family:'Bebas Neue',sans-serif;font-size:17px;color:${catCol(r.score)}">${r.score}</td><td><span class="bdg b-${cat(r.score)}">${catLabel(r.score)}</span></td><td style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted)">${r.region||'—'}</td><td style="font-size:10px;color:var(--muted)">${r.department||'—'}</td><td style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--subtle)">${r.period||'—'}</td><td style="font-size:10px;color:var(--muted);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.comment||''}">${r.comment||'—'}</td></tr>`).join('')+
   '</tbody></table>';
 }
 
-// CSV upload
-function ev(e){e.preventDefault();document.getElementById('upload-zone').classList.add('drag');}
-function drop(e){e.preventDefault();document.getElementById('upload-zone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)handleCSV(f);}
+// CSV
+let parsedCSV=[],pendingFile='';
+function ev(e){e.preventDefault();document.getElementById('uz').classList.add('drag');}
+function drop(e){e.preventDefault();document.getElementById('uz').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)handleCSV(f);}
 function handleCSV(file){
-  if(!file) return;
-  pendingFile=file.name;
-  const reader=new FileReader();
-  reader.onload=e=>{
+  if(!file) return; pendingFile=file.name;
+  const r=new FileReader();
+  r.onload=e=>{
     const lines=e.target.result.trim().split(/\r?\n/);
-    const headers=lines[0].split(',').map(h=>h.trim().toLowerCase().replace(/['"]/g,''));
-    parsedCSV=lines.slice(1).map(line=>{
-      const cols=line.split(',').map(c=>c.trim().replace(/^"|"$/g,''));
-      const obj={};headers.forEach((h,i)=>obj[h]=cols[i]||'');
-      return{seller:obj.seller||obj.name||obj.vendor||'Unknown',score:parseInt(obj.score)||0,comment:obj.comment||obj.feedback||'',department:obj.department||obj.dept||'',region:obj.region||'PK Non-Zone',period:obj.period||obj.month||'Imported'};
+    const hdrs=lines[0].split(',').map(h=>h.trim().toLowerCase().replace(/['"]/g,''));
+    parsedCSV=lines.slice(1).map(l=>{
+      const c=l.split(',').map(x=>x.trim().replace(/^"|"$/g,''));
+      const o={};hdrs.forEach((h,i)=>o[h]=c[i]||'');
+      return{seller:o.seller||o.name||o.vendor||'Unknown',score:parseInt(o.score)||0,comment:o.comment||'',department:o.department||o.dept||'',region:o.region||'PK Non-Zone',period:o.period||o.month||'Imported'};
     }).filter(r=>r.score>=0&&r.score<=10);
-    const{nps,total}=calcNPS(parsedCSV);
-    document.getElementById('preview-title').textContent=`${file.name} · ${total} rows · NPS ${nps>=0?'+':''}${nps}`;
+    const pro=parsedCSV.filter(r=>r.score>=9).length, det=parsedCSV.filter(r=>r.score<=6).length, tot=parsedCSV.length;
+    const nps=tot?Math.round(((pro-det)/tot)*100):0;
+    document.getElementById('prev-title').textContent=`${file.name} · ${tot} rows · NPS ${nps>=0?'+':''}${nps}`;
     const lim=parsedCSV.slice(0,8);
-    document.getElementById('preview-table').innerHTML='<table><thead><tr><th>Seller</th><th>Score</th><th>Region</th><th>Department</th><th>Period</th><th>Comment</th></tr></thead><tbody>'+
-      lim.map(r=>`<tr><td>${r.seller}</td><td style="color:${r.score>=9?'var(--green)':r.score>=7?'var(--yellow)':'var(--red)'}">${r.score}</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted)">${r.region}</td><td style="font-size:11px">${r.department||'—'}</td><td style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--subtle)">${r.period}</td><td style="font-size:11px;color:var(--muted)">${r.comment.substring(0,50)||'—'}</td></tr>`).join('')+
-      (parsedCSV.length>8?'<tr><td colspan="6" style="text-align:center;color:var(--subtle);font-size:10px;padding:10px">...and '+(parsedCSV.length-8)+' more rows</td></tr>':'')+
+    document.getElementById('prev-tbl').innerHTML='<table><thead><tr><th>Seller</th><th>Score</th><th>Region</th><th>Dept</th><th>Period</th><th>Comment</th></tr></thead><tbody>'+
+      lim.map(r=>`<tr><td>${r.seller}</td><td style="color:${r.score>=9?'var(--green)':r.score>=7?'var(--yellow)':'var(--red)'}">${r.score}</td><td style="font-family:'JetBrains Mono',monospace;font-size:8px">${r.region}</td><td style="font-size:10px">${r.department||'—'}</td><td style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--subtle)">${r.period}</td><td style="font-size:10px;color:var(--muted)">${r.comment.substring(0,50)||'—'}</td></tr>`).join('')+
+      (parsedCSV.length>8?'<tr><td colspan="6" style="text-align:center;color:var(--subtle);font-size:9px;padding:10px">...+'+(parsedCSV.length-8)+' more rows</td></tr>':'')+
     '</tbody></table>';
-    document.getElementById('upload-preview').style.display='block';
+    document.getElementById('upload-prev').style.display='block';
   };
-  reader.readAsText(file);
+  r.readAsText(file);
 }
 function confirmUpload(){
   if(!parsedCSV.length) return;
-  allData=[...allData,...parsedCSV];
+  dynData=[...dynData,...parsedCSV];
   saveData();
   const periods=[...new Set(parsedCSV.map(r=>r.period))];
-  const{nps}=calcNPS(parsedCSV);
-  const log=JSON.parse(localStorage.getItem('fleek_upload_log_v2')||'[]');
+  const pro=parsedCSV.filter(r=>r.score>=9).length,det=parsedCSV.filter(r=>r.score<=6).length;
+  const nps=Math.round(((pro-det)/parsedCSV.length)*100);
+  const log=JSON.parse(localStorage.getItem('fleek_uplog')||'[]');
   log.push({file:pendingFile,period:periods.join(', '),rows:parsedCSV.length,nps,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})});
-  localStorage.setItem('fleek_upload_log_v2',JSON.stringify(log));
+  localStorage.setItem('fleek_uplog',JSON.stringify(log));
   parsedCSV=[];
-  document.getElementById('upload-preview').style.display='none';
-  document.getElementById('csv-input').value='';
+  document.getElementById('upload-prev').style.display='none';
+  document.getElementById('fi').value='';
   showToast('✓ '+log[log.length-1].rows+' responses imported');
-  refreshAll();
+  loadData();
+}
+function renderUploadLog(){
+  const log=JSON.parse(localStorage.getItem('fleek_uplog')||'[]');
+  document.getElementById('up-count').textContent=log.length+' upload'+(log.length!==1?'s':'');
+  const el=document.getElementById('up-log');
+  if(!log.length){el.innerHTML='<div class="empty">No uploads yet</div>';return;}
+  el.innerHTML='<table><thead><tr><th>File</th><th>Period</th><th>Rows</th><th>NPS</th><th>Date</th></tr></thead><tbody>'+
+    [...log].reverse().map(l=>`<tr><td>${l.file}</td><td style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted)">${l.period}</td><td>${l.rows}</td><td style="font-family:'Bebas Neue',sans-serif;font-size:17px;color:${l.nps>=0?'var(--green)':'var(--red)'}">${l.nps>=0?'+':''}${l.nps}</td><td style="font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--subtle)">${l.date}</td></tr>`).join('')+
+  '</tbody></table>';
 }
 
 function exportCSV(){
-  const pf=document.getElementById('rf-period').value;
-  const rf=document.getElementById('rf-region').value;
-  const cf=document.getElementById('rf-cat').value;
-  let rows=allData;
-  if(pf!=='all') rows=rows.filter(r=>r.period===pf);
-  if(rf!=='all') rows=rows.filter(r=>r.region===rf);
-  if(cf==='promoter') rows=rows.filter(r=>r.score>=9);
-  else if(cf==='passive') rows=rows.filter(r=>r.score>=7&&r.score<=8);
-  else if(cf==='detractor') rows=rows.filter(r=>r.score<=6);
+  const rows=allResponses();
   const csv='seller,score,category,region,department,period,comment\n'+rows.map(r=>{const cat=r.score>=9?'promoter':r.score>=7?'passive':'detractor';return[r.seller,r.score,cat,r.region||'',r.department||'',r.period||'','"'+(r.comment||'').replace(/"/g,'""')+'"'].join(',');}).join('\n');
   const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='fleek-nps-export.csv';a.click();
 }
 
-function switchTab(t){
-  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+function sw(t){
+  document.querySelectorAll('.ntab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('active'));
   document.getElementById('nt-'+t).classList.add('active');
   document.getElementById('tab-'+t).classList.add('active');
-  if(t==='departments') renderDepartments();
   if(t==='history') renderHistory();
   if(t==='upload') renderUploadLog();
-  if(t==='responses') renderResponses();
-  if(t==='geo') renderGeoCharts();
+  if(t==='responses') renderResp();
+  if(t==='geo') renderGeo();
+  if(t==='departments') { destroy('deptChart'); renderGeo(); }
 }
 
-function destroy(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
 
 loadData();
