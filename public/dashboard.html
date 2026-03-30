@@ -4,26 +4,26 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Fleek NPS Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Montserrat:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    :root{--bg:#0c0c0c;--card:#161616;--border:#252525;--yellow:#F5C518;--red:#E8453C;--green:#3DD68C;--blue:#4B9EFF;--text:#f0f0f0;--muted:#888}
-    body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh}
+    :root{--bg:#0c0c0c;--card:#161616;--border:#252525;--yellow:#FFD400;--red:#E8453C;--green:#3DD68C;--blue:#4B9EFF;--text:#f0f0f0;--muted:#888}
+    body{background:var(--bg);color:var(--text);font-family:'Montserrat',sans-serif;min-height:100vh}
     
     /* TOPBAR */
     .topbar{background:#111;border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100}
-    .brand{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--yellow);letter-spacing:2px}
-    .brand span{color:var(--text);margin-left:8px;font-size:1rem;font-family:'Syne',sans-serif;font-weight:600;opacity:0.6}
+    .brand{font-family:'League Gothic',sans-serif;font-size:1.6rem;color:var(--yellow);letter-spacing:2px}
+    .brand span{color:var(--text);margin-left:8px;font-size:1rem;font-family:'Montserrat',sans-serif;font-weight:600;opacity:0.6}
     .topbar-right{display:flex;align-items:center;gap:12px}
     .survey-link{background:var(--yellow);color:#0c0c0c;padding:8px 18px;border-radius:8px;font-weight:700;font-size:0.85rem;text-decoration:none;letter-spacing:0.5px}
     .survey-link:hover{opacity:0.85}
-    .logout-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px 18px;border-radius:8px;cursor:pointer;font-family:'Syne',sans-serif;font-size:0.85rem}
+    .logout-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px 18px;border-radius:8px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:0.85rem}
     .logout-btn:hover{border-color:var(--text);color:var(--text)}
     
     /* TABS */
     .tabs{display:flex;gap:4px;padding:24px 32px 0;border-bottom:1px solid var(--border);background:#111}
-    .tab{padding:10px 20px;border-radius:8px 8px 0 0;background:transparent;border:none;color:var(--muted);font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;transition:all 0.2s;border:1px solid transparent;border-bottom:none}
+    .tab{padding:10px 20px;border-radius:8px 8px 0 0;background:transparent;border:none;color:var(--muted);font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;transition:all 0.2s;border:1px solid transparent;border-bottom:none}
     .tab:hover{color:var(--text)}
     .tab.active{background:var(--bg);color:var(--yellow);border-color:var(--border)}
     
@@ -43,7 +43,7 @@
     .stat-value{font-family:'JetBrains Mono',monospace;font-size:2.4rem;font-weight:700;line-height:1}
     .stat.nps .stat-value{color:var(--yellow)}
     .stat.pro .stat-value{color:var(--green)}
-    .stat.pass .stat-value{color:#F59E0B}
+    .stat.pass .stat-value{color:var(--orange)}
     .stat.det .stat-value{color:var(--red)}
     .stat-sub{color:var(--muted);font-size:0.78rem;margin-top:6px}
     
@@ -56,7 +56,7 @@
     /* PERIOD FILTER */
     .filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
     .filter-bar label{color:var(--muted);font-size:0.82rem;font-weight:700;text-transform:uppercase;letter-spacing:1px}
-    .filter-bar select{background:#1a1a1a;border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:8px;font-family:'Syne',sans-serif;font-size:0.88rem;outline:none}
+    .filter-bar select{background:#1a1a1a;border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:8px;font-family:'Montserrat',sans-serif;font-size:0.88rem;outline:none}
     .filter-bar select:focus{border-color:var(--yellow)}
     .filter-bar select option{background:#111}
     
@@ -70,11 +70,11 @@
     tr:hover td{background:#1a1a1a}
     .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;font-family:'JetBrains Mono',monospace}
     .badge.P{background:rgba(61,214,140,0.15);color:var(--green)}
-    .badge.S{background:rgba(245,158,11,0.15);color:#F59E0B}
+    .badge.S{background:rgba(245,158,11,0.15);color:var(--orange)}
     .badge.D{background:rgba(232,69,60,0.15);color:var(--red)}
     .score-pill{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.9rem}
     .score-pill.P{background:rgba(61,214,140,0.15);color:var(--green)}
-    .score-pill.S{background:rgba(245,158,11,0.15);color:#F59E0B}
+    .score-pill.S{background:rgba(245,158,11,0.15);color:var(--orange)}
     .score-pill.D{background:rgba(232,69,60,0.15);color:var(--red)}
     
     /* DEPT CARDS */
@@ -82,7 +82,7 @@
     .dept-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
     .dept-name{font-weight:700;font-size:0.95rem;margin-bottom:4px}
     .dept-nps{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;margin-bottom:8px}
-    .dept-nps.positive{color:var(--green)}.dept-nps.zero{color:#F59E0B}.dept-nps.negative{color:var(--red)}
+    .dept-nps.positive{color:var(--green)}.dept-nps.zero{color:var(--orange)}.dept-nps.negative{color:var(--red)}
     .dept-bar-bg{height:6px;background:#1a1a1a;border-radius:3px;overflow:hidden}
     .dept-bar-fill{height:100%;border-radius:3px;transition:width 0.8s}
     .dept-meta{display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-top:8px}
@@ -93,7 +93,7 @@
     .geo-flag{font-size:1.8rem;margin-bottom:8px}
     .geo-name{font-weight:800;font-size:1rem;margin-bottom:2px}
     .geo-nps{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700}
-    .geo-nps.positive{color:var(--green)}.geo-nps.zero{color:#F59E0B}.geo-nps.negative{color:var(--red)}
+    .geo-nps.positive{color:var(--green)}.geo-nps.zero{color:var(--orange)}.geo-nps.negative{color:var(--red)}
     .geo-segs{display:flex;gap:8px;margin-top:10px;font-size:0.75rem}
     .geo-seg{display:flex;flex-direction:column;align-items:center;background:#1a1a1a;border-radius:6px;padding:6px 10px;flex:1}
     .geo-seg .seg-label{color:var(--muted);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.8px}
@@ -104,7 +104,7 @@
     .history-table th{text-align:left;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:10px 16px;border-bottom:1px solid var(--border)}
     .history-table td{padding:14px 16px;border-bottom:1px solid #1a1a1a;font-size:0.9rem}
     .nps-trend{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700}
-    .nps-trend.p{color:var(--green)}.nps-trend.z{color:#F59E0B}.nps-trend.n{color:var(--red)}
+    .nps-trend.p{color:var(--green)}.nps-trend.z{color:var(--orange)}.nps-trend.n{color:var(--red)}
     .delta-chip{font-size:0.75rem;padding:2px 8px;border-radius:12px;margin-left:8px;font-family:'JetBrains Mono',monospace}
     .delta-up{background:rgba(61,214,140,0.15);color:var(--green)}
     .delta-down{background:rgba(232,69,60,0.15);color:var(--red)}
@@ -119,7 +119,7 @@
     .info-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;font-size:0.85rem}
     .info-box h4{color:var(--yellow);margin-bottom:10px;font-size:0.9rem}
     .info-box code{background:#1a1a1a;padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--green)}
-    .action-btn{padding:10px 22px;border-radius:8px;border:none;font-family:'Syne',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;transition:opacity 0.2s}
+    .action-btn{padding:10px 22px;border-radius:8px;border:none;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;transition:opacity 0.2s}
     .action-btn.primary{background:var(--yellow);color:#0c0c0c}
     .action-btn.ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
     .action-btn:hover{opacity:0.85}
@@ -148,7 +148,7 @@
 </head>
 <body>
   <div class="topbar">
-    <div class="brand"><img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek" style="height:32px;vertical-align:middle;margin-right:10px;filter:brightness(0) invert(1)"/><span style="font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:600;opacity:0.6;color:var(--text)">NPS Dashboard</span></div>
+    <div class="brand"><img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek" style="height:32px;vertical-align:middle;margin-right:10px;filter:brightness(0) invert(1)"/><span style="font-family:'Montserrat',sans-serif;font-size:0.95rem;font-weight:600;opacity:0.6;color:var(--text)">NPS Dashboard</span></div>
     <div class="topbar-right">
       <a href="/survey" target="_blank" class="survey-link">📋 Survey Form</a>
       <button class="logout-btn" onclick="logout()">Logout</button>
@@ -331,7 +331,7 @@
     <!-- SATISFACTION TAB -->
     <div class="tab-content" id="tab-satisfaction">
       <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center">
-        <select id="satPeriodFilter" onchange="renderSatisfaction()" style="background:#161616;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Syne',sans-serif;padding:8px 14px;font-size:0.85rem;outline:none">
+        <select id="satPeriodFilter" onchange="renderSatisfaction()" style="background:#161616;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Montserrat',sans-serif;padding:8px 14px;font-size:0.85rem;outline:none">
           <option value="all">All Periods</option>
         </select>
         <span style="color:var(--muted);font-size:0.82rem">Satisfaction ratings from April 2026 new survey format</span>
@@ -347,24 +347,24 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px">
           <div class="field-group">
             <label style="display:block;font-size:0.78rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700">Report Period</label>
-            <select id="reportPeriod" style="width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.9rem;padding:10px 14px;outline:none">
+            <select id="reportPeriod" style="width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:0.9rem;padding:10px 14px;outline:none">
               <option value="all">All Time</option>
             </select>
           </div>
           <div class="field-group">
             <label style="display:block;font-size:0.78rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700">Prepared By</label>
-            <input type="text" id="reportAuthor" placeholder="e.g. Seller Support Team" value="Seller Support Team" style="width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.9rem;padding:10px 14px;outline:none"/>
+            <input type="text" id="reportAuthor" placeholder="e.g. Seller Support Team" value="Seller Support Team" style="width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:0.9rem;padding:10px 14px;outline:none"/>
           </div>
         </div>
 
         <div style="margin-top:16px">
           <label style="display:block;font-size:0.78rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700">Executive Note <span style="font-size:0.7rem;color:var(--muted);text-transform:none;letter-spacing:0">(optional — appears at top of report)</span></label>
-          <textarea id="reportNote" placeholder="Add a brief executive summary or key highlights..." style="width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;resize:vertical;min-height:80px"></textarea>
+          <textarea id="reportNote" placeholder="Add a brief executive summary or key highlights..." style="width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;resize:vertical;min-height:80px"></textarea>
         </div>
 
         <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap">
-          <button onclick="generateReport()" style="flex:1;min-width:180px;padding:14px 24px;background:var(--yellow);color:#0c0c0c;border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;cursor:pointer;transition:opacity 0.2s">⬇ DOWNLOAD REPORT</button>
-          <button onclick="previewReport()" style="flex:1;min-width:180px;padding:14px 24px;background:transparent;color:var(--text);border:1.5px solid var(--border);border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px;cursor:pointer;transition:all 0.2s">👁 PREVIEW REPORT</button>
+          <button onclick="generateReport()" style="flex:1;min-width:180px;padding:14px 24px;background:var(--yellow);color:#0c0c0c;border:none;border-radius:10px;font-family:'League Gothic',sans-serif;font-size:1.2rem;letter-spacing:2px;cursor:pointer;transition:opacity 0.2s">⬇ DOWNLOAD REPORT</button>
+          <button onclick="previewReport()" style="flex:1;min-width:180px;padding:14px 24px;background:transparent;color:var(--text);border:1.5px solid var(--border);border-radius:10px;font-family:'League Gothic',sans-serif;font-size:1.2rem;letter-spacing:2px;cursor:pointer;transition:all 0.2s">👁 PREVIEW REPORT</button>
         </div>
       </div>
 
@@ -548,23 +548,7 @@
   ];
 
 
-  // ===== APRIL 2026 DATA (new survey format) =====
-  const aprEntries = [
-    {email:"elegantvin@gmail.com",seller:"Elegant Vintage",storeHandle:"ElegantVintage",score:9,department:"Quality Check",geography:"PK Zone",city:"Lahore",comment:"Quality check is much better now.",mainIssue:"Need faster processing",aspects:"Quality Check",satisfaction:{"Payment":"Satisfied","Quality Check":"Satisfied","Sales":"Neutral","Seller Support":"Satisfied","Shipping & Logistics":"Neutral","Vendor Application":"Neutral","Refund":"Neutral"},biggestIssues:"Background remover still needs work",period:"Apr 2026",submittedAt:"2026-04-03T09:12:00Z",source:"survey_form"},
-    {email:"reloadedfits@gmail.com",seller:"ReloadedFits",storeHandle:"ReloadedFits",score:10,department:"Seller Support",geography:"PK Zone",city:"Karachi",comment:"Fleek Sort is a game changer for y2k.",mainIssue:"Min order from one seller not multiple",aspects:"Sales & Visibility",satisfaction:{"Payment":"Satisfied","Quality Check":"Satisfied","Sales":"Satisfied","Seller Support":"Satisfied","Shipping & Logistics":"Satisfied","Vendor Application":"Satisfied","Refund":"Neutral"},biggestIssues:"Min order split across sellers",period:"Apr 2026",submittedAt:"2026-04-03T10:30:00Z",source:"survey_form"},
-    {email:"fabtex@gmail.com",seller:"fabtexvintage",storeHandle:"fabtexvintage",score:7,department:"Shipping & Logistics",geography:"PK Zone",city:"Karachi",comment:"Shipping improved but still slow.",mainIssue:"Faster shipping and better tracking",aspects:"Shipping & Logistics",satisfaction:{"Payment":"Neutral","Quality Check":"Neutral","Sales":"Neutral","Seller Support":"Neutral","Shipping & Logistics":"Not Satisfied","Vendor Application":"Not Satisfied","Refund":"Neutral"},biggestIssues:"Duplicate orders and slow platform",period:"Apr 2026",submittedAt:"2026-04-04T11:00:00Z",source:"survey_form"},
-    {email:"khannvintage@gmail.com",seller:"Khan Vintage",storeHandle:"KhanVintage",score:6,department:"Vendor App",geography:"PK Zone",city:"Lahore",comment:"App still crashes, AI titles are wrong.",mainIssue:"Fix app crashes and AI brand tags",aspects:"Vendor Application",satisfaction:{"Payment":"Neutral","Quality Check":"Neutral","Sales":"Not Satisfied","Seller Support":"Neutral","Shipping & Logistics":"Neutral","Vendor Application":"Not Satisfied","Refund":"Not Satisfied"},biggestIssues:"App crashes and wrong AI brand tags",period:"Apr 2026",submittedAt:"2026-04-04T12:15:00Z",source:"survey_form"},
-    {email:"retrothrift@gmail.com",seller:"Retro thrift store",storeHandle:"RetroThrift",score:8,department:"Payments",geography:"PK Zone",city:"Islamabad",comment:"Payment speed is better this month.",mainIssue:"Refund for specific product not generic",aspects:"Payment",satisfaction:{"Payment":"Satisfied","Quality Check":"Neutral","Sales":"Satisfied","Seller Support":"Satisfied","Shipping & Logistics":"Neutral","Vendor Application":"Neutral","Refund":"Not Satisfied"},biggestIssues:"Refund process is too generic",period:"Apr 2026",submittedAt:"2026-04-05T09:00:00Z",source:"survey_form"},
-    {email:"carpediem@gmail.com",seller:"Carpediem-Vintage",storeHandle:"CarpediemVintage",score:7,department:"Vendor App",geography:"PK Zone",city:"Karachi",comment:"Individual product upload would help.",mainIssue:"Individual upload per piece with custom pricing",aspects:"Vendor Application",satisfaction:{"Payment":"Neutral","Quality Check":"Neutral","Sales":"Neutral","Seller Support":"Neutral","Shipping & Logistics":"Neutral","Vendor Application":"Not Satisfied","Refund":"Neutral"},biggestIssues:"No individual product pricing like Etsy",period:"Apr 2026",submittedAt:"2026-04-05T13:00:00Z",source:"survey_form"},
-    {email:"adeela@gmail.com",seller:"Adeela",storeHandle:"Adeela",score:9,department:"Seller Support",geography:"PK Zone",city:"Islamabad",comment:"Good platform for resellers, improving.",mainIssue:"Keep improving Seller Support response time",aspects:"Seller Support",satisfaction:{"Payment":"Satisfied","Quality Check":"Satisfied","Sales":"Satisfied","Seller Support":"Satisfied","Shipping & Logistics":"Satisfied","Vendor Application":"Neutral","Refund":"Neutral"},biggestIssues:"Faster support response needed",period:"Apr 2026",submittedAt:"2026-04-06T10:00:00Z",source:"survey_form"},
-    {email:"rewear@gmail.com",seller:"Rewear",storeHandle:"Rewear",score:4,department:"Vendor App",geography:"PK Zone",city:"Karachi",comment:"App still hangs a lot, no improvement.",mainIssue:"App performance and categorisation",aspects:"Vendor Application",satisfaction:{"Payment":"Not Satisfied","Quality Check":"Neutral","Sales":"Not Satisfied","Seller Support":"Not Satisfied","Shipping & Logistics":"Not Satisfied","Vendor Application":"Not Satisfied","Refund":"Not Satisfied"},biggestIssues:"App hangs, poor visibility, no categorisation",period:"Apr 2026",submittedAt:"2026-04-07T08:30:00Z",source:"survey_form"},
-    {email:"idraees@gmail.com",seller:"Idraees",storeHandle:"Idraees",score:8,department:"Vendor App",geography:"PK Non-Zone",city:"Peshawar",comment:"Can now sell individual pieces at good price.",mainIssue:"AI brand tagging needs improvement",aspects:"Sales & Visibility",satisfaction:{"Payment":"Satisfied","Quality Check":"Neutral","Sales":"Satisfied","Seller Support":"Satisfied","Shipping & Logistics":"Neutral","Vendor Application":"Neutral","Refund":"Neutral"},biggestIssues:"AI generates wrong brand names",period:"Apr 2026",submittedAt:"2026-04-07T11:00:00Z",source:"survey_form"},
-    {email:"mrenterprise@gmail.com",seller:"Mr enterprise",storeHandle:"MrEnterprise",score:8,department:"Seller Support",geography:"PK Non-Zone",city:"Multan",comment:"Good price for individual items.",mainIssue:"Nothing major at the moment",aspects:"Seller Support",satisfaction:{"Payment":"Satisfied","Quality Check":"Satisfied","Sales":"Satisfied","Seller Support":"Satisfied","Shipping & Logistics":"Neutral","Vendor Application":"Neutral","Refund":"Neutral"},biggestIssues:"Minor issues with listing duration",period:"Apr 2026",submittedAt:"2026-04-08T09:00:00Z",source:"survey_form"},
-    {email:"retroesthetic@gmail.com",seller:"RetroEsthetic",storeHandle:"RetroEsthetic",score:5,department:"Shipping & Logistics",geography:"PK Zone",city:"Lahore",comment:"Shipping charges are still too high.",mainIssue:"Reduce shipping charges",aspects:"Shipping & Logistics",satisfaction:{"Payment":"Neutral","Quality Check":"Neutral","Sales":"Neutral","Seller Support":"Neutral","Shipping & Logistics":"Not Satisfied","Vendor Application":"Not Satisfied","Refund":"Neutral"},biggestIssues:"High shipping charges and app lag",period:"Apr 2026",submittedAt:"2026-04-09T10:00:00Z",source:"survey_form"},
-    {email:"classical@gmail.com",seller:"Classical cloth",storeHandle:"ClassicalCloth",score:3,department:"Seller Support",geography:"PK Zone",city:"Karachi",comment:"Still not beneficial vs bulk model.",mainIssue:"Seller to buyer chat needed",aspects:"Seller Support",satisfaction:{"Payment":"Not Satisfied","Quality Check":"Neutral","Sales":"Not Satisfied","Seller Support":"Not Satisfied","Shipping & Logistics":"Neutral","Vendor Application":"Not Satisfied","Refund":"Not Satisfied"},biggestIssues:"No seller-buyer chat, warehouse management hard",period:"Apr 2026",submittedAt:"2026-04-10T11:00:00Z",source:"survey_form"},
-  ];
-
-  const SEED_DATA = [...sepEntries, ...novEntries, ...janEntries, ...marEntries, ...aprEntries];
+    const SEED_DATA = [...sepEntries, ...novEntries, ...janEntries, ...marEntries];
   
   // Load/save data
   function getData() {
@@ -632,7 +616,7 @@
     
     const dist = Array(11).fill(0);
     data.forEach(e => { if (e.score >= 0 && e.score <= 10) dist[e.score]++; });
-    const colors = dist.map((_,i) => i>=9?'#3DD68C':i>=7?'#F59E0B':'#E8453C');
+    const colors = dist.map((_,i) => i>=9?'#3DD68C':i>=7?'var(--orange)':'#E8453C');
     
     if (distChart) distChart.destroy();
     distChart = new Chart(document.getElementById('distChart'), {
@@ -642,7 +626,7 @@
     
     if (segChart) segChart.destroy();
     segChart = new Chart(document.getElementById('segChart'), {
-      type:'doughnut', data: { labels:['Promoters','Passives','Detractors'], datasets:[{data:[pro,pass,det],backgroundColor:['#3DD68C','#F59E0B','#E8453C'],borderWidth:0}] },
+      type:'doughnut', data: { labels:['Promoters','Passives','Detractors'], datasets:[{data:[pro,pass,det],backgroundColor:['#3DD68C','var(--orange)','#E8453C'],borderWidth:0}] },
       options:{ plugins:{legend:{position:'bottom',labels:{color:'#888',padding:16}}}, cutout:'65%' }
     });
   }
@@ -670,7 +654,7 @@
         <div class="geo-nps ${npsClass}">${z.total ? (z.nps > 0 ? '+' : '') + z.nps : 'N/A'}</div>
         <div class="geo-segs">
           <div class="geo-seg"><span class="seg-label" style="color:#3DD68C">PRO</span><span class="seg-val" style="color:#3DD68C">${proP}%</span></div>
-          <div class="geo-seg"><span class="seg-label" style="color:#F59E0B">PAS</span><span class="seg-val" style="color:#F59E0B">${passP}%</span></div>
+          <div class="geo-seg"><span class="seg-label" style="color:var(--orange)">PAS</span><span class="seg-val" style="color:var(--orange)">${passP}%</span></div>
           <div class="geo-seg"><span class="seg-label" style="color:#E8453C">DET</span><span class="seg-val" style="color:#E8453C">${detP}%</span></div>
           <div class="geo-seg"><span class="seg-label">Total</span><span class="seg-val">${z.total}</span></div>
         </div>
@@ -686,7 +670,7 @@
     
     if (geoVolChart) geoVolChart.destroy();
     geoVolChart = new Chart(document.getElementById('geoVolChart'), {
-      type:'doughnut', data:{ labels:zones, datasets:[{data:zoneData.map(z=>z.total),backgroundColor:['#F5C518','#4B9EFF','#3DD68C','#F59E0B'],borderWidth:0}] },
+      type:'doughnut', data:{ labels:zones, datasets:[{data:zoneData.map(z=>z.total),backgroundColor:['#FFD400','#4B9EFF','#3DD68C','var(--orange)'],borderWidth:0}] },
       options:{ plugins:{legend:{position:'bottom',labels:{color:'#888',padding:12}}}, cutout:'55%' }
     });
   }
@@ -732,7 +716,7 @@
     if (trendChart) trendChart.destroy();
     trendChart = new Chart(document.getElementById('trendChart'), {
       type:'line',
-      data:{ labels:periodStats.map(p=>p.period), datasets:[{label:'NPS',data:periodStats.map(p=>p.nps),borderColor:'#F5C518',backgroundColor:'rgba(245,197,24,0.1)',borderWidth:2.5,pointBackgroundColor:'#F5C518',pointRadius:6,tension:0.3,fill:true}] },
+      data:{ labels:periodStats.map(p=>p.period), datasets:[{label:'NPS',data:periodStats.map(p=>p.nps),borderColor:'#FFD400',backgroundColor:'rgba(245,197,24,0.1)',borderWidth:2.5,pointBackgroundColor:'#FFD400',pointRadius:6,tension:0.3,fill:true}] },
       options:{ plugins:{legend:{display:false}}, scales:{x:{grid:{color:'#1a1a1a'},ticks:{color:'#888'}},y:{grid:{color:'#1a1a1a'},ticks:{color:'#888'}}}}
     });
     
@@ -754,7 +738,7 @@
         <td><span class="nps-trend ${npsClass}">${p.nps > 0 ? '+':''}${p.nps}</span>${deltaHTML}</td>
         <td>${p.total}</td>
         <td style="color:#3DD68C">${p.pro} (${Math.round(p.pro/p.total*100)}%)</td>
-        <td style="color:#F59E0B">${p.pass} (${Math.round(p.pass/p.total*100)}%)</td>
+        <td style="color:var(--orange)">${p.pass} (${Math.round(p.pass/p.total*100)}%)</td>
         <td style="color:#E8453C">${p.det} (${Math.round(p.det/p.total*100)}%)</td>
       </tr>`;
     }).join('');
@@ -795,7 +779,7 @@
         <td><span class="score-pill ${cat}">${e.score}</span></td>
         <td><span class="badge ${cat}">${catLabel}</span></td>
         <td style="color:#888">${e.department || '—'}</td>
-        <td style="color:#4B9EFF;font-weight:600">${e.geography || '—'}</td>
+        <td style="color:#0D2BFF;font-weight:700;background:rgba(13,43,255,0.1);padding:2px 8px;border-radius:2px">${e.geography || '—'}</td>
         <td style="color:var(--muted);font-size:0.82rem;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${e.comment}">${e.comment || '—'}</td>
         <td style="font-size:0.82rem;max-width:160px">${aspectCell}</td>
         <td style="color:var(--muted);font-size:0.82rem">${e.period || '—'}</td>
@@ -1023,21 +1007,21 @@
     document.getElementById('satContent').innerHTML = `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
         <div style="background:#161616;border:1px solid var(--border);border-radius:14px;padding:20px">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:2px;color:var(--yellow);margin-bottom:8px">RESPONSES WITH SATISFACTION DATA</div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--text)">${withSat.length}</div>
+          <div style="font-family:'League Gothic',sans-serif;font-size:0.75rem;letter-spacing:2px;color:var(--yellow);margin-bottom:8px">RESPONSES WITH SATISFACTION DATA</div>
+          <div style="font-family:'League Gothic',sans-serif;font-size:2.5rem;color:var(--text)">${withSat.length}</div>
         </div>
         <div style="background:#161616;border:1px solid var(--border);border-radius:14px;padding:20px">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:2px;color:var(--yellow);margin-bottom:8px">TOP VALUED ASPECT</div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--text)">${topAspects[0]?.[0]||'—'}</div>
+          <div style="font-family:'League Gothic',sans-serif;font-size:0.75rem;letter-spacing:2px;color:var(--yellow);margin-bottom:8px">TOP VALUED ASPECT</div>
+          <div style="font-family:'League Gothic',sans-serif;font-size:1.6rem;color:var(--text)">${topAspects[0]?.[0]||'—'}</div>
           <div style="color:var(--muted);font-size:0.8rem">${topAspects[0]?.[1]||0} sellers</div>
         </div>
       </div>
       <div style="background:#161616;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:0.8rem;letter-spacing:2px;color:var(--yellow);margin-bottom:14px">MOST VALUED ASPECTS</div>
+        <div style="font-family:'League Gothic',sans-serif;font-size:0.8rem;letter-spacing:2px;color:var(--yellow);margin-bottom:14px">MOST VALUED ASPECTS</div>
         <div style="display:flex;flex-wrap:wrap;gap:8px">${topAspects.map(([a,c])=>`<div style="background:#0c0c0c;border:1px solid var(--border);border-radius:8px;padding:7px 14px;display:flex;align-items:center;gap:8px"><span style="font-weight:600">${a}</span><span style="background:var(--yellow);color:#0c0c0c;font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:4px">${c}</span></div>`).join('')}</div>
       </div>
       <div style="background:#161616;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:0.8rem;letter-spacing:2px;color:var(--yellow);margin-bottom:16px">SATISFACTION BY AREA</div>
+        <div style="font-family:'League Gothic',sans-serif;font-size:0.8rem;letter-spacing:2px;color:var(--yellow);margin-bottom:16px">SATISFACTION BY AREA</div>
         ${areaStats.map(({area,pct,total})=>total===0?'': `<div style="margin-bottom:14px">
           <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-weight:600;font-size:0.9rem">${area}</span><span style="color:var(--muted);font-size:0.78rem">${total} responses</span></div>
           <div style="display:flex;height:10px;border-radius:6px;overflow:hidden;background:#1e1e1e">
@@ -1047,14 +1031,14 @@
           </div>
           <div style="display:flex;gap:14px;margin-top:4px;font-size:0.73rem;color:var(--muted)">
             <span><span style="color:#3DD68C">■</span> Satisfied ${pct.Satisfied}%</span>
-            <span><span style="color:#F59E0B">■</span> Neutral ${pct.Neutral}%</span>
+            <span><span style="color:var(--orange)">■</span> Neutral ${pct.Neutral}%</span>
             <span><span style="color:#E8453C">■</span> Not Satisfied ${pct.NotSat}%</span>
           </div>
         </div>`).join('')}
       </div>
       <div style="background:#161616;border:1px solid var(--border);border-radius:14px;padding:20px">
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:0.8rem;letter-spacing:2px;color:var(--yellow);margin-bottom:14px">TOP REPORTED ISSUES</div>
-        ${withSat.filter(e=>e.biggestIssues).slice(0,10).map(e=>`<div style="padding:10px 0;border-bottom:1px solid #1e1e1e;display:flex;gap:12px"><span style="color:var(--yellow);font-family:'Bebas Neue';font-size:0.72rem;min-width:64px;padding-top:2px">${e.period}</span><span style="font-size:0.84rem;color:var(--muted)">${e.biggestIssues}</span></div>`).join('')}
+        <div style="font-family:'League Gothic',sans-serif;font-size:0.8rem;letter-spacing:2px;color:var(--yellow);margin-bottom:14px">TOP REPORTED ISSUES</div>
+        ${withSat.filter(e=>e.biggestIssues).slice(0,10).map(e=>`<div style="padding:10px 0;border-bottom:1px solid #1e1e1e;display:flex;gap:12px"><span style="color:var(--yellow);font-family:'League Gothic';font-size:0.72rem;min-width:64px;padding-top:2px">${e.period}</span><span style="font-size:0.84rem;color:var(--muted)">${e.biggestIssues}</span></div>`).join('')}
       </div>`;
   }
 
@@ -1118,22 +1102,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#0c0c0c;color:#f0f0f0;font-family:'Syne',sans-serif;padding:40px 24px;max-width:900px;margin:0 auto}
+body{background:#0c0c0c;color:#f0f0f0;font-family:'Montserrat',sans-serif;padding:40px 24px;max-width:900px;margin:0 auto}
 .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;padding-bottom:24px;border-bottom:1px solid #252525}
 .logo-area img{height:36px;filter:brightness(0) invert(1)}
 .report-meta{text-align:right}
-.report-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px;color:#F5C518}
+.report-title{font-family:'League Gothic',sans-serif;font-size:2rem;letter-spacing:3px;color:#FFD400}
 .report-sub{color:#888;font-size:0.8rem;margin-top:4px}
 .hero{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:32px}
 .metric-card{background:#161616;border:1px solid #252525;border-radius:14px;padding:20px;text-align:center}
 .metric-label{font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:#888;margin-bottom:8px}
-.metric-value{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:2px}
-.nps-val{color:#F5C518}
+.metric-value{font-family:'League Gothic',sans-serif;font-size:2.4rem;letter-spacing:2px}
+.nps-val{color:#FFD400}
 .pro-val{color:#3DD68C}
 .det-val{color:#E8453C}
-.pass-val{color:#F59E0B}
+.pass-val{color:var(--orange)}
 .section{background:#161616;border:1px solid #252525;border-radius:14px;padding:24px;margin-bottom:20px}
-.section-title{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px;color:#F5C518;margin-bottom:16px}
+.section-title{font-family:'League Gothic',sans-serif;font-size:1rem;letter-spacing:2px;color:#FFD400;margin-bottom:16px}
 table{width:100%;border-collapse:collapse;font-size:0.88rem}
 th{text-align:left;padding:8px 12px;border-bottom:1px solid #252525;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;color:#888;font-weight:600}
 td{padding:10px 12px;border-bottom:1px solid #181818;color:#f0f0f0}
@@ -1144,7 +1128,7 @@ tr:last-child td{border-bottom:none}
 .bar-label{font-size:0.82rem;min-width:100px;color:#888}
 .bar-val{font-size:0.82rem;font-weight:700;min-width:40px;text-align:right}
 .footer{margin-top:40px;padding-top:20px;border-top:1px solid #252525;display:flex;justify-content:space-between;align-items:center;color:#555;font-size:0.75rem}
-.internal-badge{background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.2);color:#F5C518;padding:4px 12px;border-radius:6px;font-size:0.7rem;letter-spacing:1px}
+.internal-badge{background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.2);color:#FFD400;padding:4px 12px;border-radius:6px;font-size:0.7rem;letter-spacing:1px}
 @media print{body{background:#fff;color:#000}.metric-card,.section{background:#f8f8f8;border-color:#ddd}.metric-label,.section-title,.report-sub,.bar-label,.footer{color:#555}th{color:#555}td{color:#222}}
 </style>
 </head>
@@ -1172,9 +1156,9 @@ tr:last-child td{border-bottom:none}
 <div class="section">
   <div class="section-title">Score Distribution</div>
   <div class="bar-row"><span class="bar-label">Promoters (9–10)</span><div style="flex:1"><div class="bar-wrap"><div class="bar-fill" style="width:${proP}%;background:#3DD68C"></div></div></div><span class="bar-val" style="color:#3DD68C">${proP}%</span></div>
-  <div class="bar-row"><span class="bar-label">Passives (7–8)</span><div style="flex:1"><div class="bar-wrap"><div class="bar-fill" style="width:${passP}%;background:#F59E0B"></div></div></div><span class="bar-val" style="color:#F59E0B">${passP}%</span></div>
+  <div class="bar-row"><span class="bar-label">Passives (7–8)</span><div style="flex:1"><div class="bar-wrap"><div class="bar-fill" style="width:${passP}%;background:#F59E0B"></div></div></div><span class="bar-val" style="color:var(--orange)">${passP}%</span></div>
   <div class="bar-row"><span class="bar-label">Detractors (0–6)</span><div style="flex:1"><div class="bar-wrap"><div class="bar-fill" style="width:${detP}%;background:#E8453C"></div></div></div><span class="bar-val" style="color:#E8453C">${detP}%</span></div>
-  <div style="margin-top:16px;color:#888;font-size:0.82rem">Total responses: <strong style="color:#f0f0f0">${total}</strong> &nbsp;·&nbsp; Period: <strong style="color:#F5C518">${periodFilter === 'all' ? 'All Time' : periodFilter}</strong></div>
+  <div style="margin-top:16px;color:#888;font-size:0.82rem">Total responses: <strong style="color:#f0f0f0">${total}</strong> &nbsp;·&nbsp; Period: <strong style="color:#FFD400">${periodFilter === 'all' ? 'All Time' : periodFilter}</strong></div>
 </div>
 
 ${histRows ? `<div class="section">
