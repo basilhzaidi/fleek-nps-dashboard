@@ -9,134 +9,151 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0F0F0F;--card:#141414;--border:#2a2a2a;--yellow:#FFD400;--orange:#F25C2A;--red:#E8453C;--green:#3DD68C;--cream:#F6F1E7;--muted:#888}
+:root{--bg:#FFFFFF;--card:#F8F8F8;--border:#E5E5E5;--yellow:#FFD400;--orange:#F25C2A;--red:#E8453C;--green:#3DD68C;--cream:#111111;--muted:#777}
 body{background:var(--bg);color:var(--cream);font-family:'Montserrat',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
 
 /* ── Topbar ── */
-.topbar{display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:64px;background:#0F0F0F;border-bottom:2px solid var(--yellow);position:sticky;top:0;z-index:100}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:64px;background:var(--bg);border-bottom:2px solid var(--yellow);position:sticky;top:0;z-index:100}
 .brand{display:flex;align-items:center;gap:14px}
-.brand img{height:28px;filter:brightness(0) invert(1)}
+.brand img{height:28px;filter:brightness(0)}
 .brand-divider{width:1px;height:20px;background:var(--border)}
 .brand-label{font-family:'League Gothic',sans-serif;font-size:1rem;letter-spacing:4px;color:var(--yellow);text-transform:uppercase}
-.topbar-right{display:flex;align-items:center;gap:16px}
-.report-date{font-size:0.7rem;color:var(--muted);letter-spacing:1px}
-.logout-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 16px;border-radius:2px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.report-date{font-size:0.68rem;color:var(--muted);letter-spacing:1px}
+.logout-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 14px;border-radius:2px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s}
 .logout-btn:hover{border-color:var(--yellow);color:var(--yellow)}
 
 /* ── Period bar ── */
-.period-bar{background:#111;border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.period-bar{background:var(--card);border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .period-bar-label{color:var(--muted);font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-right:4px}
-.period-btn{padding:6px 14px;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:2px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s}
+.period-btn{padding:6px 14px;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:2px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s}
 .period-btn:hover{border-color:rgba(255,212,0,0.5);color:var(--cream)}
 .period-btn.active{background:var(--yellow);color:#0F0F0F;border-color:var(--yellow)}
 
+/* ── Tab bar ── */
+.tab-bar{background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between}
+.tab-nav{display:flex;gap:0}
+.vtab{background:transparent;border:none;border-bottom:3px solid transparent;color:var(--muted);padding:14px 20px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s}
+.vtab:hover{color:var(--cream)}
+.vtab.active{color:var(--yellow);border-bottom-color:var(--yellow)}
+.pdf-btn{background:var(--yellow);color:#0F0F0F;border:none;padding:8px 18px;border-radius:2px;cursor:pointer;font-family:'League Gothic',sans-serif;font-size:0.9rem;letter-spacing:2px;text-transform:uppercase;transition:opacity 0.15s;white-space:nowrap}
+.pdf-btn:hover{opacity:0.85}
+
 /* ── Layout ── */
 .main{max-width:1140px;margin:0 auto;padding:28px 24px 48px}
+.vtab-content{display:none}.vtab-content.active{display:block}
+
+/* ── Period cards ── */
+.period-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;margin-bottom:20px}
+.period-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:18px 16px;cursor:pointer;transition:all 0.15s;position:relative;overflow:hidden}
+.period-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--border)}
+.period-card:hover::after{background:rgba(255,212,0,0.35)}
+.period-card.active{border-color:var(--yellow);background:rgba(255,212,0,0.04)}
+.period-card.active::after{background:var(--yellow)}
+.pc-period{font-size:0.62rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.pc-nps{font-family:'League Gothic',sans-serif;font-size:2.4rem;line-height:1;letter-spacing:2px}
+.pc-total{font-size:0.7rem;color:var(--muted);margin-top:5px}
+.pc-delta{font-size:0.68rem;font-weight:700;margin-top:5px}
 
 /* ── NPS Hero ── */
 .nps-hero{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:36px 32px;margin-bottom:20px;display:grid;grid-template-columns:220px 1fr;gap:40px;align-items:center}
 .hero-score-wrap{text-align:center;border-right:1px solid var(--border);padding-right:40px}
-.hero-score-label{font-size:0.62rem;letter-spacing:4px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:10px}
+.hero-score-label{font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:10px}
 .hero-score-value{font-family:'League Gothic',sans-serif;font-size:5.5rem;letter-spacing:4px;line-height:1}
-.hero-score-health{font-family:'League Gothic',sans-serif;font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;margin-top:8px;padding:3px 12px;display:inline-block;border-radius:2px}
-.hero-score-meta{color:var(--muted);font-size:0.72rem;margin-top:12px;letter-spacing:0.5px}
-.hero-score-trend{font-size:0.78rem;font-weight:700;margin-top:6px}
+.hero-score-health{font-family:'League Gothic',sans-serif;font-size:0.72rem;letter-spacing:3px;text-transform:uppercase;margin-top:8px;padding:4px 12px;display:inline-block;border-radius:2px}
+.hero-score-meta{color:var(--muted);font-size:0.7rem;margin-top:12px}
+.hero-score-trend{font-size:0.76rem;font-weight:700;margin-top:6px}
 .hero-segs{display:flex;flex-direction:column;gap:16px}
 .seg-row{display:flex;align-items:center;gap:14px}
-.seg-label{font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;min-width:96px}
-.seg-track{flex:1;background:#1e1e1e;border-radius:2px;height:12px;overflow:hidden}
+.seg-label{font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;min-width:92px}
+.seg-track{flex:1;background:#EEEEEE;border-radius:2px;height:12px;overflow:hidden}
 .seg-fill{height:100%;border-radius:2px;transition:width 0.7s ease}
-.seg-pct{font-family:'League Gothic',sans-serif;font-size:1.4rem;min-width:56px;text-align:right}
-.seg-count{font-size:0.72rem;color:var(--muted);min-width:68px}
-
-/* ── Period cards ── */
-.period-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:20px}
-.period-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:18px 16px;cursor:pointer;transition:all 0.15s;position:relative;overflow:hidden}
-.period-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--border);transition:background 0.15s}
-.period-card:hover::after{background:rgba(255,212,0,0.4)}
-.period-card.active{border-color:var(--yellow);background:rgba(255,212,0,0.04)}
-.period-card.active::after{background:var(--yellow)}
-.pc-period{font-size:0.65rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;font-weight:700;margin-bottom:8px}
-.pc-nps{font-family:'League Gothic',sans-serif;font-size:2.4rem;line-height:1;letter-spacing:2px}
-.pc-total{font-size:0.72rem;color:var(--muted);margin-top:5px}
-.pc-delta{font-size:0.7rem;font-weight:700;margin-top:5px;display:flex;align-items:center;gap:4px}
+.seg-pct{font-family:'League Gothic',sans-serif;font-size:1.4rem;min-width:54px;text-align:right}
+.seg-count{font-size:0.7rem;color:var(--muted);min-width:66px}
 
 /* ── Metric strip ── */
 .metric-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
 .metric{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:20px;text-align:center}
-.metric-label{font-size:0.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px}
+.metric-label{font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px}
 .metric-value{font-family:'League Gothic',sans-serif;font-size:2.8rem;letter-spacing:2px;line-height:1}
-.metric-sub{color:var(--muted);font-size:0.72rem;margin-top:6px;font-family:'JetBrains Mono',monospace}
+.metric-sub{color:var(--muted);font-size:0.7rem;margin-top:6px;font-family:'JetBrains Mono',monospace}
 
 /* ── Charts ── */
 .charts-row{display:grid;grid-template-columns:3fr 2fr;gap:16px;margin-bottom:20px}
 .chart-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:4px;padding:24px}
-.chart-title{font-family:'League Gothic',sans-serif;font-size:0.78rem;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);margin-bottom:18px}
+.chart-title{font-family:'League Gothic',sans-serif;font-size:0.76rem;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);margin-bottom:18px}
 
-/* ── Score dist bars ── */
+/* ── Score dist ── */
 .dist-group{margin-bottom:14px}
-.dist-group-label{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.dist-group-label{font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:7px}
-.bar-score{font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;min-width:18px;text-align:center}
-.bar-track{flex:1;background:#1e1e1e;border-radius:2px;height:7px;overflow:hidden}
+.bar-score{font-family:'JetBrains Mono',monospace;font-size:0.76rem;font-weight:700;min-width:16px;text-align:center}
+.bar-track{flex:1;background:#EEEEEE;border-radius:2px;height:7px;overflow:hidden}
 .bar-fill{height:100%;border-radius:2px;transition:width 0.6s ease}
-.bar-cnt{font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:700;min-width:28px;text-align:right}
+.bar-cnt{font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:700;min-width:26px;text-align:right}
 
-/* ── Tables ── */
+/* ── Section cards ── */
 .section-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:4px;padding:24px;margin-bottom:16px}
-.section-title{font-family:'League Gothic',sans-serif;font-size:0.78rem;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);margin-bottom:16px}
+.section-title{font-family:'League Gothic',sans-serif;font-size:0.76rem;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);margin-bottom:16px}
 table{width:100%;border-collapse:collapse}
-th{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:700}
-td{padding:10px 12px;border-bottom:1px solid #1c1c1c;font-size:0.83rem;vertical-align:middle}
-tr:hover td{background:rgba(255,212,0,0.02)}
+th{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:700}
+td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:0.82rem;vertical-align:middle}
+tr:hover td{background:rgba(0,0,0,0.02)}
 tr:last-child td{border-bottom:none}
 .nps-bar-cell{display:flex;align-items:center;gap:8px}
-.nps-bar-mini{flex:1;max-width:80px;height:4px;background:#1e1e1e;border-radius:2px;overflow:hidden}
+.nps-bar-mini{flex:1;max-width:80px;height:4px;background:#EEEEEE;border-radius:2px;overflow:hidden}
 .nps-bar-mini-fill{height:100%;border-radius:2px}
 
 /* ── Comments ── */
-.comment-row{padding:16px 0;border-bottom:1px solid #1c1c1c;display:flex;gap:14px;align-items:flex-start}
+.comment-row{padding:16px 0;border-bottom:1px solid var(--border);display:flex;gap:14px;align-items:flex-start}
 .comment-row:last-child{border-bottom:none}
-.score-pill{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:4px;font-family:'League Gothic',sans-serif;font-size:1.2rem;font-weight:700;flex-shrink:0;letter-spacing:1px}
+.score-pill{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:4px;font-family:'League Gothic',sans-serif;font-size:1.2rem;font-weight:700;flex-shrink:0}
 .score-pill.P{background:rgba(61,214,140,0.12);color:var(--green);border:1px solid rgba(61,214,140,0.25)}
 .score-pill.S{background:rgba(242,92,42,0.1);color:var(--orange);border:1px solid rgba(242,92,42,0.2)}
 .score-pill.D{background:rgba(232,69,60,0.1);color:var(--red);border:1px solid rgba(232,69,60,0.2)}
-.comment-meta{font-size:0.75rem;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.comment-seller{font-weight:700;color:var(--cream)}
-.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:2px;font-size:0.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:2px;font-size:0.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase}
 .badge.P{background:rgba(61,214,140,0.12);color:var(--green);border:1px solid rgba(61,214,140,0.2)}
 .badge.S{background:rgba(242,92,42,0.1);color:var(--orange);border:1px solid rgba(242,92,42,0.2)}
 .badge.D{background:rgba(232,69,60,0.1);color:var(--red);border:1px solid rgba(232,69,60,0.2)}
-.comment-text{font-size:0.84rem;color:var(--cream);line-height:1.6}
-.comment-issue{font-size:0.76rem;color:var(--muted);margin-top:4px;line-height:1.4}
+.comments-divider{font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:8px 0 6px;border-bottom:1px solid var(--border);margin-bottom:4px}
 
-/* ── Comments divider ── */
-.comments-divider{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--muted);padding:10px 0 6px;border-bottom:1px solid var(--border);margin-top:4px;margin-bottom:4px}
+/* ── Satisfaction ── */
+.sat-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.sat-area-bar{margin-bottom:12px}
+.sat-bar-track{display:flex;height:10px;border-radius:2px;overflow:hidden;margin:5px 0}
+.sat-legend{display:flex;gap:14px;font-size:0.7rem;color:var(--muted)}
+.aspects-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.aspect-chip{background:#F0F0F0;border:1px solid var(--border);border-radius:2px;padding:6px 12px;display:flex;align-items:center;gap:8px;font-size:0.8rem}
+.aspect-count{background:var(--yellow);color:#0F0F0F;font-size:0.65rem;font-weight:700;padding:2px 7px;border-radius:2px}
+
+/* ── Smart Summary ── */
+.summary-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:4px;padding:24px;margin-bottom:16px}
+.summary-title{font-family:'League Gothic',sans-serif;font-size:0.76rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin-bottom:14px}
 
 /* ── Footer ── */
 .footer{margin-top:32px;padding:18px 0;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.footer-left{color:var(--muted);font-size:0.7rem;line-height:1.6}
-.footer-right{display:flex;align-items:center;gap:12px}
-.footer-right img{height:20px;filter:brightness(0) invert(1);opacity:0.4}
+.footer-left{color:var(--muted);font-size:0.68rem;line-height:1.6}
+.footer-right{display:flex;align-items:center;gap:10px}
+.footer-right img{height:18px;filter:brightness(0);opacity:0.5}
 
 /* ── Loading ── */
 .loading{text-align:center;padding:80px;color:var(--muted)}
 .loading-spinner{display:inline-block;width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--yellow);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:16px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ── Responsive ── */
 @media(max-width:900px){
   .nps-hero{grid-template-columns:1fr}
   .hero-score-wrap{border-right:none;border-bottom:1px solid var(--border);padding-right:0;padding-bottom:24px}
   .metric-strip{grid-template-columns:1fr 1fr}
   .charts-row{grid-template-columns:1fr}
+  .sat-grid{grid-template-columns:1fr}
 }
 @media(max-width:600px){
-  .topbar{padding:0 16px}
-  .main{padding:16px 12px 40px}
-  .nps-hero{padding:24px 16px}
+  .topbar,.tab-bar{padding:0 14px}
+  .main{padding:14px 12px 40px}
   .metric-strip{grid-template-columns:1fr 1fr}
   .period-cards{grid-template-columns:1fr 1fr}
+  .vtab{padding:12px 12px}
 }
 </style>
 </head>
@@ -155,25 +172,53 @@ tr:last-child td{border-bottom:none}
 </div>
 
 <div class="period-bar" id="periodBar">
-  <span class="period-bar-label">View period:</span>
+  <span class="period-bar-label">Period:</span>
 </div>
 
-<div class="main" id="mainContent">
-  <div class="loading">
-    <div class="loading-spinner"></div>
-    <div style="font-family:'League Gothic',sans-serif;font-size:0.9rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin-top:4px">Loading Report...</div>
+<div class="tab-bar">
+  <div class="tab-nav">
+    <button class="vtab active" onclick="showVTab('overview')">Overview</button>
+    <button class="vtab" onclick="showVTab('satisfaction')">Satisfaction</button>
+    <button class="vtab" onclick="showVTab('summary')">Smart Summary</button>
   </div>
+  <button class="pdf-btn" onclick="exportPDF()">⬇ Download Report PDF</button>
+</div>
+
+<div class="main">
+
+  <!-- OVERVIEW TAB -->
+  <div class="vtab-content active" id="vtab-overview">
+    <div class="loading">
+      <div class="loading-spinner"></div>
+      <div style="font-family:'League Gothic',sans-serif;font-size:0.9rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin-top:4px">Loading Report...</div>
+    </div>
+  </div>
+
+  <!-- SATISFACTION TAB -->
+  <div class="vtab-content" id="vtab-satisfaction">
+    <div style="padding:60px;text-align:center;color:var(--muted)">Loading...</div>
+  </div>
+
+  <!-- SMART SUMMARY TAB -->
+  <div class="vtab-content" id="vtab-summary">
+    <div style="padding:60px;text-align:center;color:var(--muted)">Loading...</div>
+  </div>
+
 </div>
 
 <script>
+// ── Auth ─────────────────────────────────────────────────────────────────
 if (!sessionStorage.getItem('nps_role')) { window.location.href = '/'; }
 function logout() { sessionStorage.removeItem('nps_role'); sessionStorage.removeItem('nps_user'); window.location.href = '/'; }
 
 document.getElementById('topbarDate').textContent = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
 
+// ── State ────────────────────────────────────────────────────────────────
 let allData = [];
 let activePeriod = 'all';
+let activeTab = 'overview';
 
+// ── Data ─────────────────────────────────────────────────────────────────
 async function loadData() {
   try {
     const res = await fetch('/api/data?t=' + Date.now());
@@ -187,371 +232,713 @@ async function loadData() {
       allData = json.responses || [];
     } catch(e2) { allData = []; }
   }
-  render();
+  renderAll();
 }
 
+// ── Helpers ───────────────────────────────────────────────────────────────
 function calcNPS(entries) {
   const total = entries.length;
-  if (!total) return { total: 0, pro: 0, pass: 0, det: 0, nps: 0 };
+  if (!total) return { total:0, pro:0, pass:0, det:0, nps:0 };
   const scored = entries.filter(e => e.score !== null && e.score !== undefined && Number.isFinite(e.score) && e.score >= 0 && e.score <= 10);
   const n = scored.length;
-  if (!n) return { total, pro: 0, pass: 0, det: 0, nps: 0 };
+  if (!n) return { total, pro:0, pass:0, det:0, nps:0 };
   const pro  = scored.filter(e => e.score >= 9).length;
   const pass = scored.filter(e => e.score >= 7 && e.score <= 8).length;
   const det  = scored.filter(e => e.score <= 6).length;
-  return { total, pro, pass, det, nps: Math.round((pro - det) / n * 100) };
+  return { total, pro, pass, det, nps: Math.round((pro-det)/n*100) };
 }
-
-function npsColor(nps) {
-  return nps >= 20 ? 'var(--green)' : nps >= 0 ? 'var(--orange)' : 'var(--red)';
-}
-
+function npsColor(nps) { return nps >= 20 ? 'var(--green)' : nps >= 0 ? 'var(--orange)' : 'var(--red)'; }
+function npsHex(nps)   { return nps >= 20 ? '#3DD68C'      : nps >= 0 ? '#F25C2A'        : '#E8453C'; }
 function getPeriods() {
-  const order = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
-  return [...new Set(allData.map(e => e.period))].filter(Boolean).sort((a,b) => {
-    const [am,ay]=a.split(' '), [bm,by]=b.split(' ');
-    return (parseInt(ay)-parseInt(by))||((order[am]||0)-(order[bm]||0));
+  const order={Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+  return [...new Set(allData.map(e=>e.period))].filter(Boolean).sort((a,b)=>{
+    const[am,ay]=a.split(' '),[bm,by]=b.split(' ');
+    return(parseInt(ay)-parseInt(by))||((order[am]||0)-(order[bm]||0));
   });
 }
+function filtered() {
+  return activePeriod==='all' ? allData : allData.filter(e=>e.period===activePeriod);
+}
 
-function render() {
+// ── Period bar ────────────────────────────────────────────────────────────
+function renderPeriodBar() {
   const periods = getPeriods();
-  const filtered = activePeriod === 'all' ? allData : allData.filter(e => e.period === activePeriod);
-  const { nps, total, pro, pass, det } = calcNPS(filtered);
+  document.getElementById('periodBar').innerHTML =
+    `<span class="period-bar-label">Period:</span>
+     <button class="period-btn ${activePeriod==='all'?'active':''}" onclick="setPeriod('all')">All Time</button>
+     ${periods.map(p=>`<button class="period-btn ${activePeriod===p?'active':''}" onclick="setPeriod('${p}')">${p}</button>`).join('')}`;
+}
 
-  // Period bar
-  const bar = document.getElementById('periodBar');
-  bar.innerHTML = `<span class="period-bar-label">View period:</span>
-    <button class="period-btn ${activePeriod==='all'?'active':''}" onclick="setPeriod('all')">All Time</button>
-    ${periods.map(p=>`<button class="period-btn ${activePeriod===p?'active':''}" onclick="setPeriod('${p}')">${p}</button>`).join('')}`;
+function setPeriod(p) { activePeriod = p; renderAll(); window.scrollTo({top:0,behavior:'smooth'}); }
+function showVTab(t) {
+  activeTab = t;
+  document.querySelectorAll('.vtab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.vtab-content').forEach(c=>c.classList.remove('active'));
+  document.querySelector(`.vtab[onclick*="${t}"]`).classList.add('active');
+  document.getElementById('vtab-'+t).classList.add('active');
+  renderActiveTab();
+}
+function renderAll() { renderPeriodBar(); renderActiveTab(); }
+function renderActiveTab() {
+  if (activeTab==='overview') renderOverview();
+  else if (activeTab==='satisfaction') renderSatisfaction();
+  else renderSummary();
+}
 
-  // Health
-  const health = nps >= 50 ? {label:'EXCELLENT',bg:'rgba(61,214,140,0.12)',color:'var(--green)',border:'rgba(61,214,140,0.3)'}
-               : nps >= 20 ? {label:'GOOD',bg:'rgba(61,214,140,0.08)',color:'var(--green)',border:'rgba(61,214,140,0.2)'}
-               : nps >= 0  ? {label:'NEEDS WORK',bg:'rgba(242,92,42,0.1)',color:'var(--orange)',border:'rgba(242,92,42,0.25)'}
-                           : {label:'CRITICAL',bg:'rgba(232,69,60,0.1)',color:'var(--red)',border:'rgba(232,69,60,0.25)'};
+// ── OVERVIEW TAB ─────────────────────────────────────────────────────────
+function renderOverview() {
+  const data = filtered();
+  const periods = getPeriods();
+  const { nps, total, pro, pass, det } = calcNPS(data);
+  const proP = total ? Math.round(pro/total*100) : 0;
+  const passP = total ? Math.round(pass/total*100) : 0;
+  const detP = total ? Math.round(det/total*100) : 0;
+  const health = nps>=50?{l:'EXCELLENT',bg:'rgba(61,214,140,0.12)',c:'var(--green)',b:'rgba(61,214,140,0.3)'}
+               : nps>=20?{l:'GOOD',bg:'rgba(61,214,140,0.08)',c:'var(--green)',b:'rgba(61,214,140,0.2)'}
+               : nps>=0 ?{l:'NEEDS WORK',bg:'rgba(242,92,42,0.1)',c:'var(--orange)',b:'rgba(242,92,42,0.25)'}
+                        :{l:'CRITICAL',bg:'rgba(232,69,60,0.1)',c:'var(--red)',b:'rgba(232,69,60,0.25)'};
 
-  // Trend vs prev period
   let trendHTML = '';
   if (activePeriod !== 'all') {
     const idx = periods.indexOf(activePeriod);
     if (idx > 0) {
-      const prevNPS = calcNPS(allData.filter(e => e.period === periods[idx-1])).nps;
-      const delta = nps - prevNPS;
-      const c = delta >= 0 ? 'var(--green)' : 'var(--red)';
-      trendHTML = `<div class="hero-score-trend" style="color:${c}">${delta >= 0 ? '▲' : '▼'} ${delta > 0 ? '+' : ''}${delta} vs ${periods[idx-1]}</div>`;
+      const pNPS = calcNPS(allData.filter(e=>e.period===periods[idx-1])).nps;
+      const d = nps - pNPS;
+      trendHTML = `<div class="hero-score-trend" style="color:${d>=0?'var(--green)':'var(--red)'}">
+        ${d>=0?'▲':'▼'} ${d>0?'+':''}${d} vs ${periods[idx-1]}</div>`;
     }
   }
 
-  const proP  = total ? Math.round(pro/total*100)  : 0;
-  const passP = total ? Math.round(pass/total*100) : 0;
-  const detP  = total ? Math.round(det/total*100)  : 0;
-
   // Period cards
-  const periodCardsHTML = periods.map((p,i) => {
-    const pd = allData.filter(e => e.period === p);
-    const pn = calcNPS(pd);
-    const prev = i > 0 ? calcNPS(allData.filter(e => e.period === periods[i-1])).nps : null;
-    const delta = prev !== null ? pn.nps - prev : null;
-    const c = npsColor(pn.nps);
-    const deltaEl = delta !== null
-      ? `<div class="pc-delta" style="color:${delta>=0?'var(--green)':'var(--red)'}">
-           ${delta>=0?'▲':'▼'} ${delta>0?'+':''}${delta} vs prev
-         </div>` : '';
+  const pCards = periods.map((p,i) => {
+    const pn = calcNPS(allData.filter(e=>e.period===p));
+    const prev = i>0 ? calcNPS(allData.filter(e=>e.period===periods[i-1])).nps : null;
+    const d = prev!==null ? pn.nps-prev : null;
     return `<div class="period-card ${activePeriod===p?'active':''}" onclick="setPeriod('${p}')">
       <div class="pc-period">${p}</div>
-      <div class="pc-nps" style="color:${c}">${pn.nps>0?'+':''}${pn.nps}</div>
+      <div class="pc-nps" style="color:${npsColor(pn.nps)}">${pn.nps>0?'+':''}${pn.nps}</div>
       <div class="pc-total">${pn.total} responses</div>
-      ${deltaEl}
+      ${d!==null?`<div class="pc-delta" style="color:${d>=0?'var(--green)':'var(--red)'}">${d>=0?'▲':'▼'} ${d>0?'+':''}${d} vs prev</div>`:''}
     </div>`;
   }).join('');
 
-  // Score distribution grouped
-  const scored = filtered.filter(e => Number.isFinite(e.score) && e.score >= 0 && e.score <= 10);
-  const distHTML = [
-    {label:'Detractors (0–6)', scores:[0,1,2,3,4,5,6], color:'var(--red)'},
-    {label:'Passives (7–8)',   scores:[7,8],           color:'var(--orange)'},
-    {label:'Promoters (9–10)',scores:[9,10],           color:'var(--green)'}
-  ].map(g => {
-    const groupCnt = g.scores.reduce((a,s)=>a+scored.filter(e=>e.score===s).length,0);
-    const bars = g.scores.map(s => {
-      const cnt = scored.filter(e=>e.score===s).length;
-      const pct = scored.length ? Math.round(cnt/scored.length*100) : 0;
-      return `<div class="bar-row">
-        <span class="bar-score" style="color:${g.color}">${s}</span>
-        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${g.color}"></div></div>
-        <span class="bar-cnt" style="color:${g.color}">${cnt}</span>
-      </div>`;
-    }).join('');
+  // Score dist
+  const scored = data.filter(e=>Number.isFinite(e.score)&&e.score>=0&&e.score<=10);
+  const distHTML = [{l:'Detractors (0–6)',s:[0,1,2,3,4,5,6],c:'var(--red)'},
+                    {l:'Passives (7–8)',s:[7,8],c:'var(--orange)'},
+                    {l:'Promoters (9–10)',s:[9,10],c:'var(--green)'}].map(g=>{
+    const gc = g.s.reduce((a,s)=>a+scored.filter(e=>e.score===s).length,0);
     return `<div class="dist-group">
-      <div class="dist-group-label" style="color:${g.color}">${g.label} <span style="color:var(--muted);font-weight:400">(${groupCnt})</span></div>
-      ${bars}
+      <div class="dist-group-label" style="color:${g.c}">${g.l} <span style="color:var(--muted);font-weight:400">(${gc})</span></div>
+      ${g.s.map(s=>{const c=scored.filter(e=>e.score===s).length,pct=scored.length?Math.round(c/scored.length*100):0;
+        return `<div class="bar-row"><span class="bar-score" style="color:${g.c}">${s}</span>
+          <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${g.c}"></div></div>
+          <span class="bar-cnt" style="color:${g.c}">${c}</span></div>`;}).join('')}
     </div>`;
   }).join('');
 
-  // Department rows
+  // Dept rows
   const depts = ['Seller Support','Quality Check','Payments','Shipping & Logistics','Vendor App','Sales & Visibility'];
-  const deptRows = depts.map(d => {
-    const dd = filtered.filter(e => e.department === d);
-    if (!dd.length) return '';
-    const dn = calcNPS(dd);
-    const c = npsColor(dn.nps);
-    const barW = Math.min(100, Math.abs(dn.nps));
-    return `<tr>
-      <td style="font-weight:600">${d}</td>
-      <td style="color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:0.78rem">${dn.total}</td>
-      <td>
-        <div class="nps-bar-cell">
-          <span style="font-family:'League Gothic',sans-serif;font-size:1.3rem;color:${c};min-width:42px">${dn.nps>0?'+':''}${dn.nps}</span>
-          <div class="nps-bar-mini"><div class="nps-bar-mini-fill" style="width:${barW}%;background:${c}"></div></div>
-        </div>
-      </td>
-      <td style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:0.78rem">${Math.round(dd.filter(e=>e.score>=9).length/dn.total*100)}%</td>
-      <td style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:0.78rem">${Math.round(dd.filter(e=>e.score<=6).length/dn.total*100)}%</td>
-    </tr>`;
+  const deptRows = depts.map(d=>{
+    const dd=data.filter(e=>e.department===d); if(!dd.length)return '';
+    const dn=calcNPS(dd); const c=npsColor(dn.nps); const bw=Math.min(100,Math.abs(dn.nps));
+    return `<tr><td style="font-weight:600">${d}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:0.76rem;color:var(--muted)">${dn.total}</td>
+      <td><div class="nps-bar-cell"><span style="font-family:'League Gothic',sans-serif;font-size:1.3rem;color:${c};min-width:42px">${dn.nps>0?'+':''}${dn.nps}</span>
+        <div class="nps-bar-mini"><div class="nps-bar-mini-fill" style="width:${bw}%;background:${c}"></div></div></div></td>
+      <td style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:0.76rem">${Math.round(dd.filter(e=>e.score>=9).length/dn.total*100)}%</td>
+      <td style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:0.76rem">${Math.round(dd.filter(e=>e.score<=6).length/dn.total*100)}%</td></tr>`;
   }).filter(Boolean).join('');
 
-  // Geography rows
-  const zones = ['PK Zone','PK Non-Zone','India','ROW'];
-  const geoFlags = {'PK Zone':'🇵🇰','PK Non-Zone':'🇵🇰','India':'🇮🇳','ROW':'🌍'};
-  const geoRows = zones.map(z => {
-    const zd = filtered.filter(e => e.geography === z);
-    if (!zd.length) return '';
-    const zn = calcNPS(zd);
-    const c = npsColor(zn.nps);
-    const barW = Math.min(100, Math.abs(zn.nps));
-    return `<tr>
-      <td style="font-weight:600">${geoFlags[z]} ${z}</td>
-      <td style="color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:0.78rem">${zn.total}</td>
-      <td>
-        <div class="nps-bar-cell">
-          <span style="font-family:'League Gothic',sans-serif;font-size:1.3rem;color:${c};min-width:42px">${zn.nps>0?'+':''}${zn.nps}</span>
-          <div class="nps-bar-mini"><div class="nps-bar-mini-fill" style="width:${barW}%;background:${c}"></div></div>
-        </div>
-      </td>
-      <td style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:0.78rem">${Math.round(zd.filter(e=>e.score>=9).length/zn.total*100)}%</td>
-      <td style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:0.78rem">${Math.round(zd.filter(e=>e.score<=6).length/zn.total*100)}%</td>
-    </tr>`;
+  // Geo rows
+  const zones=['PK Zone','PK Non-Zone','India','ROW'];
+  const flags={'PK Zone':'🇵🇰','PK Non-Zone':'🇵🇰','India':'🇮🇳','ROW':'🌍'};
+  const geoRows = zones.map(z=>{
+    const zd=data.filter(e=>e.geography===z); if(!zd.length)return '';
+    const zn=calcNPS(zd); const c=npsColor(zn.nps); const bw=Math.min(100,Math.abs(zn.nps));
+    return `<tr><td style="font-weight:600">${flags[z]} ${z}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:0.76rem;color:var(--muted)">${zn.total}</td>
+      <td><div class="nps-bar-cell"><span style="font-family:'League Gothic',sans-serif;font-size:1.3rem;color:${c};min-width:42px">${zn.nps>0?'+':''}${zn.nps}</span>
+        <div class="nps-bar-mini"><div class="nps-bar-mini-fill" style="width:${bw}%;background:${c}"></div></div></div></td>
+      <td style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:0.76rem">${Math.round(zd.filter(e=>e.score>=9).length/zn.total*100)}%</td>
+      <td style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:0.76rem">${Math.round(zd.filter(e=>e.score<=6).length/zn.total*100)}%</td></tr>`;
   }).filter(Boolean).join('');
 
-  // Comments — detractors first, then promoters
-  const withComments = filtered.filter(e => e.comment && e.comment.trim().length > 8 && Number.isFinite(e.score));
-  const detComments = withComments.filter(e => e.score <= 6).slice(0,5);
-  const proComments = withComments.filter(e => e.score >= 9).slice(0,4);
-
-  const makeComment = e => {
-    const cat = e.score >= 9 ? 'P' : e.score >= 7 ? 'S' : 'D';
-    const catLabel = e.score >= 9 ? 'Promoter' : e.score >= 7 ? 'Passive' : 'Detractor';
-    const name = e.storeHandle || e.seller || 'Unknown Seller';
-    const emailEl = e.email ? `<span style="color:var(--muted);font-size:0.7rem">${e.email}</span>` : '';
-    const issueEl = e.biggestIssues ? `<div class="comment-issue">⚠ ${e.biggestIssues}</div>` : (e.mainIssue && e.mainIssue !== 'None' ? `<div class="comment-issue">Issue: ${e.mainIssue}</div>` : '');
-    return `<div class="comment-row">
-      <span class="score-pill ${cat}">${e.score}</span>
+  // Comments
+  const wc = data.filter(e=>e.comment&&e.comment.trim().length>8&&Number.isFinite(e.score));
+  const mkC = e => {
+    const cat=e.score>=9?'P':e.score>=7?'S':'D';
+    const lbl=e.score>=9?'Promoter':e.score>=7?'Passive':'Detractor';
+    const nm=e.storeHandle||e.seller||'Unknown';
+    return `<div class="comment-row"><span class="score-pill ${cat}">${e.score}</span>
       <div style="flex:1;min-width:0">
-        <div class="comment-meta">
-          <span class="comment-seller">${name}</span>
-          <span class="badge ${cat}">${catLabel}</span>
-          ${emailEl}
-          <span style="color:var(--muted);font-size:0.7rem;margin-left:auto">${e.period}</span>
+        <div style="font-size:0.73rem;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span style="font-weight:700;color:var(--cream)">${nm}</span>
+          <span class="badge ${cat}">${lbl}</span>
+          ${e.email?`<span style="color:var(--muted);font-size:0.68rem">${e.email}</span>`:''}
+          <span style="color:var(--muted);font-size:0.68rem;margin-left:auto">${e.period}</span>
         </div>
-        <div class="comment-text">${e.comment}</div>
-        ${issueEl}
-      </div>
-    </div>`;
+        <div style="font-size:0.83rem;color:var(--cream);line-height:1.6">${e.comment}</div>
+        ${e.biggestIssues?`<div style="font-size:0.75rem;color:var(--muted);margin-top:4px">⚠ ${e.biggestIssues}</div>`:''}
+      </div></div>`;
   };
+  const dCom = wc.filter(e=>e.score<=6).slice(0,5).map(mkC).join('');
+  const pCom = wc.filter(e=>e.score>=9).slice(0,4).map(mkC).join('');
+  const now = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
 
-  const commentsHTML = [
-    detComments.length ? `<div class="comments-divider" style="color:var(--red)">⚠ Detractor Voices — Churn Risk (${detComments.length})</div>${detComments.map(makeComment).join('')}` : '',
-    proComments.length ? `<div class="comments-divider" style="color:var(--green);margin-top:8px">✓ Promoter Voices — What's Working (${proComments.length})</div>${proComments.map(makeComment).join('')}` : ''
-  ].filter(Boolean).join('');
-
-  const now = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'long',year:'numeric'});
-
-  document.getElementById('mainContent').innerHTML = `
-
-    <!-- Period comparison cards -->
-    <div class="period-cards">${periodCardsHTML}</div>
-
-    <!-- NPS Hero -->
+  document.getElementById('vtab-overview').innerHTML = `
+    <div class="period-cards">${pCards}</div>
     <div class="nps-hero">
       <div class="hero-score-wrap">
         <div class="hero-score-label">Net Promoter Score</div>
         <div class="hero-score-value" style="color:${npsColor(nps)}">${nps>0?'+':''}${nps}</div>
-        <div class="hero-score-health" style="background:${health.bg};color:${health.color};border:1px solid ${health.border}">${health.label}</div>
+        <div class="hero-score-health" style="background:${health.bg};color:${health.c};border:1px solid ${health.b}">${health.l}</div>
         ${trendHTML}
         <div class="hero-score-meta">${total} responses · ${activePeriod==='all'?'All Time':activePeriod}</div>
       </div>
       <div class="hero-segs">
-        <div class="seg-row">
-          <span class="seg-label" style="color:var(--green)">Promoters</span>
+        <div class="seg-row"><span class="seg-label" style="color:var(--green)">Promoters</span>
           <div class="seg-track"><div class="seg-fill" style="width:${proP}%;background:var(--green)"></div></div>
-          <span class="seg-pct" style="color:var(--green)">${proP}%</span>
-          <span class="seg-count">${pro} sellers</span>
-        </div>
-        <div class="seg-row">
-          <span class="seg-label" style="color:var(--orange)">Passives</span>
+          <span class="seg-pct" style="color:var(--green)">${proP}%</span><span class="seg-count">${pro} sellers</span></div>
+        <div class="seg-row"><span class="seg-label" style="color:var(--orange)">Passives</span>
           <div class="seg-track"><div class="seg-fill" style="width:${passP}%;background:var(--orange)"></div></div>
-          <span class="seg-pct" style="color:var(--orange)">${passP}%</span>
-          <span class="seg-count">${pass} sellers</span>
-        </div>
-        <div class="seg-row">
-          <span class="seg-label" style="color:var(--red)">Detractors</span>
+          <span class="seg-pct" style="color:var(--orange)">${passP}%</span><span class="seg-count">${pass} sellers</span></div>
+        <div class="seg-row"><span class="seg-label" style="color:var(--red)">Detractors</span>
           <div class="seg-track"><div class="seg-fill" style="width:${detP}%;background:var(--red)"></div></div>
-          <span class="seg-pct" style="color:var(--red)">${detP}%</span>
-          <span class="seg-count">${det} sellers</span>
-        </div>
-        <div style="margin-top:8px;padding-top:12px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">
-          <div style="font-size:0.62rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">Formula</div>
-          <div></div>
-          <div style="font-size:0.62rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">Scale</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--cream)">(Pro − Det) ÷ Total</div>
-          <div></div>
-          <div style="font-size:0.72rem;color:var(--muted)">−100 to +100</div>
+          <span class="seg-pct" style="color:var(--red)">${detP}%</span><span class="seg-count">${det} sellers</span></div>
+        <div style="margin-top:10px;padding-top:12px;border-top:1px solid var(--border);display:flex;gap:24px">
+          <div style="font-size:0.68rem;color:var(--muted)">Formula: <span style="color:var(--cream);font-family:'JetBrains Mono',monospace">(Pro − Det) ÷ Scored</span></div>
+          <div style="font-size:0.68rem;color:var(--muted)">Scale: <span style="color:var(--cream)">−100 to +100</span></div>
         </div>
       </div>
     </div>
-
-    <!-- Metric strip -->
     <div class="metric-strip">
       <div class="metric" style="border-top:3px solid var(--yellow)">
         <div class="metric-label">NPS Score</div>
         <div class="metric-value" style="color:${npsColor(nps)}">${nps>0?'+':''}${nps}</div>
-        <div class="metric-sub">${health.label}</div>
-      </div>
+        <div class="metric-sub">${health.l}</div></div>
       <div class="metric" style="border-top:3px solid var(--green)">
         <div class="metric-label">Promoters (9–10)</div>
         <div class="metric-value" style="color:var(--green)">${proP}%</div>
-        <div class="metric-sub">${pro} of ${total}</div>
-      </div>
+        <div class="metric-sub">${pro} of ${total}</div></div>
       <div class="metric" style="border-top:3px solid var(--orange)">
         <div class="metric-label">Passives (7–8)</div>
         <div class="metric-value" style="color:var(--orange)">${passP}%</div>
-        <div class="metric-sub">${pass} of ${total}</div>
-      </div>
+        <div class="metric-sub">${pass} of ${total}</div></div>
       <div class="metric" style="border-top:3px solid var(--red)">
         <div class="metric-label">Detractors (0–6)</div>
         <div class="metric-value" style="color:var(--red)">${detP}%</div>
-        <div class="metric-sub">${det} of ${total}</div>
-      </div>
+        <div class="metric-sub">${det} of ${total}</div></div>
     </div>
-
-    <!-- Charts row -->
     <div class="charts-row">
-      <div class="chart-card">
-        <div class="chart-title">NPS Trend Over Time</div>
-        <canvas id="trendChart" height="180"></canvas>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Score Distribution</div>
-        ${distHTML}
-      </div>
+      <div class="chart-card"><div class="chart-title">NPS Trend Over Time</div><canvas id="trendChart" height="180"></canvas></div>
+      <div class="chart-card"><div class="chart-title">Score Distribution</div>${distHTML}</div>
     </div>
-
-    <!-- Donut + Tables -->
     <div style="display:grid;grid-template-columns:260px 1fr;gap:16px;margin-bottom:16px">
-      <div class="chart-card" style="border-left:3px solid var(--yellow)">
-        <div class="chart-title">Segment Breakdown</div>
-        <canvas id="donutChart" height="180"></canvas>
-      </div>
+      <div class="chart-card"><div class="chart-title">Segment Breakdown</div><canvas id="donutChart" height="180"></canvas></div>
       <div style="display:flex;flex-direction:column;gap:16px">
         <div class="section-card" style="margin-bottom:0">
           <div class="section-title">By Department</div>
-          ${deptRows ? `<table><thead><tr><th>Department</th><th>Responses</th><th>NPS</th><th>Promoters</th><th>Detractors</th></tr></thead><tbody>${deptRows}</tbody></table>` : '<div style="color:var(--muted);font-size:0.85rem;padding:8px 0">No data for this period.</div>'}
+          ${deptRows?`<table><thead><tr><th>Department</th><th>Responses</th><th>NPS</th><th>Promoters</th><th>Detractors</th></tr></thead><tbody>${deptRows}</tbody></table>`:'<div style="color:var(--muted);font-size:0.83rem">No data.</div>'}
         </div>
         <div class="section-card" style="margin-bottom:0">
           <div class="section-title">By Geography</div>
-          ${geoRows ? `<table><thead><tr><th>Zone</th><th>Responses</th><th>NPS</th><th>Promoters</th><th>Detractors</th></tr></thead><tbody>${geoRows}</tbody></table>` : '<div style="color:var(--muted);font-size:0.85rem;padding:8px 0">No data for this period.</div>'}
+          ${geoRows?`<table><thead><tr><th>Zone</th><th>Responses</th><th>NPS</th><th>Promoters</th><th>Detractors</th></tr></thead><tbody>${geoRows}</tbody></table>`:'<div style="color:var(--muted);font-size:0.83rem">No data.</div>'}
+        </div>
+      </div>
+    </div>
+    ${dCom||pCom?`<div class="section-card">
+      <div class="section-title">Seller Feedback</div>
+      ${dCom?`<div class="comments-divider" style="color:var(--red)">⚠ Detractor Voices — Churn Risk</div>${dCom}`:''}
+      ${pCom?`<div class="comments-divider" style="color:var(--green);margin-top:8px">✓ Promoter Voices — What's Working</div>${pCom}`:''}
+    </div>`:''}
+    <div class="footer">
+      <div class="footer-left"><div style="font-weight:700;color:var(--cream);margin-bottom:2px">Fleek Seller Experience — Internal NPS Report</div>
+        <div>Generated ${now} · ${total} responses · ${activePeriod==='all'?'All Time':activePeriod} · Confidential</div></div>
+      <div class="footer-right"><span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px">POWERED BY</span>
+        <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek"/></div>
+    </div>`;
+
+  // Trend chart
+  const tStats = getPeriods().map(p=>({period:p,nps:calcNPS(allData.filter(e=>e.period===p)).nps}));
+  const tc = document.getElementById('trendChart')?.getContext('2d');
+  if (tc) {
+    if (window._tChart) window._tChart.destroy();
+    window._tChart = new Chart(tc,{type:'line',data:{labels:tStats.map(p=>p.period),datasets:[{label:'NPS',data:tStats.map(p=>p.nps),borderColor:'#FFD400',backgroundColor:'rgba(255,212,0,0.07)',borderWidth:2.5,pointBackgroundColor:'#FFD400',pointRadius:6,tension:0.3,fill:true}]},
+      options:{plugins:{legend:{display:false},annotation:{annotations:{z:{type:'line',yMin:0,yMax:0,borderColor:'rgba(255,212,0,0.35)',borderWidth:1.5,borderDash:[5,5],label:{display:true,content:'TARGET (0)',color:'#FFD400',backgroundColor:'rgba(255,212,0,0.06)',font:{family:'Montserrat',size:9,weight:'700'},position:'end',padding:{x:6,y:3}}}}}},
+        scales:{x:{grid:{color:'#E5E5E5'},ticks:{color:'#666',font:{family:'Montserrat',size:10}}},y:{grid:{color:'#E5E5E5'},ticks:{color:'#666',font:{family:'Montserrat',size:10}}}}}});
+  }
+  // Donut
+  const dc = document.getElementById('donutChart')?.getContext('2d');
+  if (dc&&total>0) {
+    if (window._dChart) window._dChart.destroy();
+    window._dChart = new Chart(dc,{type:'doughnut',data:{labels:['Promoters','Passives','Detractors'],datasets:[{data:[pro,pass,det],backgroundColor:['#3DD68C','#F25C2A','#E8453C'],borderWidth:0,hoverOffset:8}]},
+      options:{cutout:'68%',plugins:{legend:{position:'bottom',labels:{color:'#666',padding:14,font:{family:'Montserrat',size:10}}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw} (${Math.round(c.raw/total*100)}%)`}}}}});
+  }
+}
+
+// ── SATISFACTION TAB ──────────────────────────────────────────────────────
+function renderSatisfaction() {
+  const data = filtered();
+  const withSat = data.filter(e=>e.satisfaction&&Object.keys(e.satisfaction).length>0);
+  const el = document.getElementById('vtab-satisfaction');
+  if (!withSat.length) {
+    el.innerHTML = `<div style="padding:60px;text-align:center;color:var(--muted)">
+      <div style="font-size:2rem;margin-bottom:12px">📊</div>
+      <div style="font-family:'League Gothic',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--yellow)">NO SATISFACTION DATA</div>
+      <div style="margin-top:8px;font-size:0.82rem">Satisfaction ratings are collected from April 2026 onwards via the new survey format.</div>
+    </div>`;
+    return;
+  }
+  const areas = ['Payment','Quality Check','Sales','Seller Support','Shipping & Logistics','Vendor Application','Refund'];
+  const aStats = areas.map(area=>{
+    const rs = withSat.filter(e=>e.satisfaction[area]);
+    const counts={'Satisfied':0,'Neutral':0,'Not Satisfied':0};
+    rs.forEach(e=>{if(counts[e.satisfaction[area]]!==undefined)counts[e.satisfaction[area]]++;});
+    const total=rs.length;
+    const pct=total>0?{sat:Math.round(counts.Satisfied/total*100),neu:Math.round(counts.Neutral/total*100),ns:Math.round(counts['Not Satisfied']/total*100)}:{sat:0,neu:0,ns:0};
+    return {area,counts,total,pct};
+  });
+  const aspectCounts={};
+  withSat.forEach(e=>{if(e.aspects)aspectCounts[e.aspects]=(aspectCounts[e.aspects]||0)+1;});
+  const topAspects=Object.entries(aspectCounts).sort((a,b)=>b[1]-a[1]);
+  const now=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+
+  el.innerHTML = `
+    <div class="sat-grid">
+      <div class="section-card" style="margin-bottom:0">
+        <div class="section-title">Responses with Satisfaction Data</div>
+        <div style="font-family:'League Gothic',sans-serif;font-size:3.5rem;color:var(--cream);letter-spacing:2px">${withSat.length}</div>
+        <div style="color:var(--muted);font-size:0.78rem;margin-top:4px">out of ${data.length} total responses</div>
+      </div>
+      <div class="section-card" style="margin-bottom:0">
+        <div class="section-title">Top Valued Aspect</div>
+        <div style="font-family:'League Gothic',sans-serif;font-size:2rem;color:var(--yellow);margin-bottom:6px">${topAspects[0]?.[0]||'—'}</div>
+        <div style="color:var(--muted);font-size:0.8rem">${topAspects[0]?.[1]||0} sellers rated this highest</div>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-title">Most Valued Aspects</div>
+      <div class="aspects-wrap">
+        ${topAspects.map(([a,c])=>`<div class="aspect-chip"><span>${a}</span><span class="aspect-count">${c}</span></div>`).join('')}
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-title">Satisfaction by Area</div>
+      ${aStats.filter(s=>s.total>0).map(({area,pct,total,counts})=>`
+        <div class="sat-area-bar" style="margin-bottom:18px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <span style="font-weight:600;font-size:0.88rem">${area}</span>
+            <span style="color:var(--muted);font-size:0.74rem;font-family:'JetBrains Mono',monospace">${total} responses</span>
+          </div>
+          <div class="sat-bar-track">
+            <div style="width:${pct.sat}%;background:#3DD68C;height:100%"></div>
+            <div style="width:${pct.neu}%;background:#F25C2A;height:100%"></div>
+            <div style="width:${pct.ns}%;background:#E8453C;height:100%"></div>
+          </div>
+          <div class="sat-legend">
+            <span><span style="color:#3DD68C">■</span> Satisfied ${pct.sat}% (${counts.Satisfied})</span>
+            <span><span style="color:#F25C2A">■</span> Neutral ${pct.neu}% (${counts.Neutral})</span>
+            <span><span style="color:#E8453C">■</span> Not Satisfied ${pct.ns}% (${counts['Not Satisfied']})</span>
+          </div>
+        </div>`).join('')}
+    </div>
+    ${withSat.filter(e=>e.biggestIssues).length?`<div class="section-card">
+      <div class="section-title">Top Reported Issues</div>
+      ${withSat.filter(e=>e.biggestIssues).slice(0,10).map(e=>`
+        <div style="padding:10px 0;border-bottom:1px solid var(--border);display:flex;gap:12px">
+          <span style="color:var(--yellow);font-family:'League Gothic',sans-serif;font-size:0.7rem;min-width:68px;padding-top:2px;letter-spacing:1px">${e.period}</span>
+          <span style="font-size:0.83rem;color:var(--muted)">${e.biggestIssues}</span>
+        </div>`).join('')}
+    </div>`:''}
+    <div class="footer">
+      <div class="footer-left"><div style="font-weight:700;color:var(--cream);margin-bottom:2px">Fleek Seller Experience — Satisfaction Report</div>
+        <div>Generated ${now} · ${activePeriod==='all'?'All Time':activePeriod} · Confidential</div></div>
+      <div class="footer-right"><span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px">POWERED BY</span>
+        <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek"/></div>
+    </div>`;
+}
+
+// ── SMART SUMMARY TAB ────────────────────────────────────────────────────
+function renderSummary() {
+  const data = filtered();
+  const el = document.getElementById('vtab-summary');
+  if (!data.length) {
+    el.innerHTML = `<div style="padding:60px;text-align:center;color:var(--muted)">No data for this period.</div>`;
+    return;
+  }
+  const periods = getPeriods();
+  const {nps,total,pro,pass,det} = calcNPS(data);
+  const proP=Math.round(pro/total*100), passP=Math.round(pass/total*100), detP=Math.round(det/total*100);
+  const curIdx=periods.indexOf(activePeriod);
+  const prevNPS=curIdx>0?calcNPS(allData.filter(e=>e.period===periods[curIdx-1])).nps:null;
+  const npsDelta=prevNPS!==null?nps-prevNPS:null;
+  const health=nps>=50?{l:'EXCELLENT',c:'#3DD68C'}:nps>=20?{l:'GOOD',c:'#3DD68C'}:nps>=0?{l:'NEEDS WORK',c:'#F25C2A'}:{l:'CRITICAL',c:'#E8453C'};
+  const trendArrow=npsDelta===null?'':npsDelta>0?`<span style="color:#3DD68C;font-size:0.82rem;margin-left:8px">▲ +${npsDelta} vs ${periods[curIdx-1]}</span>`:npsDelta<0?`<span style="color:#E8453C;font-size:0.82rem;margin-left:8px">▼ ${npsDelta} vs ${periods[curIdx-1]}</span>`:`<span style="color:var(--muted);font-size:0.82rem;margin-left:8px">→ no change</span>`;
+
+  const depts=['Seller Support','Quality Check','Payments','Shipping & Logistics','Vendor App','Sales & Visibility'];
+  const deptStats=depts.map(d=>{const dd=data.filter(e=>e.department===d);if(!dd.length)return null;const n=calcNPS(dd);return{name:d,nps:n.nps,total:n.total};}).filter(Boolean).sort((a,b)=>b.nps-a.nps);
+
+  const issueKW={'App Performance':['app hang','hangs','crash','slow','lag','performance','buggy'],'Payment/Refund':['payment','payout','refund','pay us'],'Photo Upload':['photo','picture','image','background remov','3 photo'],'AI/Brand Tags':['ai generat','wrong brand','brand tag','ai title'],'Shipping':['shipping','deliver','logistic','charge'],'Seller Support':['support','response','resolve','seller support'],'Vendor App':['app','upload','catalog','listing','platform'],'Individual Pricing':['individual','single piece','etsy','ebay','per piece']};
+  const allText=data.map(e=>((e.comment||'')+' '+(e.mainIssue||'')+' '+(e.biggestIssues||'')).toLowerCase()).join(' ');
+  const issueCounts=Object.entries(issueKW).map(([issue,kws])=>({issue,count:kws.reduce((a,kw)=>a+(allText.split(kw).length-1),0)})).filter(d=>d.count>0).sort((a,b)=>b.count-a.count);
+
+  const detVoices=data.filter(e=>e.score<=6&&(e.comment||e.biggestIssues)).slice(0,5);
+  const proVoices=data.filter(e=>e.score>=9&&e.comment).slice(0,3);
+  const geoStats=['PK Zone','PK Non-Zone','India','ROW'].map(g=>{const gd=data.filter(e=>e.geography===g);if(gd.length<2)return null;return{zone:g,nps:calcNPS(gd).nps,total:gd.length};}).filter(Boolean).sort((a,b)=>b.nps-a.nps);
+  const now=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+
+  el.innerHTML = `
+    <div style="margin-bottom:20px">
+      <div style="font-family:'League Gothic',sans-serif;font-size:1.4rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase">Smart Summary</div>
+      <div style="color:var(--muted);font-size:0.78rem;margin-top:4px">Auto-generated analysis · ${activePeriod==='all'?'All Time':activePeriod}</div>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-title">NPS Overview</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px">
+        <div style="text-align:center">
+          <div style="font-size:0.6rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;font-weight:700;margin-bottom:6px">NPS SCORE</div>
+          <div style="font-family:'League Gothic',sans-serif;font-size:3.2rem;color:${health.c};line-height:1">${nps>0?'+':''}${nps}</div>
+          <div style="font-size:0.7rem;font-weight:700;color:${health.c};letter-spacing:2px;margin-top:4px">${health.l}</div>
+          ${trendArrow}
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:0.6rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;font-weight:700;margin-bottom:6px">RESPONSES</div>
+          <div style="font-family:'League Gothic',sans-serif;font-size:3.2rem;color:var(--cream);line-height:1">${total}</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:0.6rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;font-weight:700;margin-bottom:6px">PROMOTERS</div>
+          <div style="font-family:'League Gothic',sans-serif;font-size:3.2rem;color:#3DD68C;line-height:1">${proP}%</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:0.6rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;font-weight:700;margin-bottom:6px">DETRACTORS</div>
+          <div style="font-family:'League Gothic',sans-serif;font-size:3.2rem;color:#E8453C;line-height:1">${detP}%</div>
         </div>
       </div>
     </div>
 
-    <!-- Comments -->
-    ${commentsHTML ? `<div class="section-card">
-      <div class="section-title">Seller Feedback</div>
-      ${commentsHTML}
-    </div>` : ''}
+    ${issueCounts.length?`<div class="summary-card">
+      <div class="summary-title">🔴 Top Issues (from seller comments)</div>
+      ${issueCounts.slice(0,6).map((d,i)=>`<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <span style="background:var(--yellow);color:#0F0F0F;font-family:'League Gothic',sans-serif;padding:1px 8px;border-radius:2px;min-width:22px;text-align:center;font-size:0.82rem">${i+1}</span>
+        <div style="flex:1">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="font-weight:600;font-size:0.86rem">${d.issue}</span>
+            <span style="color:var(--muted);font-size:0.76rem">${d.count} mention${d.count>1?'s':''}</span>
+          </div>
+          <div style="background:#EEEEEE;border-radius:2px;height:6px;overflow:hidden">
+            <div style="width:${Math.round(d.count/issueCounts[0].count*100)}%;background:var(--red);height:100%"></div>
+          </div>
+        </div>
+      </div>`).join('')}
+    </div>`:''}
 
-    <!-- Footer -->
+    ${deptStats.length?`<div class="summary-card">
+      <div class="summary-title">🏢 Department Performance</div>
+      ${deptStats.map(d=>{const c=d.nps>=10?'#3DD68C':d.nps>=0?'#F25C2A':'#E8453C';return`<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)">
+        <span style="font-size:0.86rem;font-weight:600">${d.name}</span>
+        <div style="display:flex;gap:16px;align-items:center">
+          <span style="color:var(--muted);font-size:0.76rem;font-family:'JetBrains Mono',monospace">${d.total} responses</span>
+          <span style="font-family:'League Gothic',sans-serif;font-size:1.3rem;color:${c};min-width:50px;text-align:right">${d.nps>0?'+':''}${d.nps}</span>
+        </div>
+      </div>`;}).join('')}
+    </div>`:''}
+
+    ${geoStats.length?`<div class="summary-card">
+      <div class="summary-title">🌍 Geography Breakdown</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px">
+        ${geoStats.map(g=>{const c=g.nps>=10?'#3DD68C':g.nps>=0?'#F25C2A':'#E8453C';return`<div style="background:var(--card);border:1px solid var(--border);border-radius:4px;padding:14px;text-align:center">
+          <div style="font-size:0.65rem;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:6px">${g.zone}</div>
+          <div style="font-family:'League Gothic',sans-serif;font-size:2.2rem;color:${c}">${g.nps>0?'+':''}${g.nps}</div>
+          <div style="font-size:0.7rem;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace">${g.total} responses</div>
+        </div>`;}).join('')}
+      </div>
+    </div>`:''}
+
+    ${detVoices.length?`<div class="summary-card">
+      <div class="summary-title">⚠️ Detractor Voices (churn risk)</div>
+      ${detVoices.map(e=>`<div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start">
+        <span style="background:rgba(232,69,60,0.12);border:1px solid rgba(232,69,60,0.3);color:#E8453C;font-family:'League Gothic',sans-serif;padding:2px 8px;border-radius:2px;font-size:0.82rem;white-space:nowrap">${e.score}/10</span>
+        <div><div style="font-weight:600;font-size:0.8rem;color:var(--muted);margin-bottom:3px">${e.storeHandle||e.seller||'Unknown'}</div>
+          <div style="font-size:0.83rem;color:var(--cream);line-height:1.5">${e.comment||e.biggestIssues}</div></div>
+      </div>`).join('')}
+    </div>`:''}
+
+    ${proVoices.length?`<div class="summary-card">
+      <div class="summary-title">🟢 Promoter Voices (what's working)</div>
+      ${proVoices.map(e=>`<div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start">
+        <span style="background:rgba(61,214,140,0.12);border:1px solid rgba(61,214,140,0.3);color:#3DD68C;font-family:'League Gothic',sans-serif;padding:2px 8px;border-radius:2px;font-size:0.82rem;white-space:nowrap">${e.score}/10</span>
+        <div><div style="font-weight:600;font-size:0.8rem;color:var(--muted);margin-bottom:3px">${e.storeHandle||e.seller||'Unknown'}</div>
+          <div style="font-size:0.83rem;color:var(--cream);line-height:1.5">${e.comment}</div></div>
+      </div>`).join('')}
+    </div>`:''}
+
     <div class="footer">
-      <div class="footer-left">
-        <div style="font-weight:700;color:var(--cream);margin-bottom:2px">Fleek Seller Experience — Internal NPS Report</div>
-        <div>Generated ${now} · ${total} responses · ${activePeriod==='all'?'All Time':activePeriod} · Confidential</div>
-      </div>
-      <div class="footer-right">
-        <span style="font-size:0.68rem;color:var(--muted);letter-spacing:1px">POWERED BY</span>
-        <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek"/>
-      </div>
-    </div>
-  `;
-
-  // ── Trend chart (all periods, always) ──
-  const trendPeriods = getPeriods();
-  const trendStats = trendPeriods.map(p => ({ period: p, nps: calcNPS(allData.filter(e=>e.period===p)).nps }));
-  const trendCtx = document.getElementById('trendChart')?.getContext('2d');
-  if (trendCtx) {
-    if (window._trendChart) window._trendChart.destroy();
-    window._trendChart = new Chart(trendCtx, {
-      type: 'line',
-      data: {
-        labels: trendStats.map(p=>p.period),
-        datasets: [{
-          label: 'NPS', data: trendStats.map(p=>p.nps),
-          borderColor: '#FFD400', backgroundColor: 'rgba(255,212,0,0.07)',
-          borderWidth: 2.5, pointBackgroundColor: '#FFD400', pointRadius: 6,
-          pointHoverRadius: 8, tension: 0.3, fill: true
-        }]
-      },
-      options: {
-        plugins: {
-          legend: { display: false },
-          annotation: {
-            annotations: {
-              zeroLine: {
-                type: 'line', yMin: 0, yMax: 0,
-                borderColor: 'rgba(255,212,0,0.35)', borderWidth: 1.5, borderDash: [5,5],
-                label: { display: true, content: 'TARGET (0)', color: '#FFD400',
-                  backgroundColor: 'rgba(255,212,0,0.06)',
-                  font: { family: 'Montserrat', size: 9, weight: '700' },
-                  position: 'end', padding: {x:6,y:3} }
-              }
-            }
-          }
-        },
-        scales: {
-          x: { grid:{color:'#1a1a1a'}, ticks:{color:'#888',font:{family:'Montserrat',size:10}} },
-          y: { grid:{color:'#1a1a1a'}, ticks:{color:'#888',font:{family:'Montserrat',size:10}} }
-        }
-      }
-    });
-  }
-
-  // ── Donut chart ──
-  const dCtx = document.getElementById('donutChart')?.getContext('2d');
-  if (dCtx && total > 0) {
-    if (window._donutChart) window._donutChart.destroy();
-    window._donutChart = new Chart(dCtx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Promoters','Passives','Detractors'],
-        datasets: [{ data:[pro,pass,det], backgroundColor:['#3DD68C','#F25C2A','#E8453C'], borderWidth:0, hoverOffset:8 }]
-      },
-      options: {
-        cutout: '68%',
-        plugins: {
-          legend: { position:'bottom', labels:{ color:'#888', padding:14, font:{family:'Montserrat',size:10} } },
-          tooltip: { callbacks:{ label: c => ` ${c.label}: ${c.raw} (${Math.round(c.raw/total*100)}%)` } }
-        }
-      }
-    });
-  }
+      <div class="footer-left"><div style="font-weight:700;color:var(--cream);margin-bottom:2px">Fleek Seller Experience — Smart Summary</div>
+        <div>Generated ${now} · ${total} responses · ${activePeriod==='all'?'All Time':activePeriod} · Confidential</div></div>
+      <div class="footer-right"><span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px">POWERED BY</span>
+        <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek"/></div>
+    </div>`;
 }
 
-function setPeriod(p) {
-  activePeriod = p;
-  render();
-  window.scrollTo({ top:0, behavior:'smooth' });
+// ── PDF EXPORT ───────────────────────────────────────────────────────────
+function exportPDF() {
+  const data = filtered();
+  const periods = getPeriods();
+  if (!data.length) { alert('No data to export.'); return; }
+  const {nps,total,pro,pass,det} = calcNPS(data);
+  const proP=Math.round(pro/total*100), passP=Math.round(pass/total*100), detP=Math.round(det/total*100);
+  const health=nps>=50?{l:'EXCELLENT',c:'#3DD68C'}:nps>=20?{l:'GOOD',c:'#3DD68C'}:nps>=0?{l:'NEEDS WORK',c:'#F25C2A'}:{l:'CRITICAL',c:'#E8453C'};
+  const periodLabel = activePeriod==='all'?'All Time':activePeriod;
+  const now = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+  const LOGO = 'https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp';
+
+  // Period trend cards for PDF
+  const trendCards = periods.map((p,i)=>{
+    const pn=calcNPS(allData.filter(e=>e.period===p));
+    const pnP=Math.round(pn.pro/pn.total*100), pnPass=Math.round(pn.pass/pn.total*100), pnDet=Math.round(pn.det/pn.total*100);
+    const c=pn.nps>=0?'#3DD68C':'#E8453C';
+    const isCur=p===activePeriod;
+    return `<div style="background:#F8F8F8;border:1px solid ${isCur?'#FFD400':'#E5E5E5'};border-radius:4px;padding:20px;${isCur?'box-shadow:0 0 0 1px #FFD400':''}">
+      <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#888;margin-bottom:8px">${p}${isCur?' · CURRENT':''}</div>
+      <div style="font-family:'League Gothic',sans-serif;font-size:44px;font-weight:400;color:${c};line-height:1;margin-bottom:8px">${pn.nps>0?'+':''}${pn.nps}</div>
+      <div style="font-size:10px;color:#999;margin-bottom:12px">n = ${pn.total} responses</div>
+      ${[{l:'Promoters',v:pnP,c:'#3DD68C'},{l:'Passives',v:pnPass,c:'#F25C2A'},{l:'Detractors',v:pnDet,c:'#E8453C'}].map(s=>`
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+          <div style="font-size:10px;color:#888;width:66px;flex-shrink:0">${s.l}</div>
+          <div style="flex:1;height:4px;background:#E5E5E5;border-radius:2px;overflow:hidden">
+            <div style="width:${s.v}%;height:100%;background:${s.c};border-radius:2px"></div>
+          </div>
+          <div style="font-size:10px;color:#888;width:32px;text-align:right">${s.v}%</div>
+        </div>`).join('')}
+    </div>`;
+  }).join('');
+
+  // Dept table for PDF
+  const depts=['Seller Support','Quality Check','Payments','Shipping & Logistics','Vendor App','Sales & Visibility'];
+  const deptRows=depts.map(d=>{
+    const dd=data.filter(e=>e.department===d); if(!dd.length)return '';
+    const dn=calcNPS(dd); const c=dn.nps>=0?'#3DD68C':'#E8453C';
+    return `<tr><td style="padding:10px 14px;border-bottom:1px solid #E5E5E5;font-size:12px">${d}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #E5E5E5;font-size:12px;color:#888;text-align:center">${dn.total}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #E5E5E5;font-family:'League Gothic',sans-serif;font-size:22px;color:${c}">${dn.nps>0?'+':''}${dn.nps}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #E5E5E5;font-size:12px;color:#3DD68C">${Math.round(dd.filter(e=>e.score>=9).length/dn.total*100)}%</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #E5E5E5;font-size:12px;color:#E8453C">${Math.round(dd.filter(e=>e.score<=6).length/dn.total*100)}%</td></tr>`;
+  }).filter(Boolean).join('');
+
+  // Geo table for PDF
+  const zones=['PK Zone','PK Non-Zone','India','ROW'];
+  const geoRows=zones.map(z=>{
+    const zd=data.filter(e=>e.geography===z); if(!zd.length)return '';
+    const zn=calcNPS(zd); const c=zn.nps>=0?'#3DD68C':'#E8453C';
+    return `<tr><td style="padding:10px 14px;border-bottom:1px solid #E5E5E5;font-size:12px">${z}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #E5E5E5;font-size:12px;color:#888;text-align:center">${zn.total}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #E5E5E5;font-family:'League Gothic',sans-serif;font-size:22px;color:${c}">${zn.nps>0?'+':''}${zn.nps}</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #E5E5E5;font-size:12px;color:#3DD68C">${Math.round(zd.filter(e=>e.score>=9).length/zn.total*100)}%</td>
+      <td style="padding:10px 14px;border-bottom:1px solid #E5E5E5;font-size:12px;color:#E8453C">${Math.round(zd.filter(e=>e.score<=6).length/zn.total*100)}%</td></tr>`;
+  }).filter(Boolean).join('');
+
+  // Top comments for PDF
+  const wc=data.filter(e=>e.comment&&e.comment.trim().length>8&&Number.isFinite(e.score));
+  const detComs=wc.filter(e=>e.score<=6).slice(0,4);
+  const proComs=wc.filter(e=>e.score>=9).slice(0,3);
+  const mkPdfC=(e,cat)=>{
+    const c=cat==='D'?'#E8453C':cat==='P'?'#3DD68C':'#F25C2A';
+    const lbl=cat==='D'?'Detractor':cat==='P'?'Promoter':'Passive';
+    return `<div style="padding:12px 0;border-bottom:1px solid #E5E5E5;display:flex;gap:12px;align-items:flex-start">
+      <div style="background:${c}22;border:1px solid ${c}44;color:${c};font-family:'League Gothic',sans-serif;font-size:16px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:3px;flex-shrink:0">${e.score}</div>
+      <div>
+        <div style="font-size:11px;color:#888;margin-bottom:3px;display:flex;gap:8px;align-items:center">
+          <span style="font-weight:700;color:#111111">${e.storeHandle||e.seller||'Unknown'}</span>
+          <span style="background:${c}22;color:${c};padding:1px 6px;border-radius:2px;font-size:9px;letter-spacing:1px;text-transform:uppercase">${lbl}</span>
+          <span>${e.period}</span>
+        </div>
+        <div style="font-size:12px;color:#333333;line-height:1.5">${e.comment}</div>
+        ${e.biggestIssues?`<div style="font-size:11px;color:#666;margin-top:3px">Issues: ${e.biggestIssues}</div>`:''}
+      </div>
+    </div>`;
+  };
+
+  // Satisfaction section for PDF (if tab is satisfaction)
+  let satSection = '';
+  if (activeTab === 'satisfaction') {
+    const withSat=data.filter(e=>e.satisfaction&&Object.keys(e.satisfaction).length>0);
+    const areas=['Payment','Quality Check','Sales','Seller Support','Shipping & Logistics','Vendor Application','Refund'];
+    const aStats=areas.map(area=>{
+      const rs=withSat.filter(e=>e.satisfaction[area]);
+      const counts={'Satisfied':0,'Neutral':0,'Not Satisfied':0};
+      rs.forEach(e=>{if(counts[e.satisfaction[area]]!==undefined)counts[e.satisfaction[area]]++;});
+      const t=rs.length;
+      return{area,counts,total:t,pct:t>0?{sat:Math.round(counts.Satisfied/t*100),neu:Math.round(counts.Neutral/t*100),ns:Math.round(counts['Not Satisfied']/t*100)}:{sat:0,neu:0,ns:0}};
+    }).filter(s=>s.total>0);
+    satSection = withSat.length ? `
+      <div style="margin:32px 0 0">
+        <div style="font-family:'League Gothic',sans-serif;font-size:11px;letter-spacing:3px;color:#FFD400;text-transform:uppercase;border-left:3px solid #FFD400;padding-left:12px;margin-bottom:16px">Satisfaction by Area</div>
+        ${aStats.map(({area,pct,total,counts})=>`
+          <div style="margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:12px"><span style="font-weight:600;color:#111111">${area}</span><span style="color:#666">${total} responses</span></div>
+            <div style="display:flex;height:8px;border-radius:2px;overflow:hidden;background:#EEEEEE">
+              <div style="width:${pct.sat}%;background:#3DD68C"></div>
+              <div style="width:${pct.neu}%;background:#F25C2A"></div>
+              <div style="width:${pct.ns}%;background:#E8453C"></div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:4px;font-size:10px;color:#666">
+              <span><span style="color:#3DD68C">■</span> Satisfied ${pct.sat}% (${counts.Satisfied})</span>
+              <span><span style="color:#F25C2A">■</span> Neutral ${pct.neu}% (${counts.Neutral})</span>
+              <span><span style="color:#E8453C">■</span> Not Satisfied ${pct.ns}% (${counts['Not Satisfied']})</span>
+            </div>
+          </div>`).join('')}
+      </div>` : `<p style="color:#666;font-size:12px;margin-top:20px">No satisfaction data for this period.</p>`;
+  }
+
+  // Smart summary issues for PDF
+  let summarySection = '';
+  if (activeTab === 'summary') {
+    const issueKW={'App Performance':['app hang','hangs','crash','slow','lag','buggy'],'Payment/Refund':['payment','payout','refund'],'Photo Upload':['photo','picture','background remov'],'AI/Brand Tags':['ai generat','wrong brand'],'Shipping':['shipping','deliver','logistic'],'Individual Pricing':['individual','single piece','etsy','ebay','per piece']};
+    const allText=data.map(e=>((e.comment||'')+' '+(e.mainIssue||'')+' '+(e.biggestIssues||'')).toLowerCase()).join(' ');
+    const iCounts=Object.entries(issueKW).map(([issue,kws])=>({issue,count:kws.reduce((a,kw)=>a+(allText.split(kw).length-1),0)})).filter(d=>d.count>0).sort((a,b)=>b.count-a.count);
+    summarySection = iCounts.length?`
+      <div style="margin:32px 0 0">
+        <div style="font-family:'League Gothic',sans-serif;font-size:11px;letter-spacing:3px;color:#FFD400;text-transform:uppercase;border-left:3px solid #FFD400;padding-left:12px;margin-bottom:16px">Top Issues from Seller Comments</div>
+        ${iCounts.slice(0,6).map((d,i)=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px">
+          <span style="background:#FFD400;color:#0F0F0F;font-family:'League Gothic',sans-serif;padding:1px 7px;border-radius:2px;font-size:11px;min-width:20px;text-align:center">${i+1}</span>
+          <div style="flex:1">
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px;font-size:12px">
+              <span style="font-weight:600;color:#111111">${d.issue}</span>
+              <span style="color:#666">${d.count} mention${d.count>1?'s':''}</span>
+            </div>
+            <div style="background:#EEEEEE;height:5px;border-radius:2px;overflow:hidden">
+              <div style="width:${Math.round(d.count/iCounts[0].count*100)}%;height:100%;background:#E8453C"></div>
+            </div>
+          </div>
+        </div>`).join('')}
+      </div>`:'';
+  }
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Fleek Seller NPS Report — ${periodLabel}</title>
+<link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{background:#FFFFFF;color:#111111;font-family:'Montserrat',sans-serif;font-size:13px;line-height:1.6}
+.navbar{background:#FFFFFF;border-bottom:2px solid #FFD400;padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:12px}
+.nav-logo img{height:28px;filter:brightness(0);display:block}
+.nav-logo .divider{width:1px;height:18px;background:#E5E5E5}
+.nav-logo .label{font-family:'League Gothic',sans-serif;font-size:14px;letter-spacing:4px;color:#FFD400;text-transform:uppercase}
+.nav-right{text-align:right}
+.nav-right .rpt-title{font-family:'League Gothic',sans-serif;font-size:13px;font-weight:400;letter-spacing:3px;text-transform:uppercase;color:#111111}
+.nav-right .rpt-sub{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#888;margin-top:2px}
+.hero{background:#F8F8F8;border-bottom:1px solid #E5E5E5;padding:56px 48px 44px}
+.hero-eyebrow{font-family:'League Gothic',sans-serif;font-size:10px;font-weight:400;letter-spacing:3px;text-transform:uppercase;color:#FFD400;margin-bottom:16px}
+.hero-h1{font-family:'League Gothic',sans-serif;font-size:72px;font-weight:400;line-height:0.95;text-transform:uppercase;color:#111111;margin-bottom:20px;letter-spacing:2px}
+.hero-h1 .accent{color:#FFD400}
+.hero-desc{font-size:13px;color:#666;max-width:400px;line-height:1.7;margin-bottom:40px}
+.kpi-row{display:flex;gap:0;border-top:1px solid #E5E5E5;padding-top:32px;flex-wrap:wrap;gap:0}
+.kpi-item{padding:0 36px 0 0;border-right:1px solid #E5E5E5;margin-right:36px;flex-shrink:0}
+.kpi-item:last-child{border-right:none;margin-right:0}
+.kpi-num{font-family:'League Gothic',sans-serif;font-size:52px;font-weight:400;line-height:1;margin-bottom:5px}
+.kpi-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#888;font-weight:700}
+.section{padding:40px 48px;border-bottom:1px solid #E5E5E5}
+.section:last-child{border-bottom:none}
+.sec-eye{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#FFD400;margin-bottom:6px;padding-left:12px;border-left:3px solid #FFD400}
+.sec-h{font-family:'League Gothic',sans-serif;font-size:28px;font-weight:400;color:#111111;text-transform:uppercase;letter-spacing:1px;margin-bottom:24px}
+.trend-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:4px}
+table{width:100%;border-collapse:collapse}
+thead th{text-align:left;padding:9px 14px;border-bottom:1px solid #E5E5E5;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#333;font-weight:700}
+tbody td{padding:10px 14px;border-bottom:1px solid #E5E5E5;font-size:12px;color:#111111}
+tbody tr:last-child td{border-bottom:none}
+.footer{padding:20px 48px;border-top:1px solid #E5E5E5;display:flex;justify-content:space-between;align-items:center}
+.footer-l{color:#888;font-size:10px;line-height:1.6}
+.footer-r{display:flex;align-items:center;gap:10px}
+.footer-r img{height:18px;filter:brightness(0);opacity:0.5}
+@media print{@page{margin:0;size:A4}body{font-size:11px}.hero{padding:40px 36px 32px}.section{padding:28px 36px}.footer,.navbar{padding-left:36px;padding-right:36px}}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <div class="nav-logo">
+    <img src="${LOGO}" alt="Fleek" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+    <span style="display:none;font-family:'League Gothic',sans-serif;font-size:22px;letter-spacing:3px;color:#FFD400">FLEEK</span>
+    <div class="divider"></div>
+    <span class="label">NPS Report</span>
+  </div>
+  <div class="nav-right">
+    <div class="rpt-title">Seller NPS Report — ${periodLabel}</div>
+    <div class="rpt-sub">Generated ${now} · Internal &amp; Confidential</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-eyebrow">Fleek Seller Experience · ${periodLabel}</div>
+  <div class="hero-h1">Seller<br/><span class="accent">NPS</span><br/>Report</div>
+  <div class="hero-desc">Net Promoter Score analysis across ${total} seller responses. Period: ${periodLabel}.</div>
+  <div class="kpi-row">
+    <div class="kpi-item"><div class="kpi-num" style="color:${health.c}">${nps>0?'+':''}${nps}</div><div class="kpi-label">NPS Score · ${health.l}</div></div>
+    <div class="kpi-item"><div class="kpi-num" style="color:#111111">${total}</div><div class="kpi-label">Total Responses</div></div>
+    <div class="kpi-item"><div class="kpi-num" style="color:#3DD68C">${proP}%</div><div class="kpi-label">Promoters (9–10)</div></div>
+    <div class="kpi-item"><div class="kpi-num" style="color:#E8453C">${detP}%</div><div class="kpi-label">Detractors (0–6)</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="sec-eye">Part 1 · Historical Trend</div>
+  <div class="sec-h">NPS by Period</div>
+  <div class="trend-grid">${trendCards}</div>
+</div>
+
+${deptRows?`<div class="section">
+  <div class="sec-eye">Part 2 · Department Breakdown</div>
+  <div class="sec-h">NPS by Department</div>
+  <table><thead><tr><th>Department</th><th style="text-align:center">Responses</th><th>NPS</th><th>Promoters</th><th>Detractors</th></tr></thead><tbody>${deptRows}</tbody></table>
+</div>`:''}
+
+${geoRows?`<div class="section">
+  <div class="sec-eye">Part 3 · Geography Breakdown</div>
+  <div class="sec-h">NPS by Zone</div>
+  <table><thead><tr><th>Zone</th><th style="text-align:center">Responses</th><th>NPS</th><th>Promoters</th><th>Detractors</th></tr></thead><tbody>${geoRows}</tbody></table>
+</div>`:''}
+
+${satSection?`<div class="section"><div class="sec-eye">Part 4 · Satisfaction</div><div class="sec-h">Satisfaction by Area</div>${satSection}</div>`:''}
+${summarySection?`<div class="section"><div class="sec-eye">Part 4 · Analysis</div><div class="sec-h">Top Issues</div>${summarySection}</div>`:''}
+
+${detComs.length||proComs.length?`<div class="section">
+  <div class="sec-eye">Part ${satSection||summarySection?5:4} · Seller Voices</div>
+  <div class="sec-h">Feedback Highlights</div>
+  ${detComs.length?`<div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#E8453C;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #E5E5E5">⚠ Detractor Voices</div>${detComs.map(e=>mkPdfC(e,'D')).join('')}`:''}
+  ${proComs.length?`<div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#3DD68C;font-weight:700;margin-top:16px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #E5E5E5">✓ Promoter Voices</div>${proComs.map(e=>mkPdfC(e,'P')).join('')}`:''}
+</div>`:''}
+
+<div class="footer">
+  <div class="footer-l">
+    <div style="font-weight:700;color:#555;margin-bottom:2px">Fleek Seller Experience — Internal Report — Confidential</div>
+    <div>${now} · fleek-nps-dashboard.vercel.app</div>
+  </div>
+  <div class="footer-r">
+    <span style="font-size:9px;color:#888;letter-spacing:1px">POWERED BY</span>
+    <img src="${LOGO}" alt="Fleek" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+    <span style="display:none;font-family:'League Gothic',sans-serif;font-size:16px;letter-spacing:2px;color:#FFD400">FLEEK</span>
+  </div>
+</div>
+
+<script>window.onload=function(){window.print();}<\/script>
+</body>
+</html>`;
+
+  const w = window.open('', '_blank', 'width=1000,height=800');
+  if (!w) { alert('Please allow popups for this site to export PDF.'); return; }
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
 }
 
+// ── Init ─────────────────────────────────────────────────────────────────
 loadData();
 </script>
 </body>
