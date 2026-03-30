@@ -1,7 +1,5 @@
 // api/tally-webhook.js
-// Receives Tally form submissions and converts them to NPS dashboard format
-// Set this as your Tally form webhook: https://fleek-nps-dashboard.vercel.app/api/tally-webhook
-module.exports = function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -17,7 +15,6 @@ module.exports = function handler(req, res) {
       if (f.type === 'MULTIPLE_CHOICE' || f.type === 'DROPDOWN') return f.value?.[0]?.text || f.value || null;
       return f.value || null;
     };
-
     const getMatrix = (label) => {
       const f = fields.find(f => f.label && f.label.toLowerCase().includes(label.toLowerCase()));
       if (!f || f.type !== 'MATRIX') return {};
@@ -33,28 +30,54 @@ module.exports = function handler(req, res) {
     }
 
     const entry = {
-      email: getField('email') || getField('registered email') || '',
-      seller: getField('store handle') || getField('store name') || 'Unknown',
-      storeHandle: getField('store handle') || '',
+      email:        getField('email') || getField('registered email') || '',
+      seller:       getField('store handle') || getField('store name') || 'Unknown',
+      storeHandle:  getField('store handle') || '',
       score,
-      comment: getField('main reason') || getField('reason for') || '',
-      mainIssue: getField('improve') || getField('improvement') || '',
-      aspects: getField('aspects') || getField('value the most') || '',
+      comment:      getField('main reason') || getField('reason for') || '',
+      mainIssue:    getField('improve') || getField('improvement') || '',
+      aspects:      getField('aspects') || getField('value the most') || '',
       satisfaction: getMatrix('satisfied') || getMatrix('satisfaction') || {},
-      biggestIssues: getField('biggest issues') || getField('issues') || '',
-      department: getField('aspects') || 'Seller Support',
-      geography: 'PK Zone',
-      city: '',
-      period: new Date().toLocaleString('en-US', { month: 'short' }) + ' ' + new Date().getFullYear(),
-      submittedAt: new Date().toISOString(),
-      source: 'tally_webhook'
+      biggestIssues:getField('biggest issues') || getField('issues') || '',
+      department:   getField('aspects') || 'Seller Support',
+      geography:    'PK Zone',
+      city:         '',
+      period:       new Date().toLocaleString('en-US', { month: 'short' }) + ' ' + new Date().getFullYear(),
+      submittedAt:  new Date().toISOString(),
+      source:       'tally_webhook'
     };
 
     if (!global.npsResponses) global.npsResponses = [];
     global.npsResponses.unshift(entry);
     if (global.npsResponses.length > 5000) global.npsResponses = global.npsResponses.slice(0, 5000);
 
-    console.log('[tally-webhook] New:', entry.seller, 'Score:', entry.score);
+    // ── Slack DM notification ────────────────────────────────────────────────
+    const slackToken = process.env.SLACK_BOT_TOKEN;
+    if (slackToken) {
+      const cat = score >= 9 ? '🟢 Promoter' : score >= 7 ? '🟡 Passive' : '🔴 Detractor';
+      await fetch('https://slack.com/api/chat.postMessage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${slackToken}` },
+        body: JSON.stringify({
+          channel: 'U0947NPLP1V',
+          text: `📋 New NPS Response (Tally) — ${entry.period}`,
+          blocks: [
+            { type: 'header', text: { type: 'plain_text', text: `📋 New NPS Response — ${entry.period}` } },
+            { type: 'section', fields: [
+              { type: 'mrkdwn', text: `*🏪 Store*\n${entry.seller}` },
+              { type: 'mrkdwn', text: `*📊 Score*\n${score}/10  ${cat}` },
+              { type: 'mrkdwn', text: `*📧 Email*\n${entry.email || '—'}` },
+              { type: 'mrkdwn', text: `*📌 Aspect*\n${entry.aspects || '—'}` }
+            ]},
+            entry.comment ? { type: 'section', text: { type: 'mrkdwn', text: `*💬 Reason*\n_${entry.comment}_` } } : null,
+            entry.biggestIssues ? { type: 'section', text: { type: 'mrkdwn', text: `*⚠️ Issues*\n${entry.biggestIssues}` } } : null,
+            { type: 'context', elements: [{ type: 'mrkdwn', text: `Via Tally webhook · ${new Date().toLocaleString('en-GB')}` }] },
+            { type: 'divider' }
+          ].filter(Boolean)
+        })
+      }).catch(e => console.error('[tally-webhook] Slack error:', e.message));
+    }
+
     return res.status(200).json({ success: true, seller: entry.seller, score: entry.score, period: entry.period });
 
   } catch (err) {
