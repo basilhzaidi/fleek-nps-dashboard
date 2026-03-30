@@ -1145,13 +1145,14 @@ Any sellers showing signs of leaving (low score + strong negative). Keep brief.
 
 Under 500 words. Be direct and specific.`;
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/claude-proxy', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+        body: JSON.stringify({ prompt })
       });
       const data = await res.json();
-      const text = data.content?.find(b => b.type === 'text')?.text || 'No response.';
+      if (!res.ok) throw new Error(data.error || 'Proxy error');
+      const text = data.text || 'No response.';
       const rendered = text
         .replace(/^## (.+)$/gm, '<div style="font-family:\'League Gothic\',sans-serif;font-size:1rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin:24px 0 10px;padding-top:20px;border-top:1px solid var(--border)">$1</div>')
         .replace(/^\*\*(.+?)\*\*/gm, '<strong style="color:var(--cream)">$1</strong>')
