@@ -164,7 +164,7 @@
     <button class="tab" onclick="showTab('responses')">📋 Responses</button>
     <button class="tab" onclick="showTab('automation')">⚙️ Automation</button>
     <button class="tab" onclick="showTab('satisfaction')">😊 Satisfaction</button>
-    <button class="tab" onclick="showTab('insights')">🤖 AI Insights</button>
+    <button class="tab" onclick="showTab('summary')">📝 Smart Summary</button>
     <button class="tab" onclick="showTab('report')">📄 Report</button>
   </div>
 
@@ -341,27 +341,19 @@
     </div>
 
 
-    <!-- AI INSIGHTS TAB -->
-    <div class="tab-content" id="tab-insights">
+
+    <!-- SMART SUMMARY TAB -->
+    <div class="tab-content" id="tab-summary">
       <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;align-items:center;justify-content:space-between">
         <div>
-          <div style="font-family:'League Gothic',sans-serif;font-size:1.4rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase">AI Insights</div>
-          <div style="color:var(--muted);font-size:0.8rem;margin-top:4px">Claude reads all seller feedback and generates actionable summaries</div>
+          <div style="font-family:'League Gothic',sans-serif;font-size:1.4rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase">Smart Summary</div>
+          <div style="color:var(--muted);font-size:0.8rem;margin-top:4px">Auto-generated analysis from real seller data — no AI API needed</div>
         </div>
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          <select id="insightsPeriod" style="background:#161616;border:1.5px solid var(--border);border-radius:4px;color:var(--text);font-family:'Montserrat',sans-serif;padding:9px 14px;font-size:0.82rem;outline:none">
-            <option value="all">All Periods</option>
-          </select>
-          <button onclick="generateInsights()" id="insightsBtn" style="background:var(--yellow);color:#0F0F0F;border:none;border-radius:4px;padding:10px 22px;font-family:'League Gothic',sans-serif;font-size:1rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:opacity 0.2s">GENERATE INSIGHTS</button>
-        </div>
+        <select id="summaryPeriod" onchange="renderSummary()" style="background:#161616;border:1.5px solid var(--border);border-radius:4px;color:var(--text);font-family:'Montserrat',sans-serif;padding:9px 14px;font-size:0.82rem;outline:none">
+          <option value="all">All Periods</option>
+        </select>
       </div>
-      <div id="insightsContent">
-        <div style="background:#141414;border:1px solid var(--border);border-radius:4px;padding:48px;text-align:center;border-left:3px solid var(--yellow)">
-          <div style="font-size:2rem;margin-bottom:12px">🤖</div>
-          <div style="font-family:'League Gothic',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--yellow);text-transform:uppercase;margin-bottom:8px">Select a period and click Generate</div>
-          <div style="color:var(--muted);font-size:0.84rem;line-height:1.7;max-width:480px;margin:0 auto">Claude will analyse seller comments, scores, and satisfaction ratings to surface key themes, top complaints, and recommended actions.</div>
-        </div>
-      </div>
+      <div id="summaryContent"></div>
     </div>
 
     <div class="tab-content" id="tab-report">
@@ -978,7 +970,7 @@
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById('tab-' + id).classList.add('active');
-    document.querySelectorAll('.tab')[['overview','geography','departments','history','upload','responses','automation','satisfaction','insights','report'].indexOf(id)]?.classList.add('active');
+    document.querySelectorAll('.tab')[['overview','geography','departments','history','upload','responses','automation','satisfaction','summary','report'].indexOf(id)]?.classList.add('active');
     if (id === 'overview') renderOverview();
     else if (id === 'geography') renderGeography();
     else if (id === 'departments') renderDepartments();
@@ -987,7 +979,7 @@
     else if (id === 'responses') renderResponses();
     else if (id === 'automation') renderAutomation();
     else if (id === 'satisfaction') renderSatisfaction();
-    else if (id === 'insights') renderInsights();
+    else if (id === 'summary') renderSummary();
     else if (id === 'report') { renderReport(); }
   }
   
@@ -1069,127 +1061,186 @@
   }
 
 
-  // ===================== AI INSIGHTS =====================
-  function renderInsights() {
-    const allData = getData();
-    const sel = document.getElementById('insightsPeriod');
-    if (!sel) return;
-    const cur = sel.value;
-    const periods = [...new Set(allData.map(e => e.period))].sort();
-    sel.innerHTML = '<option value="all">All Periods</option>' +
-      periods.map(p => `<option value="${p}"${p === cur ? ' selected' : ''}>${p}</option>`).join('');
-  }
 
-  async function generateInsights() {
+  // ===================== SMART SUMMARY =====================
+  function renderSummary() {
     const allData = getData();
-    const period = document.getElementById('insightsPeriod')?.value || 'all';
-    const filtered = period === 'all' ? allData : allData.filter(e => e.period === period);
-    if (!filtered.length) {
-      document.getElementById('insightsContent').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)">No data for this period.</div>';
+    const sel = document.getElementById('summaryPeriod');
+    if (sel) {
+      const cur = sel.value;
+      const periods = [...new Set(allData.map(e => e.period))].sort();
+      sel.innerHTML = '<option value="all">All Periods</option>' +
+        periods.map(p => `<option value="${p}"${p === cur ? ' selected' : ''}>${p}</option>`).join('');
+    }
+    const pf = sel?.value || 'all';
+    const data = pf === 'all' ? allData : allData.filter(e => e.period === pf);
+    if (!data.length) {
+      document.getElementById('summaryContent').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)">No data for this period.</div>';
       return;
     }
-    const btn = document.getElementById('insightsBtn');
-    btn.disabled = true; btn.textContent = 'ANALYSING...'; btn.style.opacity = '0.6';
-    document.getElementById('insightsContent').innerHTML = `
-      <div style="background:#141414;border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:4px;padding:48px;text-align:center">
-        <div style="margin-bottom:16px"><div style="display:inline-block;width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--yellow);border-radius:50%;animation:spin 0.8s linear infinite"></div></div>
-        <div style="font-family:'League Gothic',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--yellow);text-transform:uppercase">Analysing ${filtered.length} responses...</div>
-      </div>
-      <style>@keyframes spin{to{transform:rotate(360deg)}}</style>`;
-    const { nps, total, pro, det } = calcNPS(filtered);
-    const comments = filtered.filter(e => e.comment || e.biggestIssues || e.mainIssue)
-      .map(e => `[Score:${e.score}|${e.department||'?'}|${e.geography||'?'}] ${e.comment||''} ${e.biggestIssues ? '//Issues: '+e.biggestIssues : ''} ${e.mainIssue && e.mainIssue !== 'None' ? '//Main: '+e.mainIssue : ''}`)
-      .join('\n');
-    const satSummary = (() => {
-      const ws = filtered.filter(e => e.satisfaction && Object.keys(e.satisfaction).length);
-      if (!ws.length) return 'No satisfaction data yet.';
-      const areas = ['Payment','Quality Check','Sales','Seller Support','Shipping & Logistics','Vendor Application','Refund'];
-      return areas.map(a => {
-        const rs = ws.filter(e => e.satisfaction[a]);
-        if (!rs.length) return null;
-        const s = rs.filter(e => e.satisfaction[a] === 'Satisfied').length;
-        const n = rs.filter(e => e.satisfaction[a] === 'Not Satisfied').length;
-        return `${a}: ${Math.round(s/rs.length*100)}% satisfied, ${Math.round(n/rs.length*100)}% not satisfied (n=${rs.length})`;
-      }).filter(Boolean).join('\n');
-    })();
-    const prompt = `You are analysing Fleek seller NPS survey data. Fleek is a B2B wholesale marketplace for vintage and second-hand clothing connecting resellers with global suppliers.
 
-PERIOD: ${period === 'all' ? 'All Time' : period}
-NPS: ${nps > 0 ? '+' : ''}${nps} | Total: ${total} | Promoters: ${Math.round(pro/total*100)}% | Detractors: ${Math.round(det/total*100)}%
+    const { nps, total, pro, pass, det } = calcNPS(data);
+    const proP = Math.round(pro/total*100);
+    const passP = Math.round(pass/total*100);
+    const detP = Math.round(det/total*100);
 
-SATISFACTION BY AREA:
-${satSummary}
+    // Previous period for comparison
+    const periods = [...new Set(allData.map(e => e.period))].sort();
+    const curIdx = periods.indexOf(pf);
+    const prevPeriod = curIdx > 0 ? periods[curIdx - 1] : null;
+    const prevData = prevPeriod ? allData.filter(e => e.period === prevPeriod) : null;
+    const prevNPS = prevData ? calcNPS(prevData).nps : null;
+    const npsDelta = prevNPS !== null ? nps - prevNPS : null;
 
-SELLER FEEDBACK:
-${comments}
+    // Department breakdown
+    const depts = ['Seller Support','Quality Check','Payments','Shipping & Logistics','Vendor App','Sales & Visibility'];
+    const deptStats = depts.map(d => {
+      const dd = data.filter(e => e.department === d);
+      if (!dd.length) return null;
+      const n = calcNPS(dd);
+      return { name: d, nps: n.nps, total: n.total, pro: dd.filter(e=>e.score>=9).length };
+    }).filter(Boolean).sort((a,b) => b.nps - a.nps);
 
-Write a structured analysis using these exact section headers:
+    // Top issues (keyword frequency from comments + mainIssue + biggestIssues)
+    const issueKeywords = {
+      'App Performance': ['app hang','hangs','crash','slow','lag','performance','buggy'],
+      'Payment/Refund': ['payment','payout','refund','pay us','pay the','cash','money'],
+      'Photo Upload': ['photo','picture','image','background remov','3 photo','upload photo'],
+      'AI/Brand Tags': ['ai generat','wrong brand','brand tag','ai title','wrong title'],
+      'Shipping': ['shipping','deliver','logistic','charge'],
+      'Seller Support': ['support','response','team','seller support','resolve'],
+      'Vendor App': ['app','upload','catalog','listing','platform'],
+      'Individual Pricing': ['individual','single piece','etsy','ebay','one piece','per piece'],
+    };
+    const allText = data.map(e => ((e.comment||'') + ' ' + (e.mainIssue||'') + ' ' + (e.biggestIssues||'')).toLowerCase()).join(' ');
+    const issueCounts = Object.entries(issueKeywords).map(([issue, kws]) => ({
+      issue, count: kws.reduce((acc, kw) => acc + (allText.split(kw).length - 1), 0)
+    })).filter(d => d.count > 0).sort((a,b) => b.count - a.count);
 
-## NPS SUMMARY
-2-3 sentences on overall health.
+    // Detractor comments
+    const detractorComments = data.filter(e => e.score <= 6 && (e.comment || e.biggestIssues))
+      .slice(0, 5).map(e => ({ score: e.score, seller: e.seller || 'Unknown', text: e.comment || e.biggestIssues }));
 
-## TOP WINS
-3 bullet points on what sellers value most.
+    // Promoter comments
+    const promoterComments = data.filter(e => e.score >= 9 && e.comment)
+      .slice(0, 3).map(e => ({ score: e.score, seller: e.seller || 'Unknown', text: e.comment }));
 
-## CRITICAL ISSUES
-3 bullet points on biggest pain points with specific examples.
+    // Geography best/worst
+    const geoStats = ['PK Zone','PK Non-Zone','India','ROW'].map(g => {
+      const gd = data.filter(e => e.geography === g);
+      if (gd.length < 2) return null;
+      return { zone: g, nps: calcNPS(gd).nps, total: gd.length };
+    }).filter(Boolean).sort((a,b) => b.nps - a.nps);
 
-## DEPARTMENT FOCUS
-Which department needs most attention and why.
+    // NPS health label
+    const health = nps >= 50 ? { label:'EXCELLENT', color:'#3DD68C' } :
+                   nps >= 20 ? { label:'GOOD', color:'#3DD68C' } :
+                   nps >= 0  ? { label:'NEEDS WORK', color:'var(--orange)' } :
+                               { label:'CRITICAL', color:'var(--red)' };
 
-## ACTION PLAN
-5 numbered actions for Seller Support this month.
+    const trendArrow = npsDelta === null ? '' :
+      npsDelta > 0 ? `<span style="color:#3DD68C;font-size:0.85rem;margin-left:8px">▲ +${npsDelta} vs ${prevPeriod}</span>` :
+      npsDelta < 0 ? `<span style="color:var(--red);font-size:0.85rem;margin-left:8px">▼ ${npsDelta} vs ${prevPeriod}</span>` :
+                     `<span style="color:var(--muted);font-size:0.85rem;margin-left:8px">→ no change vs ${prevPeriod}</span>`;
 
-## CHURN RISK
-Any sellers showing signs of leaving (low score + strong negative). Keep brief.
+    const card = (content) => `<div style="background:#141414;border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:4px;padding:24px;margin-bottom:16px">${content}</div>`;
+    const secTitle = (t) => `<div style="font-family:'League Gothic',sans-serif;font-size:0.85rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin-bottom:14px">${t}</div>`;
 
-Under 500 words. Be direct and specific.`;
-    try {
-      const res = await fetch('/api/claude-proxy', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt })
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Proxy error');
-      const text = data.text || 'No response.';
-      const rendered = text
-        .replace(/^## (.+)$/gm, '<div style="font-family:\'League Gothic\',sans-serif;font-size:1rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin:24px 0 10px;padding-top:20px;border-top:1px solid var(--border)">$1</div>')
-        .replace(/^\*\*(.+?)\*\*/gm, '<strong style="color:var(--cream)">$1</strong>')
-        .replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--cream)">$1</strong>')
-        .replace(/^(\d+)\. (.+)$/gm, '<div style="display:flex;gap:10px;margin:6px 0"><span style="background:var(--yellow);color:#0F0F0F;font-family:\'League Gothic\',sans-serif;padding:1px 8px;border-radius:2px;min-width:22px;text-align:center;font-size:0.85rem">$1</span><span style="color:var(--cream)">$2</span></div>')
-        .replace(/^[-•] (.+)$/gm, '<div style="display:flex;gap:8px;margin:5px 0"><span style="color:var(--yellow);margin-top:1px">▸</span><span style="color:var(--cream)">$1</span></div>')
-        .replace(/\n\n/g, '</p><p style="margin:6px 0">')
-        .replace(/\n/g, '<br/>');
-      const pLabel = period === 'all' ? 'All Time' : period;
-      const now = new Date().toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
-      document.getElementById('insightsContent').innerHTML = `
-        <div style="background:#141414;border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:4px;padding:32px;margin-bottom:12px">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:12px">
-            <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <span style="background:rgba(255,212,0,0.1);border:1px solid rgba(255,212,0,0.2);color:var(--yellow);padding:3px 12px;border-radius:2px;font-size:0.72rem;font-weight:700;letter-spacing:1px">${pLabel} · ${total} RESPONSES</span>
-              <span style="background:${nps >= 0 ? 'rgba(61,214,140,0.1)' : 'rgba(232,69,60,0.1)'};border:1px solid ${nps >= 0 ? 'rgba(61,214,140,0.2)' : 'rgba(232,69,60,0.2)'};color:${nps >= 0 ? '#3DD68C' : 'var(--red)'};padding:3px 12px;border-radius:2px;font-size:0.72rem;font-weight:700;letter-spacing:1px">NPS ${nps > 0 ? '+' : ''}${nps}</span>
-              <span style="color:var(--muted);font-size:0.72rem;padding-top:5px">${now}</span>
-            </div>
-            <button onclick="copyInsights()" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:4px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase">COPY</button>
+    document.getElementById('summaryContent').innerHTML = `
+
+      ${card(`
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:16px">
+          <div style="text-align:center">
+            <div style="font-size:0.65rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;font-weight:700;margin-bottom:6px">NPS SCORE</div>
+            <div style="font-family:'League Gothic',sans-serif;font-size:3rem;color:${health.color};line-height:1">${nps > 0 ? '+' : ''}${nps}</div>
+            <div style="font-size:0.7rem;font-weight:700;color:${health.color};letter-spacing:2px;margin-top:4px">${health.label}</div>
+            ${trendArrow}
           </div>
-          <div id="insightsText" style="color:var(--cream);font-size:0.87rem;line-height:1.85">${rendered}</div>
+          <div style="text-align:center">
+            <div style="font-size:0.65rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;font-weight:700;margin-bottom:6px">RESPONSES</div>
+            <div style="font-family:'League Gothic',sans-serif;font-size:3rem;color:var(--cream);line-height:1">${total}</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:0.65rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;font-weight:700;margin-bottom:6px">PROMOTERS</div>
+            <div style="font-family:'League Gothic',sans-serif;font-size:3rem;color:#3DD68C;line-height:1">${proP}%</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:0.65rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;font-weight:700;margin-bottom:6px">DETRACTORS</div>
+            <div style="font-family:'League Gothic',sans-serif;font-size:3rem;color:var(--red);line-height:1">${detP}%</div>
+          </div>
         </div>
-        <div style="background:#141414;border:1px solid var(--border);border-radius:4px;padding:12px 16px;display:flex;align-items:center;gap:8px">
-          <span style="color:var(--muted);font-size:0.72rem">🤖 Generated by Claude AI · Based on real seller feedback · Internal use only</span>
-        </div>`;
-      window._lastInsightsText = text;
-    } catch(err) {
-      document.getElementById('insightsContent').innerHTML = `<div style="background:#141414;border:1px solid rgba(232,69,60,0.3);border-radius:4px;padding:32px;text-align:center"><div style="color:var(--red);font-family:'League Gothic',sans-serif;font-size:1rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Generation Failed</div><div style="color:var(--muted);font-size:0.84rem">${err.message}</div></div>`;
-    } finally {
-      btn.disabled = false; btn.textContent = 'GENERATE INSIGHTS'; btn.style.opacity = '1';
-    }
-  }
+      `)}
 
-  function copyInsights() {
-    if (window._lastInsightsText) {
-      navigator.clipboard.writeText(window._lastInsightsText).then(() => showToast('Insights copied!', 'success'));
-    }
+      ${issueCounts.length ? card(`
+        ${secTitle('🔴 Top Issues (from seller comments)')}
+        ${issueCounts.slice(0,6).map((d,i) => `
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+            <span style="background:var(--yellow);color:#0F0F0F;font-family:'League Gothic',sans-serif;padding:1px 8px;border-radius:2px;min-width:22px;text-align:center;font-size:0.82rem">${i+1}</span>
+            <div style="flex:1">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span style="font-weight:600;font-size:0.88rem">${d.issue}</span>
+                <span style="color:var(--muted);font-size:0.78rem">${d.count} mention${d.count>1?'s':''}</span>
+              </div>
+              <div style="background:#1e1e1e;border-radius:3px;height:6px;overflow:hidden">
+                <div style="width:${Math.round(d.count/issueCounts[0].count*100)}%;background:var(--red);height:100%;transition:width 0.5s"></div>
+              </div>
+            </div>
+          </div>`).join('')}
+      `) : ''}
+
+      ${deptStats.length ? card(`
+        ${secTitle('🏢 Department Performance')}
+        ${deptStats.map(d => {
+          const c = d.nps >= 10 ? '#3DD68C' : d.nps >= 0 ? 'var(--orange)' : 'var(--red)';
+          return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a1a1a">
+            <span style="font-size:0.88rem;font-weight:600">${d.name}</span>
+            <div style="display:flex;gap:16px;align-items:center">
+              <span style="color:var(--muted);font-size:0.78rem">${d.total} responses</span>
+              <span style="font-family:'League Gothic',sans-serif;font-size:1.2rem;color:${c};min-width:50px;text-align:right">${d.nps > 0 ? '+' : ''}${d.nps}</span>
+            </div>
+          </div>`;
+        }).join('')}
+      `) : ''}
+
+      ${geoStats.length ? card(`
+        ${secTitle('🌍 Geography Breakdown')}
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
+          ${geoStats.map(g => {
+            const c = g.nps >= 10 ? '#3DD68C' : g.nps >= 0 ? 'var(--orange)' : 'var(--red)';
+            return `<div style="background:#0c0c0c;border:1px solid var(--border);border-radius:4px;padding:14px;text-align:center">
+              <div style="font-size:0.68rem;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:6px">${g.zone}</div>
+              <div style="font-family:'League Gothic',sans-serif;font-size:2rem;color:${c}">${g.nps > 0 ? '+' : ''}${g.nps}</div>
+              <div style="font-size:0.72rem;color:var(--muted);margin-top:2px">${g.total} responses</div>
+            </div>`;
+          }).join('')}
+        </div>
+      `) : ''}
+
+      ${detractorComments.length ? card(`
+        ${secTitle('⚠️ Detractor Voices (churn risk)')}
+        ${detractorComments.map(c => `
+          <div style="padding:12px 0;border-bottom:1px solid #1a1a1a;display:flex;gap:12px;align-items:flex-start">
+            <span style="background:rgba(232,69,60,0.15);border:1px solid rgba(232,69,60,0.3);color:var(--red);font-family:'League Gothic',sans-serif;padding:2px 8px;border-radius:2px;font-size:0.85rem;white-space:nowrap">${c.score}/10</span>
+            <div>
+              <div style="font-weight:600;font-size:0.82rem;color:var(--muted);margin-bottom:3px">${c.seller}</div>
+              <div style="font-size:0.85rem;color:var(--cream);line-height:1.5">${c.text}</div>
+            </div>
+          </div>`).join('')}
+      `) : ''}
+
+      ${promoterComments.length ? card(`
+        ${secTitle('🟢 Promoter Voices (what\'s working)')}
+        ${promoterComments.map(c => `
+          <div style="padding:12px 0;border-bottom:1px solid #1a1a1a;display:flex;gap:12px;align-items:flex-start">
+            <span style="background:rgba(61,214,140,0.15);border:1px solid rgba(61,214,140,0.3);color:#3DD68C;font-family:'League Gothic',sans-serif;padding:2px 8px;border-radius:2px;font-size:0.85rem;white-space:nowrap">${c.score}/10</span>
+            <div>
+              <div style="font-weight:600;font-size:0.82rem;color:var(--muted);margin-bottom:3px">${c.seller}</div>
+              <div style="font-size:0.85rem;color:var(--cream);line-height:1.5">${c.text}</div>
+            </div>
+          </div>`).join('')}
+      `) : ''}
+
+    `;
   }
 
   // ===================== REPORT GENERATOR =====================
