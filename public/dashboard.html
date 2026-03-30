@@ -164,6 +164,7 @@
     <button class="tab" onclick="showTab('responses')">📋 Responses</button>
     <button class="tab" onclick="showTab('automation')">⚙️ Automation</button>
     <button class="tab" onclick="showTab('satisfaction')">😊 Satisfaction</button>
+    <button class="tab" onclick="showTab('insights')">🤖 AI Insights</button>
     <button class="tab" onclick="showTab('report')">📄 Report</button>
   </div>
 
@@ -337,6 +338,30 @@
         <span style="color:var(--muted);font-size:0.82rem">Satisfaction ratings from April 2026 new survey format</span>
       </div>
       <div id="satContent"></div>
+    </div>
+
+
+    <!-- AI INSIGHTS TAB -->
+    <div class="tab-content" id="tab-insights">
+      <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-family:'League Gothic',sans-serif;font-size:1.4rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase">AI Insights</div>
+          <div style="color:var(--muted);font-size:0.8rem;margin-top:4px">Claude reads all seller feedback and generates actionable summaries</div>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <select id="insightsPeriod" style="background:#161616;border:1.5px solid var(--border);border-radius:4px;color:var(--text);font-family:'Montserrat',sans-serif;padding:9px 14px;font-size:0.82rem;outline:none">
+            <option value="all">All Periods</option>
+          </select>
+          <button onclick="generateInsights()" id="insightsBtn" style="background:var(--yellow);color:#0F0F0F;border:none;border-radius:4px;padding:10px 22px;font-family:'League Gothic',sans-serif;font-size:1rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:opacity 0.2s">GENERATE INSIGHTS</button>
+        </div>
+      </div>
+      <div id="insightsContent">
+        <div style="background:#141414;border:1px solid var(--border);border-radius:4px;padding:48px;text-align:center;border-left:3px solid var(--yellow)">
+          <div style="font-size:2rem;margin-bottom:12px">🤖</div>
+          <div style="font-family:'League Gothic',sans-serif;font-size:1.1rem;letter-spacing:2px;color:var(--yellow);text-transform:uppercase;margin-bottom:8px">Select a period and click Generate</div>
+          <div style="color:var(--muted);font-size:0.84rem;line-height:1.7;max-width:480px;margin:0 auto">Claude will analyse seller comments, scores, and satisfaction ratings to surface key themes, top complaints, and recommended actions.</div>
+        </div>
+      </div>
     </div>
 
     <div class="tab-content" id="tab-report">
@@ -552,16 +577,16 @@
   
   // Load/save data
   function getData() {
-    const stored = localStorage.getItem('fleek_nps_v4');
+    const stored = localStorage.getItem('fleek_nps_v5');
     if (stored) {
       try { return JSON.parse(stored); } catch(e) {}
     }
-    localStorage.setItem('fleek_nps_v4', JSON.stringify(SEED_DATA));
+    localStorage.setItem('fleek_nps_v5', JSON.stringify(SEED_DATA));
     return SEED_DATA;
   }
   
   function saveData(data) {
-    localStorage.setItem('fleek_nps_v4', JSON.stringify(data));
+    localStorage.setItem('fleek_nps_v5', JSON.stringify(data));
   }
   
   let allData = getData();
@@ -953,7 +978,7 @@
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById('tab-' + id).classList.add('active');
-    document.querySelectorAll('.tab')[['overview','geography','departments','history','upload','responses','automation','satisfaction','report'].indexOf(id)]?.classList.add('active');
+    document.querySelectorAll('.tab')[['overview','geography','departments','history','upload','responses','automation','satisfaction','insights','report'].indexOf(id)]?.classList.add('active');
     if (id === 'overview') renderOverview();
     else if (id === 'geography') renderGeography();
     else if (id === 'departments') renderDepartments();
@@ -962,6 +987,7 @@
     else if (id === 'responses') renderResponses();
     else if (id === 'automation') renderAutomation();
     else if (id === 'satisfaction') renderSatisfaction();
+    else if (id === 'insights') renderInsights();
     else if (id === 'report') { renderReport(); }
   }
   
@@ -1042,6 +1068,129 @@
       </div>`;
   }
 
+
+  // ===================== AI INSIGHTS =====================
+  function renderInsights() {
+    const allData = getData();
+    const sel = document.getElementById('insightsPeriod');
+    if (!sel) return;
+    const cur = sel.value;
+    const periods = [...new Set(allData.map(e => e.period))].sort();
+    sel.innerHTML = '<option value="all">All Periods</option>' +
+      periods.map(p => `<option value="${p}"${p === cur ? ' selected' : ''}>${p}</option>`).join('');
+  }
+
+  async function generateInsights() {
+    const allData = getData();
+    const period = document.getElementById('insightsPeriod')?.value || 'all';
+    const filtered = period === 'all' ? allData : allData.filter(e => e.period === period);
+    if (!filtered.length) {
+      document.getElementById('insightsContent').innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted)">No data for this period.</div>';
+      return;
+    }
+    const btn = document.getElementById('insightsBtn');
+    btn.disabled = true; btn.textContent = 'ANALYSING...'; btn.style.opacity = '0.6';
+    document.getElementById('insightsContent').innerHTML = `
+      <div style="background:#141414;border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:4px;padding:48px;text-align:center">
+        <div style="margin-bottom:16px"><div style="display:inline-block;width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--yellow);border-radius:50%;animation:spin 0.8s linear infinite"></div></div>
+        <div style="font-family:'League Gothic',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--yellow);text-transform:uppercase">Analysing ${filtered.length} responses...</div>
+      </div>
+      <style>@keyframes spin{to{transform:rotate(360deg)}}</style>`;
+    const { nps, total, pro, det } = calcNPS(filtered);
+    const comments = filtered.filter(e => e.comment || e.biggestIssues || e.mainIssue)
+      .map(e => `[Score:${e.score}|${e.department||'?'}|${e.geography||'?'}] ${e.comment||''} ${e.biggestIssues ? '//Issues: '+e.biggestIssues : ''} ${e.mainIssue && e.mainIssue !== 'None' ? '//Main: '+e.mainIssue : ''}`)
+      .join('\n');
+    const satSummary = (() => {
+      const ws = filtered.filter(e => e.satisfaction && Object.keys(e.satisfaction).length);
+      if (!ws.length) return 'No satisfaction data yet.';
+      const areas = ['Payment','Quality Check','Sales','Seller Support','Shipping & Logistics','Vendor Application','Refund'];
+      return areas.map(a => {
+        const rs = ws.filter(e => e.satisfaction[a]);
+        if (!rs.length) return null;
+        const s = rs.filter(e => e.satisfaction[a] === 'Satisfied').length;
+        const n = rs.filter(e => e.satisfaction[a] === 'Not Satisfied').length;
+        return `${a}: ${Math.round(s/rs.length*100)}% satisfied, ${Math.round(n/rs.length*100)}% not satisfied (n=${rs.length})`;
+      }).filter(Boolean).join('\n');
+    })();
+    const prompt = `You are analysing Fleek seller NPS survey data. Fleek is a B2B wholesale marketplace for vintage and second-hand clothing connecting resellers with global suppliers.
+
+PERIOD: ${period === 'all' ? 'All Time' : period}
+NPS: ${nps > 0 ? '+' : ''}${nps} | Total: ${total} | Promoters: ${Math.round(pro/total*100)}% | Detractors: ${Math.round(det/total*100)}%
+
+SATISFACTION BY AREA:
+${satSummary}
+
+SELLER FEEDBACK:
+${comments}
+
+Write a structured analysis using these exact section headers:
+
+## NPS SUMMARY
+2-3 sentences on overall health.
+
+## TOP WINS
+3 bullet points on what sellers value most.
+
+## CRITICAL ISSUES
+3 bullet points on biggest pain points with specific examples.
+
+## DEPARTMENT FOCUS
+Which department needs most attention and why.
+
+## ACTION PLAN
+5 numbered actions for Seller Support this month.
+
+## CHURN RISK
+Any sellers showing signs of leaving (low score + strong negative). Keep brief.
+
+Under 500 words. Be direct and specific.`;
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+      });
+      const data = await res.json();
+      const text = data.content?.find(b => b.type === 'text')?.text || 'No response.';
+      const rendered = text
+        .replace(/^## (.+)$/gm, '<div style="font-family:\'League Gothic\',sans-serif;font-size:1rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin:24px 0 10px;padding-top:20px;border-top:1px solid var(--border)">$1</div>')
+        .replace(/^\*\*(.+?)\*\*/gm, '<strong style="color:var(--cream)">$1</strong>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--cream)">$1</strong>')
+        .replace(/^(\d+)\. (.+)$/gm, '<div style="display:flex;gap:10px;margin:6px 0"><span style="background:var(--yellow);color:#0F0F0F;font-family:\'League Gothic\',sans-serif;padding:1px 8px;border-radius:2px;min-width:22px;text-align:center;font-size:0.85rem">$1</span><span style="color:var(--cream)">$2</span></div>')
+        .replace(/^[-•] (.+)$/gm, '<div style="display:flex;gap:8px;margin:5px 0"><span style="color:var(--yellow);margin-top:1px">▸</span><span style="color:var(--cream)">$1</span></div>')
+        .replace(/\n\n/g, '</p><p style="margin:6px 0">')
+        .replace(/\n/g, '<br/>');
+      const pLabel = period === 'all' ? 'All Time' : period;
+      const now = new Date().toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+      document.getElementById('insightsContent').innerHTML = `
+        <div style="background:#141414;border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:4px;padding:32px;margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <span style="background:rgba(255,212,0,0.1);border:1px solid rgba(255,212,0,0.2);color:var(--yellow);padding:3px 12px;border-radius:2px;font-size:0.72rem;font-weight:700;letter-spacing:1px">${pLabel} · ${total} RESPONSES</span>
+              <span style="background:${nps >= 0 ? 'rgba(61,214,140,0.1)' : 'rgba(232,69,60,0.1)'};border:1px solid ${nps >= 0 ? 'rgba(61,214,140,0.2)' : 'rgba(232,69,60,0.2)'};color:${nps >= 0 ? '#3DD68C' : 'var(--red)'};padding:3px 12px;border-radius:2px;font-size:0.72rem;font-weight:700;letter-spacing:1px">NPS ${nps > 0 ? '+' : ''}${nps}</span>
+              <span style="color:var(--muted);font-size:0.72rem;padding-top:5px">${now}</span>
+            </div>
+            <button onclick="copyInsights()" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:4px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase">COPY</button>
+          </div>
+          <div id="insightsText" style="color:var(--cream);font-size:0.87rem;line-height:1.85">${rendered}</div>
+        </div>
+        <div style="background:#141414;border:1px solid var(--border);border-radius:4px;padding:12px 16px;display:flex;align-items:center;gap:8px">
+          <span style="color:var(--muted);font-size:0.72rem">🤖 Generated by Claude AI · Based on real seller feedback · Internal use only</span>
+        </div>`;
+      window._lastInsightsText = text;
+    } catch(err) {
+      document.getElementById('insightsContent').innerHTML = `<div style="background:#141414;border:1px solid rgba(232,69,60,0.3);border-radius:4px;padding:32px;text-align:center"><div style="color:var(--red);font-family:'League Gothic',sans-serif;font-size:1rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Generation Failed</div><div style="color:var(--muted);font-size:0.84rem">${err.message}</div></div>`;
+    } finally {
+      btn.disabled = false; btn.textContent = 'GENERATE INSIGHTS'; btn.style.opacity = '1';
+    }
+  }
+
+  function copyInsights() {
+    if (window._lastInsightsText) {
+      navigator.clipboard.writeText(window._lastInsightsText).then(() => showToast('Insights copied!', 'success'));
+    }
+  }
+
   // ===================== REPORT GENERATOR =====================
   function renderReport() {
     const allData = getData();
@@ -1099,7 +1248,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>${title || 'Fleek NPS Report'}</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#0c0c0c;color:#f0f0f0;font-family:'Montserrat',sans-serif;padding:40px 24px;max-width:900px;margin:0 auto}
@@ -1109,14 +1258,14 @@ body{background:#0c0c0c;color:#f0f0f0;font-family:'Montserrat',sans-serif;paddin
 .report-title{font-family:'League Gothic',sans-serif;font-size:2rem;letter-spacing:3px;color:#FFD400}
 .report-sub{color:#888;font-size:0.8rem;margin-top:4px}
 .hero{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:32px}
-.metric-card{background:#161616;border:1px solid #252525;border-radius:14px;padding:20px;text-align:center}
-.metric-label{font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:#888;margin-bottom:8px}
+.metric-card{background:#161616;border:1px solid #2a2a2a;border-radius:4px;padding:20px;text-align:center}
+.metric-label{font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:#888;margin-bottom:8px;font-family:'Montserrat',sans-serif;font-weight:700}
 .metric-value{font-family:'League Gothic',sans-serif;font-size:2.4rem;letter-spacing:2px}
 .nps-val{color:#FFD400}
 .pro-val{color:#3DD68C}
 .det-val{color:#E8453C}
 .pass-val{color:var(--orange)}
-.section{background:#161616;border:1px solid #252525;border-radius:14px;padding:24px;margin-bottom:20px}
+.section{background:#161616;border:1px solid #2a2a2a;border-left:3px solid #FFD400;border-radius:4px;padding:24px;margin-bottom:20px}
 .section-title{font-family:'League Gothic',sans-serif;font-size:1rem;letter-spacing:2px;color:#FFD400;margin-bottom:16px}
 table{width:100%;border-collapse:collapse;font-size:0.88rem}
 th{text-align:left;padding:8px 12px;border-bottom:1px solid #252525;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;color:#888;font-weight:600}
