@@ -4,94 +4,139 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Fleek — Seller NPS Report</title>
-<link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Montserrat:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0F0F0F;--card:#141414;--border:#2a2a2a;--yellow:#FFD400;--blue:#0D2BFF;--orange:#F25C2A;--red:#E8453C;--green:#3DD68C;--cream:#F6F1E7;--muted:#888}
+:root{--bg:#0F0F0F;--card:#141414;--border:#2a2a2a;--yellow:#FFD400;--orange:#F25C2A;--red:#E8453C;--green:#3DD68C;--cream:#F6F1E7;--muted:#888}
 body{background:var(--bg);color:var(--cream);font-family:'Montserrat',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
 
-/* Header */
-.topbar{display:flex;justify-content:space-between;align-items:center;padding:0 28px;height:64px;background:#0F0F0F;border-bottom:2px solid var(--yellow);position:sticky;top:0;z-index:100}
+/* ── Topbar ── */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:64px;background:#0F0F0F;border-bottom:2px solid var(--yellow);position:sticky;top:0;z-index:100}
 .brand{display:flex;align-items:center;gap:14px}
-.brand img{height:30px;filter:brightness(0) invert(1)}
-.brand-label{font-family:'League Gothic',sans-serif;font-size:1.1rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase}
-.logout-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px 18px;border-radius:2px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s}
+.brand img{height:28px;filter:brightness(0) invert(1)}
+.brand-divider{width:1px;height:20px;background:var(--border)}
+.brand-label{font-family:'League Gothic',sans-serif;font-size:1rem;letter-spacing:4px;color:var(--yellow);text-transform:uppercase}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.report-date{font-size:0.7rem;color:var(--muted);letter-spacing:1px}
+.logout-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:7px 16px;border-radius:2px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s}
 .logout-btn:hover{border-color:var(--yellow);color:var(--yellow)}
 
-/* Period switcher */
-.period-bar{background:#111;border-bottom:1px solid var(--border);padding:12px 28px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.period-btn{padding:7px 16px;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:2px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s}
-.period-btn:hover{border-color:var(--yellow);color:var(--yellow)}
+/* ── Period bar ── */
+.period-bar{background:#111;border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.period-bar-label{color:var(--muted);font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-right:4px}
+.period-btn{padding:6px 14px;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:2px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s}
+.period-btn:hover{border-color:rgba(255,212,0,0.5);color:var(--cream)}
 .period-btn.active{background:var(--yellow);color:#0F0F0F;border-color:var(--yellow)}
-.period-label{color:var(--muted);font-size:0.75rem;letter-spacing:1px;text-transform:uppercase;font-weight:700}
 
-/* Main */
-.main{max-width:1100px;margin:0 auto;padding:32px 24px}
+/* ── Layout ── */
+.main{max-width:1140px;margin:0 auto;padding:28px 24px 48px}
 
-/* Hero NPS */
-.hero{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:24px}
-.metric{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:24px;text-align:center}
-.metric-label{font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px}
-.metric-value{font-family:'League Gothic',sans-serif;font-size:3rem;letter-spacing:2px;line-height:1}
-.metric-sub{color:var(--muted);font-size:0.75rem;margin-top:6px}
+/* ── NPS Hero ── */
+.nps-hero{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:36px 32px;margin-bottom:20px;display:grid;grid-template-columns:220px 1fr;gap:40px;align-items:center}
+.hero-score-wrap{text-align:center;border-right:1px solid var(--border);padding-right:40px}
+.hero-score-label{font-size:0.62rem;letter-spacing:4px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:10px}
+.hero-score-value{font-family:'League Gothic',sans-serif;font-size:5.5rem;letter-spacing:4px;line-height:1}
+.hero-score-health{font-family:'League Gothic',sans-serif;font-size:0.75rem;letter-spacing:3px;text-transform:uppercase;margin-top:8px;padding:3px 12px;display:inline-block;border-radius:2px}
+.hero-score-meta{color:var(--muted);font-size:0.72rem;margin-top:12px;letter-spacing:0.5px}
+.hero-score-trend{font-size:0.78rem;font-weight:700;margin-top:6px}
+.hero-segs{display:flex;flex-direction:column;gap:16px}
+.seg-row{display:flex;align-items:center;gap:14px}
+.seg-label{font-size:0.68rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;min-width:96px}
+.seg-track{flex:1;background:#1e1e1e;border-radius:2px;height:12px;overflow:hidden}
+.seg-fill{height:100%;border-radius:2px;transition:width 0.7s ease}
+.seg-pct{font-family:'League Gothic',sans-serif;font-size:1.4rem;min-width:56px;text-align:right}
+.seg-count{font-size:0.72rem;color:var(--muted);min-width:68px}
 
-/* Period cards strip */
-.period-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px}
-.period-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:18px;cursor:pointer;transition:all 0.15s}
-.period-card:hover{border-color:rgba(255,212,0,0.4)}
-.period-card.active{border-color:var(--yellow);background:rgba(255,212,0,0.05)}
-.pc-period{font-size:0.68rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;font-weight:700;margin-bottom:6px}
-.pc-nps{font-family:'League Gothic',sans-serif;font-size:2.2rem;line-height:1}
-.pc-total{font-size:0.75rem;color:var(--muted);margin-top:4px}
-.pc-delta{font-size:0.72rem;font-weight:700;margin-top:4px}
+/* ── Period cards ── */
+.period-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:20px}
+.period-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:18px 16px;cursor:pointer;transition:all 0.15s;position:relative;overflow:hidden}
+.period-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:var(--border);transition:background 0.15s}
+.period-card:hover::after{background:rgba(255,212,0,0.4)}
+.period-card.active{border-color:var(--yellow);background:rgba(255,212,0,0.04)}
+.period-card.active::after{background:var(--yellow)}
+.pc-period{font-size:0.65rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.pc-nps{font-family:'League Gothic',sans-serif;font-size:2.4rem;line-height:1;letter-spacing:2px}
+.pc-total{font-size:0.72rem;color:var(--muted);margin-top:5px}
+.pc-delta{font-size:0.7rem;font-weight:700;margin-top:5px;display:flex;align-items:center;gap:4px}
 
-/* Charts row */
-.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+/* ── Metric strip ── */
+.metric-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.metric{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:20px;text-align:center}
+.metric-label{font-size:0.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px}
+.metric-value{font-family:'League Gothic',sans-serif;font-size:2.8rem;letter-spacing:2px;line-height:1}
+.metric-sub{color:var(--muted);font-size:0.72rem;margin-top:6px;font-family:'JetBrains Mono',monospace}
+
+/* ── Charts ── */
+.charts-row{display:grid;grid-template-columns:3fr 2fr;gap:16px;margin-bottom:20px}
 .chart-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:4px;padding:24px}
-.chart-title{font-family:'League Gothic',sans-serif;font-size:0.8rem;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);margin-bottom:16px}
+.chart-title{font-family:'League Gothic',sans-serif;font-size:0.78rem;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);margin-bottom:18px}
 
-/* Department table */
-.section-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:24px;margin-bottom:16px}
-.section-title{font-family:'League Gothic',sans-serif;font-size:0.8rem;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);margin-bottom:16px}
+/* ── Score dist bars ── */
+.dist-group{margin-bottom:14px}
+.dist-group-label{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+.bar-score{font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;min-width:18px;text-align:center}
+.bar-track{flex:1;background:#1e1e1e;border-radius:2px;height:7px;overflow:hidden}
+.bar-fill{height:100%;border-radius:2px;transition:width 0.6s ease}
+.bar-cnt{font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:700;min-width:28px;text-align:right}
+
+/* ── Tables ── */
+.section-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:4px;padding:24px;margin-bottom:16px}
+.section-title{font-family:'League Gothic',sans-serif;font-size:0.78rem;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);margin-bottom:16px}
 table{width:100%;border-collapse:collapse}
-th{text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:700}
-td{padding:10px 14px;border-bottom:1px solid #1a1a1a;font-size:0.85rem}
-tr:hover td{background:rgba(255,212,0,0.03)}
+th{text-align:left;padding:9px 12px;border-bottom:1px solid var(--border);font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:700}
+td{padding:10px 12px;border-bottom:1px solid #1c1c1c;font-size:0.83rem;vertical-align:middle}
+tr:hover td{background:rgba(255,212,0,0.02)}
 tr:last-child td{border-bottom:none}
+.nps-bar-cell{display:flex;align-items:center;gap:8px}
+.nps-bar-mini{flex:1;max-width:80px;height:4px;background:#1e1e1e;border-radius:2px;overflow:hidden}
+.nps-bar-mini-fill{height:100%;border-radius:2px}
 
-/* Top comments */
-.comment-row{padding:14px 0;border-bottom:1px solid #1a1a1a;display:flex;gap:12px;align-items:flex-start}
+/* ── Comments ── */
+.comment-row{padding:16px 0;border-bottom:1px solid #1c1c1c;display:flex;gap:14px;align-items:flex-start}
 .comment-row:last-child{border-bottom:none}
-.score-pill{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:4px;font-family:'League Gothic',sans-serif;font-size:1.1rem;font-weight:700;flex-shrink:0}
-.score-pill.P{background:rgba(61,214,140,0.15);color:var(--green)}
-.score-pill.S{background:rgba(242,92,42,0.12);color:var(--orange)}
-.score-pill.D{background:rgba(232,69,60,0.12);color:var(--red)}
+.score-pill{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:4px;font-family:'League Gothic',sans-serif;font-size:1.2rem;font-weight:700;flex-shrink:0;letter-spacing:1px}
+.score-pill.P{background:rgba(61,214,140,0.12);color:var(--green);border:1px solid rgba(61,214,140,0.25)}
+.score-pill.S{background:rgba(242,92,42,0.1);color:var(--orange);border:1px solid rgba(242,92,42,0.2)}
+.score-pill.D{background:rgba(232,69,60,0.1);color:var(--red);border:1px solid rgba(232,69,60,0.2)}
+.comment-meta{font-size:0.75rem;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.comment-seller{font-weight:700;color:var(--cream)}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:2px;font-size:0.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.badge.P{background:rgba(61,214,140,0.12);color:var(--green);border:1px solid rgba(61,214,140,0.2)}
+.badge.S{background:rgba(242,92,42,0.1);color:var(--orange);border:1px solid rgba(242,92,42,0.2)}
+.badge.D{background:rgba(232,69,60,0.1);color:var(--red);border:1px solid rgba(232,69,60,0.2)}
+.comment-text{font-size:0.84rem;color:var(--cream);line-height:1.6}
+.comment-issue{font-size:0.76rem;color:var(--muted);margin-top:4px;line-height:1.4}
 
-/* Bar chart custom */
-.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.bar-label-text{font-size:0.8rem;min-width:140px;color:var(--cream)}
-.bar-track{flex:1;background:#1e1e1e;border-radius:3px;height:8px;overflow:hidden}
-.bar-fill{height:100%;border-radius:3px;transition:width 0.6s ease}
-.bar-pct{font-size:0.78rem;font-weight:700;min-width:38px;text-align:right}
+/* ── Comments divider ── */
+.comments-divider{font-size:0.62rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--muted);padding:10px 0 6px;border-bottom:1px solid var(--border);margin-top:4px;margin-bottom:4px}
 
-/* Footer */
-.footer{margin-top:40px;padding:20px 0;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:0.72rem}
+/* ── Footer ── */
+.footer{margin-top:32px;padding:18px 0;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.footer-left{color:var(--muted);font-size:0.7rem;line-height:1.6}
+.footer-right{display:flex;align-items:center;gap:12px}
+.footer-right img{height:20px;filter:brightness(0) invert(1);opacity:0.4}
 
-/* Loading */
+/* ── Loading ── */
 .loading{text-align:center;padding:80px;color:var(--muted)}
 .loading-spinner{display:inline-block;width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--yellow);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:16px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* Badge */
-.badge{display:inline-flex;align-items:center;padding:2px 10px;border-radius:2px;font-size:0.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase}
-.badge.P{background:rgba(61,214,140,0.15);color:var(--green);border:1px solid rgba(61,214,140,0.2)}
-.badge.S{background:rgba(242,92,42,0.12);color:var(--orange);border:1px solid rgba(242,92,42,0.2)}
-.badge.D{background:rgba(232,69,60,0.12);color:var(--red);border:1px solid rgba(232,69,60,0.2)}
-
-@media(max-width:768px){
-  .hero{grid-template-columns:1fr 1fr}
+/* ── Responsive ── */
+@media(max-width:900px){
+  .nps-hero{grid-template-columns:1fr}
+  .hero-score-wrap{border-right:none;border-bottom:1px solid var(--border);padding-right:0;padding-bottom:24px}
+  .metric-strip{grid-template-columns:1fr 1fr}
   .charts-row{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .topbar{padding:0 16px}
+  .main{padding:16px 12px 40px}
+  .nps-hero{padding:24px 16px}
+  .metric-strip{grid-template-columns:1fr 1fr}
+  .period-cards{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
@@ -100,190 +145,278 @@ tr:last-child td{border-bottom:none}
 <div class="topbar">
   <div class="brand">
     <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek"/>
+    <div class="brand-divider"></div>
     <span class="brand-label">Seller NPS Report</span>
   </div>
-  <button class="logout-btn" onclick="logout()">Logout</button>
+  <div class="topbar-right">
+    <span class="report-date" id="topbarDate"></span>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
 </div>
 
 <div class="period-bar" id="periodBar">
-  <span class="period-label">Period:</span>
-  <!-- populated by JS -->
+  <span class="period-bar-label">View period:</span>
 </div>
 
 <div class="main" id="mainContent">
   <div class="loading">
     <div class="loading-spinner"></div>
-    <div style="font-family:'League Gothic',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--yellow);text-transform:uppercase">Loading NPS Data...</div>
+    <div style="font-family:'League Gothic',sans-serif;font-size:0.9rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin-top:4px">Loading Report...</div>
   </div>
 </div>
 
 <script>
-// ── Auth ─────────────────────────────────────────────────────────────────────
 if (!sessionStorage.getItem('nps_role')) { window.location.href = '/'; }
 function logout() { sessionStorage.removeItem('nps_role'); sessionStorage.removeItem('nps_user'); window.location.href = '/'; }
 
-// ── Data ──────────────────────────────────────────────────────────────────────
+document.getElementById('topbarDate').textContent = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+
 let allData = [];
 let activePeriod = 'all';
 
 async function loadData() {
   try {
-    // Fetch from persistent API (GitHub-backed, works from any device)
     const res = await fetch('/api/data?t=' + Date.now());
-    if (!res.ok) throw new Error('API error ' + res.status);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const json = await res.json();
     allData = json.responses || [];
   } catch(e) {
-    // Fallback: try raw GitHub URL directly
     try {
       const raw = await fetch('https://raw.githubusercontent.com/basilhzaidi/fleek-nps-dashboard/main/public/data.json?t=' + Date.now());
       const json = await raw.json();
       allData = json.responses || [];
-    } catch(e2) {
-      allData = [];
-    }
+    } catch(e2) { allData = []; }
   }
   render();
 }
 
-// ── NPS calc ─────────────────────────────────────────────────────────────────
 function calcNPS(entries) {
   const total = entries.length;
-  const pro  = entries.filter(e => e.score >= 9).length;
-  const pass = entries.filter(e => e.score >= 7 && e.score <= 8).length;
-  const det  = entries.filter(e => e.score <= 6).length;
-  const nps  = total === 0 ? 0 : Math.round((pro - det) / total * 100);
-  return { total, pro, pass, det, nps };
+  if (!total) return { total: 0, pro: 0, pass: 0, det: 0, nps: 0 };
+  const scored = entries.filter(e => e.score !== null && e.score !== undefined && Number.isFinite(e.score) && e.score >= 0 && e.score <= 10);
+  const n = scored.length;
+  if (!n) return { total, pro: 0, pass: 0, det: 0, nps: 0 };
+  const pro  = scored.filter(e => e.score >= 9).length;
+  const pass = scored.filter(e => e.score >= 7 && e.score <= 8).length;
+  const det  = scored.filter(e => e.score <= 6).length;
+  return { total, pro, pass, det, nps: Math.round((pro - det) / n * 100) };
 }
 
 function npsColor(nps) {
   return nps >= 20 ? 'var(--green)' : nps >= 0 ? 'var(--orange)' : 'var(--red)';
 }
 
-// ── Render ────────────────────────────────────────────────────────────────────
+function getPeriods() {
+  const order = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+  return [...new Set(allData.map(e => e.period))].filter(Boolean).sort((a,b) => {
+    const [am,ay]=a.split(' '), [bm,by]=b.split(' ');
+    return (parseInt(ay)-parseInt(by))||((order[am]||0)-(order[bm]||0));
+  });
+}
+
 function render() {
-  const periods = [...new Set(allData.map(e => e.period))].sort();
+  const periods = getPeriods();
   const filtered = activePeriod === 'all' ? allData : allData.filter(e => e.period === activePeriod);
   const { nps, total, pro, pass, det } = calcNPS(filtered);
 
   // Period bar
   const bar = document.getElementById('periodBar');
-  bar.innerHTML = `<span class="period-label">Period:</span>
+  bar.innerHTML = `<span class="period-bar-label">View period:</span>
     <button class="period-btn ${activePeriod==='all'?'active':''}" onclick="setPeriod('all')">All Time</button>
-    ${periods.map(p => `<button class="period-btn ${activePeriod===p?'active':''}" onclick="setPeriod('${p}')">${p}</button>`).join('')}`;
+    ${periods.map(p=>`<button class="period-btn ${activePeriod===p?'active':''}" onclick="setPeriod('${p}')">${p}</button>`).join('')}`;
 
-  // NPS health
-  const health = nps >= 50 ? 'EXCELLENT' : nps >= 20 ? 'GOOD' : nps >= 0 ? 'NEEDS WORK' : 'CRITICAL';
+  // Health
+  const health = nps >= 50 ? {label:'EXCELLENT',bg:'rgba(61,214,140,0.12)',color:'var(--green)',border:'rgba(61,214,140,0.3)'}
+               : nps >= 20 ? {label:'GOOD',bg:'rgba(61,214,140,0.08)',color:'var(--green)',border:'rgba(61,214,140,0.2)'}
+               : nps >= 0  ? {label:'NEEDS WORK',bg:'rgba(242,92,42,0.1)',color:'var(--orange)',border:'rgba(242,92,42,0.25)'}
+                           : {label:'CRITICAL',bg:'rgba(232,69,60,0.1)',color:'var(--red)',border:'rgba(232,69,60,0.25)'};
 
-  // Period comparison cards
-  const periodCardsHTML = periods.map((p, i) => {
+  // Trend vs prev period
+  let trendHTML = '';
+  if (activePeriod !== 'all') {
+    const idx = periods.indexOf(activePeriod);
+    if (idx > 0) {
+      const prevNPS = calcNPS(allData.filter(e => e.period === periods[idx-1])).nps;
+      const delta = nps - prevNPS;
+      const c = delta >= 0 ? 'var(--green)' : 'var(--red)';
+      trendHTML = `<div class="hero-score-trend" style="color:${c}">${delta >= 0 ? '▲' : '▼'} ${delta > 0 ? '+' : ''}${delta} vs ${periods[idx-1]}</div>`;
+    }
+  }
+
+  const proP  = total ? Math.round(pro/total*100)  : 0;
+  const passP = total ? Math.round(pass/total*100) : 0;
+  const detP  = total ? Math.round(det/total*100)  : 0;
+
+  // Period cards
+  const periodCardsHTML = periods.map((p,i) => {
     const pd = allData.filter(e => e.period === p);
     const pn = calcNPS(pd);
     const prev = i > 0 ? calcNPS(allData.filter(e => e.period === periods[i-1])).nps : null;
     const delta = prev !== null ? pn.nps - prev : null;
-    const deltaHTML = delta !== null
-      ? `<div class="pc-delta" style="color:${delta >= 0 ? 'var(--green)' : 'var(--red)'}">
-           ${delta >= 0 ? '▲' : '▼'} ${delta > 0 ? '+' : ''}${delta} vs prev
-         </div>`
-      : '';
-    return `<div class="period-card ${activePeriod === p ? 'active' : ''}" onclick="setPeriod('${p}')">
+    const c = npsColor(pn.nps);
+    const deltaEl = delta !== null
+      ? `<div class="pc-delta" style="color:${delta>=0?'var(--green)':'var(--red)'}">
+           ${delta>=0?'▲':'▼'} ${delta>0?'+':''}${delta} vs prev
+         </div>` : '';
+    return `<div class="period-card ${activePeriod===p?'active':''}" onclick="setPeriod('${p}')">
       <div class="pc-period">${p}</div>
-      <div class="pc-nps" style="color:${npsColor(pn.nps)}">${pn.nps > 0 ? '+' : ''}${pn.nps}</div>
+      <div class="pc-nps" style="color:${c}">${pn.nps>0?'+':''}${pn.nps}</div>
       <div class="pc-total">${pn.total} responses</div>
-      ${deltaHTML}
+      ${deltaEl}
     </div>`;
   }).join('');
 
-  // Department breakdown
+  // Score distribution grouped
+  const scored = filtered.filter(e => Number.isFinite(e.score) && e.score >= 0 && e.score <= 10);
+  const distHTML = [
+    {label:'Detractors (0–6)', scores:[0,1,2,3,4,5,6], color:'var(--red)'},
+    {label:'Passives (7–8)',   scores:[7,8],           color:'var(--orange)'},
+    {label:'Promoters (9–10)',scores:[9,10],           color:'var(--green)'}
+  ].map(g => {
+    const groupCnt = g.scores.reduce((a,s)=>a+scored.filter(e=>e.score===s).length,0);
+    const bars = g.scores.map(s => {
+      const cnt = scored.filter(e=>e.score===s).length;
+      const pct = scored.length ? Math.round(cnt/scored.length*100) : 0;
+      return `<div class="bar-row">
+        <span class="bar-score" style="color:${g.color}">${s}</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${g.color}"></div></div>
+        <span class="bar-cnt" style="color:${g.color}">${cnt}</span>
+      </div>`;
+    }).join('');
+    return `<div class="dist-group">
+      <div class="dist-group-label" style="color:${g.color}">${g.label} <span style="color:var(--muted);font-weight:400">(${groupCnt})</span></div>
+      ${bars}
+    </div>`;
+  }).join('');
+
+  // Department rows
   const depts = ['Seller Support','Quality Check','Payments','Shipping & Logistics','Vendor App','Sales & Visibility'];
   const deptRows = depts.map(d => {
     const dd = filtered.filter(e => e.department === d);
     if (!dd.length) return '';
     const dn = calcNPS(dd);
     const c = npsColor(dn.nps);
-    const proP = Math.round(dd.filter(e=>e.score>=9).length/dn.total*100);
-    const detP = Math.round(dd.filter(e=>e.score<=6).length/dn.total*100);
+    const barW = Math.min(100, Math.abs(dn.nps));
     return `<tr>
       <td style="font-weight:600">${d}</td>
-      <td>${dn.total}</td>
-      <td style="font-family:'League Gothic',sans-serif;font-size:1.3rem;color:${c}">${dn.nps > 0 ? '+' : ''}${dn.nps}</td>
-      <td style="color:var(--green)">${proP}%</td>
-      <td style="color:var(--red)">${detP}%</td>
+      <td style="color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:0.78rem">${dn.total}</td>
+      <td>
+        <div class="nps-bar-cell">
+          <span style="font-family:'League Gothic',sans-serif;font-size:1.3rem;color:${c};min-width:42px">${dn.nps>0?'+':''}${dn.nps}</span>
+          <div class="nps-bar-mini"><div class="nps-bar-mini-fill" style="width:${barW}%;background:${c}"></div></div>
+        </div>
+      </td>
+      <td style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:0.78rem">${Math.round(dd.filter(e=>e.score>=9).length/dn.total*100)}%</td>
+      <td style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:0.78rem">${Math.round(dd.filter(e=>e.score<=6).length/dn.total*100)}%</td>
     </tr>`;
   }).filter(Boolean).join('');
 
-  // Geography breakdown
+  // Geography rows
   const zones = ['PK Zone','PK Non-Zone','India','ROW'];
+  const geoFlags = {'PK Zone':'🇵🇰','PK Non-Zone':'🇵🇰','India':'🇮🇳','ROW':'🌍'};
   const geoRows = zones.map(z => {
     const zd = filtered.filter(e => e.geography === z);
     if (!zd.length) return '';
     const zn = calcNPS(zd);
     const c = npsColor(zn.nps);
+    const barW = Math.min(100, Math.abs(zn.nps));
     return `<tr>
-      <td style="font-weight:600">${z}</td>
-      <td>${zn.total}</td>
-      <td style="font-family:'League Gothic',sans-serif;font-size:1.3rem;color:${c}">${zn.nps > 0 ? '+' : ''}${zn.nps}</td>
-      <td style="color:var(--green)">${Math.round(zd.filter(e=>e.score>=9).length/zn.total*100)}%</td>
-      <td style="color:var(--red)">${Math.round(zd.filter(e=>e.score<=6).length/zn.total*100)}%</td>
+      <td style="font-weight:600">${geoFlags[z]} ${z}</td>
+      <td style="color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:0.78rem">${zn.total}</td>
+      <td>
+        <div class="nps-bar-cell">
+          <span style="font-family:'League Gothic',sans-serif;font-size:1.3rem;color:${c};min-width:42px">${zn.nps>0?'+':''}${zn.nps}</span>
+          <div class="nps-bar-mini"><div class="nps-bar-mini-fill" style="width:${barW}%;background:${c}"></div></div>
+        </div>
+      </td>
+      <td style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:0.78rem">${Math.round(zd.filter(e=>e.score>=9).length/zn.total*100)}%</td>
+      <td style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:0.78rem">${Math.round(zd.filter(e=>e.score<=6).length/zn.total*100)}%</td>
     </tr>`;
   }).filter(Boolean).join('');
 
-  // Score distribution bars
-  const distBars = [0,1,2,3,4,5,6,7,8,9,10].map(s => {
-    const cnt = filtered.filter(e => e.score === s).length;
-    const pct = total > 0 ? Math.round(cnt/total*100) : 0;
-    const cat = s >= 9 ? 'var(--green)' : s >= 7 ? 'var(--orange)' : 'var(--red)';
-    return `<div class="bar-row">
-      <span class="bar-label-text">${s} ${s >= 9 ? '(Promoter)' : s >= 7 ? '(Passive)' : '(Detractor)'}</span>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${cat}"></div></div>
-      <span class="bar-pct" style="color:${cat}">${cnt}</span>
-    </div>`;
-  }).join('');
+  // Comments — detractors first, then promoters
+  const withComments = filtered.filter(e => e.comment && e.comment.trim().length > 8 && Number.isFinite(e.score));
+  const detComments = withComments.filter(e => e.score <= 6).slice(0,5);
+  const proComments = withComments.filter(e => e.score >= 9).slice(0,4);
 
-  // Top comments
-  const topComments = filtered
-    .filter(e => e.comment && e.comment.length > 10)
-    .sort((a,b) => {
-      const aIsDetractor = a.score <= 6;
-      const bIsDetractor = b.score <= 6;
-      if (aIsDetractor && !bIsDetractor) return -1;
-      if (!aIsDetractor && bIsDetractor) return 1;
-      return 0;
-    })
-    .slice(0, 8)
-    .map(e => {
-      const cat = e.score >= 9 ? 'P' : e.score >= 7 ? 'S' : 'D';
-      const catLabel = e.score >= 9 ? 'Promoter' : e.score >= 7 ? 'Passive' : 'Detractor';
-      return `<div class="comment-row">
-        <span class="score-pill ${cat}">${e.score}</span>
-        <div>
-          <div style="font-weight:600;font-size:0.82rem;margin-bottom:3px">
-            ${e.seller || 'Unknown'}
-            <span class="badge ${cat}" style="margin-left:6px">${catLabel}</span>
-            <span style="color:var(--muted);font-size:0.75rem;margin-left:8px">${e.period}</span>
-          </div>
-          <div style="font-size:0.85rem;color:var(--cream);line-height:1.5">${e.comment}</div>
-          ${e.biggestIssues ? `<div style="font-size:0.78rem;color:var(--muted);margin-top:3px">Issues: ${e.biggestIssues}</div>` : ''}
+  const makeComment = e => {
+    const cat = e.score >= 9 ? 'P' : e.score >= 7 ? 'S' : 'D';
+    const catLabel = e.score >= 9 ? 'Promoter' : e.score >= 7 ? 'Passive' : 'Detractor';
+    const name = e.storeHandle || e.seller || 'Unknown Seller';
+    const emailEl = e.email ? `<span style="color:var(--muted);font-size:0.7rem">${e.email}</span>` : '';
+    const issueEl = e.biggestIssues ? `<div class="comment-issue">⚠ ${e.biggestIssues}</div>` : (e.mainIssue && e.mainIssue !== 'None' ? `<div class="comment-issue">Issue: ${e.mainIssue}</div>` : '');
+    return `<div class="comment-row">
+      <span class="score-pill ${cat}">${e.score}</span>
+      <div style="flex:1;min-width:0">
+        <div class="comment-meta">
+          <span class="comment-seller">${name}</span>
+          <span class="badge ${cat}">${catLabel}</span>
+          ${emailEl}
+          <span style="color:var(--muted);font-size:0.7rem;margin-left:auto">${e.period}</span>
         </div>
-      </div>`;
-    }).join('');
+        <div class="comment-text">${e.comment}</div>
+        ${issueEl}
+      </div>
+    </div>`;
+  };
 
-  const proP = total ? Math.round(pro/total*100) : 0;
-  const passP = total ? Math.round(pass/total*100) : 0;
-  const detP = total ? Math.round(det/total*100) : 0;
-  const now = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+  const commentsHTML = [
+    detComments.length ? `<div class="comments-divider" style="color:var(--red)">⚠ Detractor Voices — Churn Risk (${detComments.length})</div>${detComments.map(makeComment).join('')}` : '',
+    proComments.length ? `<div class="comments-divider" style="color:var(--green);margin-top:8px">✓ Promoter Voices — What's Working (${proComments.length})</div>${proComments.map(makeComment).join('')}` : ''
+  ].filter(Boolean).join('');
+
+  const now = new Date().toLocaleDateString('en-GB', {day:'2-digit',month:'long',year:'numeric'});
 
   document.getElementById('mainContent').innerHTML = `
 
-    <!-- Period cards -->
+    <!-- Period comparison cards -->
     <div class="period-cards">${periodCardsHTML}</div>
 
-    <!-- Hero metrics -->
-    <div class="hero">
+    <!-- NPS Hero -->
+    <div class="nps-hero">
+      <div class="hero-score-wrap">
+        <div class="hero-score-label">Net Promoter Score</div>
+        <div class="hero-score-value" style="color:${npsColor(nps)}">${nps>0?'+':''}${nps}</div>
+        <div class="hero-score-health" style="background:${health.bg};color:${health.color};border:1px solid ${health.border}">${health.label}</div>
+        ${trendHTML}
+        <div class="hero-score-meta">${total} responses · ${activePeriod==='all'?'All Time':activePeriod}</div>
+      </div>
+      <div class="hero-segs">
+        <div class="seg-row">
+          <span class="seg-label" style="color:var(--green)">Promoters</span>
+          <div class="seg-track"><div class="seg-fill" style="width:${proP}%;background:var(--green)"></div></div>
+          <span class="seg-pct" style="color:var(--green)">${proP}%</span>
+          <span class="seg-count">${pro} sellers</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-label" style="color:var(--orange)">Passives</span>
+          <div class="seg-track"><div class="seg-fill" style="width:${passP}%;background:var(--orange)"></div></div>
+          <span class="seg-pct" style="color:var(--orange)">${passP}%</span>
+          <span class="seg-count">${pass} sellers</span>
+        </div>
+        <div class="seg-row">
+          <span class="seg-label" style="color:var(--red)">Detractors</span>
+          <div class="seg-track"><div class="seg-fill" style="width:${detP}%;background:var(--red)"></div></div>
+          <span class="seg-pct" style="color:var(--red)">${detP}%</span>
+          <span class="seg-count">${det} sellers</span>
+        </div>
+        <div style="margin-top:8px;padding-top:12px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center">
+          <div style="font-size:0.62rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">Formula</div>
+          <div></div>
+          <div style="font-size:0.62rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">Scale</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--cream)">(Pro − Det) ÷ Total</div>
+          <div></div>
+          <div style="font-size:0.72rem;color:var(--muted)">−100 to +100</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metric strip -->
+    <div class="metric-strip">
       <div class="metric" style="border-top:3px solid var(--yellow)">
         <div class="metric-label">NPS Score</div>
-        <div class="metric-value" style="color:${npsColor(nps)}">${nps > 0 ? '+' : ''}${nps}</div>
-        <div class="metric-sub" style="color:${npsColor(nps)};font-weight:700;font-size:0.7rem;letter-spacing:2px;text-transform:uppercase">${health}</div>
+        <div class="metric-value" style="color:${npsColor(nps)}">${nps>0?'+':''}${nps}</div>
+        <div class="metric-sub">${health.label}</div>
       </div>
       <div class="metric" style="border-top:3px solid var(--green)">
         <div class="metric-label">Promoters (9–10)</div>
@@ -302,57 +435,111 @@ function render() {
       </div>
     </div>
 
-    <!-- Charts -->
+    <!-- Charts row -->
     <div class="charts-row">
       <div class="chart-card">
-        <div class="chart-title">Score Distribution</div>
-        ${distBars}
+        <div class="chart-title">NPS Trend Over Time</div>
+        <canvas id="trendChart" height="180"></canvas>
       </div>
       <div class="chart-card">
-        <div class="chart-title">Segment Breakdown</div>
-        <canvas id="donutChart" height="200"></canvas>
+        <div class="chart-title">Score Distribution</div>
+        ${distHTML}
       </div>
     </div>
 
-    <!-- Dept + Geo -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-      <div class="section-card">
-        <div class="section-title">By Department</div>
-        ${deptRows ? `<table><thead><tr><th>Department</th><th>Responses</th><th>NPS</th><th>Promoters</th><th>Detractors</th></tr></thead><tbody>${deptRows}</tbody></table>` : '<div style="color:var(--muted);font-size:0.85rem">No data</div>'}
+    <!-- Donut + Tables -->
+    <div style="display:grid;grid-template-columns:260px 1fr;gap:16px;margin-bottom:16px">
+      <div class="chart-card" style="border-left:3px solid var(--yellow)">
+        <div class="chart-title">Segment Breakdown</div>
+        <canvas id="donutChart" height="180"></canvas>
       </div>
-      <div class="section-card">
-        <div class="section-title">By Geography</div>
-        ${geoRows ? `<table><thead><tr><th>Zone</th><th>Responses</th><th>NPS</th><th>Promoters</th><th>Detractors</th></tr></thead><tbody>${geoRows}</tbody></table>` : '<div style="color:var(--muted);font-size:0.85rem">No data</div>'}
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="section-card" style="margin-bottom:0">
+          <div class="section-title">By Department</div>
+          ${deptRows ? `<table><thead><tr><th>Department</th><th>Responses</th><th>NPS</th><th>Promoters</th><th>Detractors</th></tr></thead><tbody>${deptRows}</tbody></table>` : '<div style="color:var(--muted);font-size:0.85rem;padding:8px 0">No data for this period.</div>'}
+        </div>
+        <div class="section-card" style="margin-bottom:0">
+          <div class="section-title">By Geography</div>
+          ${geoRows ? `<table><thead><tr><th>Zone</th><th>Responses</th><th>NPS</th><th>Promoters</th><th>Detractors</th></tr></thead><tbody>${geoRows}</tbody></table>` : '<div style="color:var(--muted);font-size:0.85rem;padding:8px 0">No data for this period.</div>'}
+        </div>
       </div>
     </div>
 
     <!-- Comments -->
-    ${topComments ? `<div class="section-card">
+    ${commentsHTML ? `<div class="section-card">
       <div class="section-title">Seller Feedback</div>
-      ${topComments}
+      ${commentsHTML}
     </div>` : ''}
 
+    <!-- Footer -->
     <div class="footer">
-      <span>Fleek Seller Experience · Internal Report · Confidential</span>
-      <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek" style="height:22px;filter:brightness(0) invert(1);opacity:0.5"/>
+      <div class="footer-left">
+        <div style="font-weight:700;color:var(--cream);margin-bottom:2px">Fleek Seller Experience — Internal NPS Report</div>
+        <div>Generated ${now} · ${total} responses · ${activePeriod==='all'?'All Time':activePeriod} · Confidential</div>
+      </div>
+      <div class="footer-right">
+        <span style="font-size:0.68rem;color:var(--muted);letter-spacing:1px">POWERED BY</span>
+        <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek"/>
+      </div>
     </div>
   `;
 
-  // Donut chart
-  const ctx = document.getElementById('donutChart')?.getContext('2d');
-  if (ctx && total > 0) {
-    if (window._donutChart) window._donutChart.destroy();
-    window._donutChart = new Chart(ctx, {
-      type: 'doughnut',
+  // ── Trend chart (all periods, always) ──
+  const trendPeriods = getPeriods();
+  const trendStats = trendPeriods.map(p => ({ period: p, nps: calcNPS(allData.filter(e=>e.period===p)).nps }));
+  const trendCtx = document.getElementById('trendChart')?.getContext('2d');
+  if (trendCtx) {
+    if (window._trendChart) window._trendChart.destroy();
+    window._trendChart = new Chart(trendCtx, {
+      type: 'line',
       data: {
-        labels: ['Promoters', 'Passives', 'Detractors'],
-        datasets: [{ data: [pro, pass, det], backgroundColor: ['#3DD68C','#F25C2A','#E8453C'], borderWidth: 0, hoverOffset: 6 }]
+        labels: trendStats.map(p=>p.period),
+        datasets: [{
+          label: 'NPS', data: trendStats.map(p=>p.nps),
+          borderColor: '#FFD400', backgroundColor: 'rgba(255,212,0,0.07)',
+          borderWidth: 2.5, pointBackgroundColor: '#FFD400', pointRadius: 6,
+          pointHoverRadius: 8, tension: 0.3, fill: true
+        }]
       },
       options: {
-        cutout: '65%',
         plugins: {
-          legend: { position: 'bottom', labels: { color: '#888', padding: 16, font: { family: 'Montserrat', size: 11 } } },
-          tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.raw} (${Math.round(ctx.raw/total*100)}%)` } }
+          legend: { display: false },
+          annotation: {
+            annotations: {
+              zeroLine: {
+                type: 'line', yMin: 0, yMax: 0,
+                borderColor: 'rgba(255,212,0,0.35)', borderWidth: 1.5, borderDash: [5,5],
+                label: { display: true, content: 'TARGET (0)', color: '#FFD400',
+                  backgroundColor: 'rgba(255,212,0,0.06)',
+                  font: { family: 'Montserrat', size: 9, weight: '700' },
+                  position: 'end', padding: {x:6,y:3} }
+              }
+            }
+          }
+        },
+        scales: {
+          x: { grid:{color:'#1a1a1a'}, ticks:{color:'#888',font:{family:'Montserrat',size:10}} },
+          y: { grid:{color:'#1a1a1a'}, ticks:{color:'#888',font:{family:'Montserrat',size:10}} }
+        }
+      }
+    });
+  }
+
+  // ── Donut chart ──
+  const dCtx = document.getElementById('donutChart')?.getContext('2d');
+  if (dCtx && total > 0) {
+    if (window._donutChart) window._donutChart.destroy();
+    window._donutChart = new Chart(dCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Promoters','Passives','Detractors'],
+        datasets: [{ data:[pro,pass,det], backgroundColor:['#3DD68C','#F25C2A','#E8453C'], borderWidth:0, hoverOffset:8 }]
+      },
+      options: {
+        cutout: '68%',
+        plugins: {
+          legend: { position:'bottom', labels:{ color:'#888', padding:14, font:{family:'Montserrat',size:10} } },
+          tooltip: { callbacks:{ label: c => ` ${c.label}: ${c.raw} (${Math.round(c.raw/total*100)}%)` } }
         }
       }
     });
@@ -362,10 +549,9 @@ function render() {
 function setPeriod(p) {
   activePeriod = p;
   render();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top:0, behavior:'smooth' });
 }
 
-// Load on init
 loadData();
 </script>
 </body>

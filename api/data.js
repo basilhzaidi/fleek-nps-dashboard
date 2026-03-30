@@ -67,78 +67,80 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // POST — add a new response
+  // POST — add a single response OR bulk import an array
   if (req.method === 'POST') {
     try {
       const body = req.body || {};
-      const score = parseInt(body.score);
-      if (isNaN(score) || score < 0 || score > 10) {
-        return res.status(400).json({ error: 'Invalid score (0-10)' });
-      }
-      const entry = {
-        seller: body.seller || body.storeHandle || 'Unknown',
-        storeHandle: body.storeHandle || body.seller || '',
-        email: body.email || '',
-        score,
-        department: body.department || body.aspects || 'Seller Support',
-        geography: body.geography || 'PK Zone',
-        city: body.city || '',
-        comment: body.comment || '',
-        mainIssue: body.mainIssue || '',
-        aspects: body.aspects || '',
-        satisfaction: body.satisfaction || {},
-        biggestIssues: body.biggestIssues || '',
-        period: body.period || (() => {
-          const d = new Date();
-          return d.toLocaleString('en-US', { month: 'short' }) + ' ' + d.getFullYear();
-        })(),
-        submittedAt: body.submittedAt || new Date().toISOString(),
-        source: body.source || 'survey_form'
-      };
+      const curPeriod = () => { const d = new Date(); return d.toLocaleString('en-US', { month: 'short' }) + ' ' + d.getFullYear(); };
 
-      // Also keep in-memory for same-session reads (fallback)
-      if (!global.npsResponses) global.npsResponses = [];
-      global.npsResponses.unshift(entry);
-
-      // Write to GitHub (persistent)
-      try {
-        const data = await readData();
-        data.responses = [entry, ...(data.responses || [])];
-        data.lastUpdated = new Date().toISOString();
-        await writeData(data);
-      } catch(writeErr) {
-        console.error('[data.js] GitHub write error:', writeErr.message);
-        // Don't fail — in-memory still captured it
+      function buildEntry(b) {
+        const score = parseInt(b.score);
+        if (isNaN(score) || score < 0 || score > 10) return null;
+        return {
+          seller: b.seller || b.storeHandle || 'Unknown',
+          storeHandle: b.storeHandle || b.seller || '',
+          email: b.email || '',
+          score,
+          department: b.department || b.aspects || 'Seller Support',
+          geography: b.geography || 'PK Zone',
+          city: b.city || '',
+          comment: b.comment || '',
+          mainIssue: b.mainIssue || '',
+          aspects: b.aspects || '',
+          satisfaction: b.satisfaction || {},
+          biggestIssues: b.biggestIssues || '',
+          period: b.period || curPeriod(),
+          submittedAt: b.submittedAt || new Date().toISOString(),
+          source: b.source || 'survey_form'
+        };
       }
 
-      // Slack notification
-      const slackWebhook = process.env.SLACK_WEBHOOK_URL;
-      if (slackWebhook) {
-        const cat = score >= 9 ? 'Promoter' : score >= 7 ? 'Passive' : 'Detractor';
-        const emoji = score >= 9 ? '🟢' : score >= 7 ? '🟡' : '🔴';
-        try {
-          await fetch(slackWebhook, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              text: `${emoji} New NPS — *${entry.seller}* scored *${score}/10* (${cat}) · ${entry.period}`,
-              blocks: [
-                { type: 'header', text: { type: 'plain_text', text: `${emoji} New NPS Response — ${entry.period}`, emoji: true }},
-                { type: 'section', fields: [
-                  { type: 'mrkdwn', text: `*Seller*\n${entry.seller}` },
-                  { type: 'mrkdwn', text: `*Score*\n${score}/10 — ${cat}` },
-                  { type: 'mrkdwn', text: `*Email*\n${entry.email || '—'}` },
-                  { type: 'mrkdwn', text: `*Zone*\n${entry.geography}` }
-                ]},
-                ...(entry.comment ? [{ type: 'section', text: { type: 'mrkdwn', text: `*Comment*\n_"${entry.comment}"_` }}] : []),
-                { type: 'context', elements: [{ type: 'mrkdwn', text: `Source: ${entry.source} · <https://fleek-nps-dashboard.vercel.app/dashboard|View Dashboard>` }]}
-              ]
-            })
-          });
-        } catch(e) { console.error('[data.js] Slack error:', e.message); }
+      // Bulk mode: body is an array
+      const isBulk = Array.isArray(body);
+      const entries = isBulk
+        ? body.map(buildEntry).filter(Boolean)
+        : [buildEntry(body)].filter(Boolean);
+
+      if (!entries.length) return res.status(400).json({ error: 'No valid entries' });
+
+      // Write to GitHub
+      const data = await readData();
+      data.responses = [...entries, ...(data.responses || [])];
+      data.lastUpdated = new Date().toISOString();
+      await writeData(data);
+
+      // Slack notification (single entry only)
+      if (!isBulk) {
+        const entry = entries[0];
+        const slackWebhook = process.env.SLACK_WEBHOOK_URL;
+        if (slackWebhook) {
+          const cat = entry.score >= 9 ? 'Promoter' : entry.score >= 7 ? 'Passive' : 'Detractor';
+          const emoji = entry.score >= 9 ? '🟢' : entry.score >= 7 ? '🟡' : '🔴';
+          try {
+            await fetch(slackWebhook, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                text: `${emoji} New NPS — *${entry.seller}* scored *${entry.score}/10* (${cat}) · ${entry.period}`,
+                blocks: [
+                  { type: 'header', text: { type: 'plain_text', text: `${emoji} New NPS Response — ${entry.period}`, emoji: true }},
+                  { type: 'section', fields: [
+                    { type: 'mrkdwn', text: `*Seller*\n${entry.seller}` },
+                    { type: 'mrkdwn', text: `*Score*\n${entry.score}/10 — ${cat}` },
+                    { type: 'mrkdwn', text: `*Email*\n${entry.email || '—'}` },
+                    { type: 'mrkdwn', text: `*Zone*\n${entry.geography}` }
+                  ]},
+                  ...(entry.comment ? [{ type: 'section', text: { type: 'mrkdwn', text: `*Comment*\n_"${entry.comment}"_` }}] : []),
+                  { type: 'context', elements: [{ type: 'mrkdwn', text: `Source: ${entry.source} · <https://fleek-nps-dashboard.vercel.app/dashboard|View Dashboard>` }]}
+                ]
+              })
+            });
+          } catch(e) { console.error('[data.js] Slack error:', e.message); }
+        }
+        return res.status(201).json({ success: true, seller: entry.seller, score: entry.score, period: entry.period });
       }
 
-      return res.status(201).json({ success: true, seller: entry.seller, score, period: entry.period });
+      return res.status(201).json({ success: true, imported: entries.length });
     } catch(err) {
       console.error('[data.js] POST error:', err.message);
       return res.status(500).json({ error: err.message });
