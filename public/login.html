@@ -4,29 +4,29 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Fleek — NPS Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0c0c0c;--card:#141414;--border:#252525;--yellow:#F5C518;--red:#E8453C;--green:#3DD68C;--text:#f0f0f0;--muted:#777}
-body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
+:root{--bg:#0F0F0F;--card:#141414;--border:#2a2a2a;--yellow:#FFD400;--red:#E8453C;--green:#3DD68C;--text:#f0f0f0;--muted:#777}
+body{background:var(--bg);color:var(--text);font-family:'Montserrat',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
 .login-wrap{width:100%;max-width:400px}
 .logo-area{text-align:center;margin-bottom:40px}
-.logo-img{height:44px;margin-bottom:16px}
-.logo-text{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:4px;color:var(--yellow)}
+.logo-img{height:48px;margin-bottom:20px}
+.logo-text{font-family:'League Gothic',sans-serif;font-size:2.2rem;letter-spacing:4px;color:var(--yellow)}
 .portal-label{font-size:0.8rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:6px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:36px;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:36px;margin-bottom:16px}
 .card-title{font-size:1.1rem;font-weight:700;margin-bottom:24px;color:var(--text)}
 .field{margin-bottom:16px}
 .field label{display:block;font-size:0.78rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:600}
-.field input{width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.95rem;padding:12px 16px;outline:none;transition:border-color 0.2s}
+.field input{width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:4px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:0.95rem;padding:12px 16px;outline:none;transition:border-color 0.2s}
 .field input:focus{border-color:var(--yellow)}
-.login-btn{width:100%;padding:16px;background:var(--yellow);color:#0c0c0c;border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;cursor:pointer;transition:opacity 0.2s;margin-top:8px}
+.login-btn{width:100%;padding:16px;background:var(--yellow);color:#0c0c0c;border:none;border-radius:4px;font-family:'League Gothic',sans-serif;font-size:1.3rem;letter-spacing:2px;cursor:pointer;transition:opacity 0.2s;margin-top:8px}
 .login-btn:hover{opacity:0.88}
-.error-msg{background:rgba(232,69,60,0.12);border:1px solid rgba(232,69,60,0.3);color:var(--red);border-radius:10px;padding:12px 16px;font-size:0.85rem;margin-top:12px;display:none}
+.error-msg{background:rgba(232,69,60,0.12);border:1px solid rgba(232,69,60,0.3);color:var(--red);border-radius:4px;padding:12px 16px;font-size:0.85rem;margin-top:12px;display:none}
 .footer{text-align:center;color:var(--muted);font-size:0.75rem;margin-top:24px}
 .footer a{color:var(--yellow);text-decoration:none}
 .divider{border:none;border-top:1px solid var(--border);margin:20px 0}
-.survey-link{display:block;text-align:center;color:var(--muted);font-size:0.82rem;padding:14px;border:1px solid var(--border);border-radius:12px;text-decoration:none;transition:all 0.2s}
+.survey-link{display:block;text-align:center;color:var(--muted);font-size:0.82rem;padding:14px;border:1px solid var(--border);border-radius:4px;text-decoration:none;transition:all 0.2s}
 .survey-link:hover{border-color:var(--yellow);color:var(--yellow)}
 </style>
 </head>
@@ -34,8 +34,8 @@ body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-he
 
 <div class="login-wrap">
   <div class="logo-area">
-    <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek" class="logo-img" style="filter:brightness(0) invert(1)"/>
-    <div class="portal-label">NPS Analytics Portal</div>
+    <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek" class="logo-img" style="height:48px;filter:brightness(0) invert(1)"/>
+    <div class="portal-label" style="font-family:'League Gothic',sans-serif;font-size:0.85rem;letter-spacing:4px;color:var(--yellow)">NPS ANALYTICS PORTAL</div>
   </div>
 
   <div class="card">
