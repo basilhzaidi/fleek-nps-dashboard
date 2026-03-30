@@ -31,8 +31,7 @@ body{background:var(--bg);color:var(--cream);font-family:'Montserrat',sans-serif
 
 /* Hero NPS */
 .hero{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:24px}
-.metric{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:24px;text-align:center;transition:border-color 0.2s}
-.metric:hover{border-color:var(--yellow)}
+.metric{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:24px;text-align:center}
 .metric-label{font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:8px}
 .metric-value{font-family:'League Gothic',sans-serif;font-size:3rem;letter-spacing:2px;line-height:1}
 .metric-sub{color:var(--muted);font-size:0.75rem;margin-top:6px}
@@ -40,8 +39,8 @@ body{background:var(--bg);color:var(--cream);font-family:'Montserrat',sans-serif
 /* Period cards strip */
 .period-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px}
 .period-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:18px;cursor:pointer;transition:all 0.15s}
-.period-card:hover,.period-card.active{border-color:var(--yellow);background:#1a1a0f}
-.period-card.active{background:rgba(255,212,0,0.05)}
+.period-card:hover{border-color:rgba(255,212,0,0.4)}
+.period-card.active{border-color:var(--yellow);background:rgba(255,212,0,0.05)}
 .pc-period{font-size:0.68rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;font-weight:700;margin-bottom:6px}
 .pc-nps{font-family:'League Gothic',sans-serif;font-size:2.2rem;line-height:1}
 .pc-total{font-size:0.75rem;color:var(--muted);margin-top:4px}
@@ -281,7 +280,7 @@ function render() {
 
     <!-- Hero metrics -->
     <div class="hero">
-      <div class="metric" style="border-top:3px solid ${npsColor(nps)}">
+      <div class="metric" style="border-top:3px solid var(--yellow)">
         <div class="metric-label">NPS Score</div>
         <div class="metric-value" style="color:${npsColor(nps)}">${nps > 0 ? '+' : ''}${nps}</div>
         <div class="metric-sub" style="color:${npsColor(nps)};font-weight:700;font-size:0.7rem;letter-spacing:2px;text-transform:uppercase">${health}</div>
@@ -335,7 +334,7 @@ function render() {
 
     <div class="footer">
       <span>Fleek Seller Experience · Internal Report · Confidential</span>
-      <span>Generated: ${now} · ${total} responses · ${activePeriod === 'all' ? 'All Time' : activePeriod}</span>
+      <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek" style="height:22px;filter:brightness(0) invert(1);opacity:0.5"/>
     </div>
   `;
 
