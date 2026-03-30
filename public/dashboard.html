@@ -6,6 +6,7 @@
   <title>Fleek NPS Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Montserrat:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     :root{--bg:#0c0c0c;--card:#161616;--border:#252525;--yellow:#FFD400;--red:#E8453C;--green:#3DD68C;--blue:#4B9EFF;--text:#f0f0f0;--muted:#888}
@@ -349,9 +350,12 @@
           <div style="font-family:'League Gothic',sans-serif;font-size:1.4rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase">Smart Summary</div>
           <div style="color:var(--muted);font-size:0.8rem;margin-top:4px">Auto-generated analysis from real seller data — no AI API needed</div>
         </div>
-        <select id="summaryPeriod" onchange="renderSummary()" style="background:#161616;border:1.5px solid var(--border);border-radius:4px;color:var(--text);font-family:'Montserrat',sans-serif;padding:9px 14px;font-size:0.82rem;outline:none">
-          <option value="all">All Periods</option>
-        </select>
+        <div style="display:flex;gap:10px;align-items:center">
+          <select id="summaryPeriod" onchange="renderSummary()" style="background:#161616;border:1.5px solid var(--border);border-radius:4px;color:var(--text);font-family:'Montserrat',sans-serif;padding:9px 14px;font-size:0.82rem;outline:none">
+            <option value="all">All Periods</option>
+          </select>
+          <button onclick="exportSummaryPDF()" style="background:transparent;border:1.5px solid var(--yellow);color:var(--yellow);padding:9px 18px;border-radius:4px;font-family:'League Gothic',sans-serif;font-size:0.9rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.15s;white-space:nowrap" onmouseover="this.style.background='var(--yellow)';this.style.color='#0F0F0F'" onmouseout="this.style.background='transparent';this.style.color='var(--yellow)'">⬇ EXPORT PDF</button>
+        </div>
       </div>
       <div id="summaryContent"></div>
     </div>
@@ -764,7 +768,26 @@
     trendChart = new Chart(document.getElementById('trendChart'), {
       type:'line',
       data:{ labels:periodStats.map(p=>p.period), datasets:[{label:'NPS',data:periodStats.map(p=>p.nps),borderColor:'#FFD400',backgroundColor:'rgba(245,197,24,0.1)',borderWidth:2.5,pointBackgroundColor:'#FFD400',pointRadius:6,tension:0.3,fill:true}] },
-      options:{ plugins:{legend:{display:false}}, scales:{x:{grid:{color:'#1a1a1a'},ticks:{color:'#888'}},y:{grid:{color:'#1a1a1a'},ticks:{color:'#888'}}}}
+      options:{
+        plugins:{
+          legend:{display:false},
+          annotation:{
+            annotations:{
+              targetLine:{
+                type:'line', yMin:0, yMax:0,
+                borderColor:'rgba(255,212,0,0.5)', borderWidth:2, borderDash:[6,4],
+                label:{
+                  display:true, content:'TARGET (0)',
+                  color:'#FFD400', backgroundColor:'rgba(255,212,0,0.08)',
+                  font:{family:'Montserrat',size:10,weight:'700'},
+                  position:'end', padding:{x:6,y:3}
+                }
+              }
+            }
+          }
+        },
+        scales:{x:{grid:{color:'#1a1a1a'},ticks:{color:'#888'}},y:{grid:{color:'#1a1a1a'},ticks:{color:'#888'}}}
+      }
     });
     
     if (volChart) volChart.destroy();
@@ -1271,6 +1294,70 @@
       `) : ''}
 
     `;
+  }
+
+
+  // ===================== SMART SUMMARY PDF EXPORT =====================
+  function exportSummaryPDF() {
+    const period = document.getElementById('summaryPeriod')?.value || 'all';
+    const content = document.getElementById('summaryContent')?.innerHTML || '';
+    if (!content || content.includes('No data')) {
+      showToast('No data to export', 'error');
+      return;
+    }
+    const label = period === 'all' ? 'All Periods' : period;
+    const now = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric' });
+    const printHTML = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <title>Fleek NPS Smart Summary — ${label}</title>
+  <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#fff;color:#111;font-family:'Montserrat',sans-serif;padding:32px;font-size:12px;line-height:1.6}
+    .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:28px;padding-bottom:16px;border-bottom:3px solid #FFD400}
+    .title{font-family:'League Gothic',sans-serif;font-size:28px;letter-spacing:4px;text-transform:uppercase;color:#0F0F0F}
+    .meta{text-align:right;color:#666;font-size:11px}
+    /* Override dark styles for print */
+    [style*="background:#141414"],[style*="background:#0c0c0c"],[style*="background:#161616"],[style*="background:#1e1e1e"],[style*="background:#1a1a1a"],[style*="background:rgba(255"],[style*="background:rgba(61"],[style*="background:rgba(232"]{background:#f8f8f8!important}
+    [style*="color:var(--cream)"],[style*="color:#F6F1E7"]{color:#111!important}
+    [style*="color:var(--muted)"],[style*="color:#888"]{color:#555!important}
+    [style*="color:var(--text)"]{color:#111!important}
+    [style*="border:1px solid var(--border)"],[style*="border:1px solid #1a1a1a"],[style*="border:1px solid #2a2a2a"]{border-color:#ddd!important}
+    [style*="border-left:3px solid var(--yellow)"]{border-left:3px solid #FFD400!important}
+    [style*="border-bottom:1px solid #1a1a1a"]{border-bottom:1px solid #eee!important}
+    [style*="background:var(--yellow)"]{background:#FFD400!important;color:#0F0F0F!important}
+    [style*="background:#0F0F0F"],[style*="background:#0c0c0c"]{background:#f0f0f0!important}
+    [style*="color:var(--yellow)"]{color:#c8a000!important}
+    [style*="color:#FFD400"]{color:#c8a000!important}
+    .footer{margin-top:32px;padding-top:12px;border-top:1px solid #ddd;display:flex;justify-content:space-between;color:#999;font-size:10px}
+    @media print{body{padding:16px}@page{margin:1.5cm}}
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <div class="title">NPS Smart Summary</div>
+      <div style="color:#666;font-size:12px;margin-top:4px">Period: ${label} · Generated: ${now}</div>
+    </div>
+    <div class="meta">
+      <div style="font-family:'League Gothic',sans-serif;font-size:18px;letter-spacing:3px;color:#FFD400">FLEEK</div>
+      <div style="margin-top:2px">Seller Experience Team</div>
+      <div>Internal Use Only</div>
+    </div>
+  </div>
+  ${content}
+  <div class="footer">
+    <span>Fleek NPS Dashboard · fleek-nps-dashboard.vercel.app</span>
+    <span>${now}</span>
+  </div>
+</body>
+</html>`;
+    const w = window.open('', '_blank');
+    w.document.write(printHTML);
+    w.document.close();
+    w.onload = () => { w.focus(); w.print(); };
   }
 
   // ===================== REPORT GENERATOR =====================
