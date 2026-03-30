@@ -8,87 +8,103 @@ module.exports = async function handler(req, res) {
 
   try {
     const body = req.body || {};
-    const score = parseInt(body.score);
-    if (isNaN(score) || score < 0 || score > 10) {
+    const { seller, storeHandle, email, score, department, geography, city,
+            comment, mainIssue, aspects, satisfaction, biggestIssues,
+            importance, period, submittedAt, source } = body;
+
+    if (score === undefined || score === null || score < 0 || score > 10) {
       return res.status(400).json({ error: 'Invalid score' });
     }
 
     const entry = {
-      email:        body.email || '',
-      seller:       body.seller || body.storeHandle || 'Unknown',
-      storeHandle:  body.storeHandle || body.seller || '',
-      score,
-      department:   body.department || body.aspects || 'Seller Support',
-      geography:    body.geography || 'PK Zone',
-      city:         body.city || '',
-      comment:      body.comment || '',
-      mainIssue:    body.mainIssue || '',
-      aspects:      body.aspects || '',
-      satisfaction: body.satisfaction || {},
-      biggestIssues:body.biggestIssues || '',
-      period:       body.period || (() => {
+      seller: seller || storeHandle || 'Unknown',
+      storeHandle: storeHandle || seller || '',
+      email: email || '',
+      score: parseInt(score),
+      department: department || aspects || 'Seller Support',
+      geography: geography || 'PK Zone',
+      city: city || '',
+      comment: comment || '',
+      mainIssue: mainIssue || '',
+      aspects: aspects || '',
+      satisfaction: satisfaction || {},
+      biggestIssues: biggestIssues || '',
+      importance: importance || {},
+      period: period || (() => {
         const d = new Date();
         return d.toLocaleString('en-US', { month: 'short' }) + ' ' + d.getFullYear();
       })(),
-      submittedAt:  new Date().toISOString(),
-      source:       'survey_form'
+      submittedAt: submittedAt || new Date().toISOString(),
+      source: source || 'survey_form'
     };
 
     if (!global.npsResponses) global.npsResponses = [];
     global.npsResponses.unshift(entry);
     if (global.npsResponses.length > 5000) global.npsResponses = global.npsResponses.slice(0, 5000);
 
-    // ── Slack DM notification to Basil ──────────────────────────────────────
-    const slackToken = process.env.SLACK_BOT_TOKEN;
-    if (slackToken) {
-      const cat = score >= 9 ? '🟢 Promoter' : score >= 7 ? '🟡 Passive' : '🔴 Detractor';
-      const scoreBar = '█'.repeat(score) + '░'.repeat(10 - score);
-      const slackMsg = {
-        channel: 'U0947NPLP1V', // Basil's user ID — private DM
-        text: `📋 New NPS Response — ${entry.period}`,
+    // ── Slack Notification ────────────────────────────────────────────────
+    const slackWebhook = process.env.SLACK_WEBHOOK_URL;
+    if (slackWebhook) {
+      const cat = entry.score >= 9 ? 'Promoter' : entry.score >= 7 ? 'Passive' : 'Detractor';
+      const emoji = entry.score >= 9 ? '🟢' : entry.score >= 7 ? '🟡' : '🔴';
+      const npsEmoji = { Promoter: '✅', Passive: '⚠️', Detractor: '🚨' }[cat];
+
+      const slackBody = {
+        text: `${npsEmoji} New NPS submission — *${entry.seller}* scored *${entry.score}/10* (${cat})`,
         blocks: [
           {
             type: 'header',
-            text: { type: 'plain_text', text: `📋 New NPS Response — ${entry.period}` }
+            text: { type: 'plain_text', text: `${emoji} New NPS Response — ${entry.period}`, emoji: true }
           },
           {
             type: 'section',
             fields: [
-              { type: 'mrkdwn', text: `*🏪 Store*\n${entry.seller || entry.storeHandle || 'Unknown'}` },
-              { type: 'mrkdwn', text: `*📧 Email*\n${entry.email || '—'}` },
-              { type: 'mrkdwn', text: `*📊 Score*\n${score}/10  ${cat}` },
-              { type: 'mrkdwn', text: `*🌍 Zone*\n${entry.geography}${entry.city ? ' · ' + entry.city : ''}` }
+              { type: 'mrkdwn', text: `*Seller*\n${entry.seller || 'Unknown'}` },
+              { type: 'mrkdwn', text: `*Score*\n${entry.score}/10 — ${cat}` },
+              { type: 'mrkdwn', text: `*Email*\n${entry.email || '—'}` },
+              { type: 'mrkdwn', text: `*Geography*\n${entry.geography || '—'}` },
+              { type: 'mrkdwn', text: `*Department*\n${entry.department || '—'}` },
+              { type: 'mrkdwn', text: `*Period*\n${entry.period}` }
             ]
           },
-          entry.comment ? {
+          ...(entry.comment ? [{
             type: 'section',
-            text: { type: 'mrkdwn', text: `*💬 Reason for score*\n_${entry.comment}_` }
-          } : null,
-          (entry.biggestIssues || entry.mainIssue) ? {
+            text: { type: 'mrkdwn', text: `*Comment*\n_"${entry.comment}"_` }
+          }] : []),
+          ...(entry.biggestIssues ? [{
             type: 'section',
-            text: { type: 'mrkdwn', text: `*⚠️ Issues*\n${entry.biggestIssues || entry.mainIssue}` }
-          } : null,
+            text: { type: 'mrkdwn', text: `*Biggest Issues*\n${entry.biggestIssues}` }
+          }] : []),
           {
             type: 'context',
             elements: [
-              { type: 'mrkdwn', text: `Submitted via ${entry.source} · ${new Date(entry.submittedAt).toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })}` }
+              { type: 'mrkdwn', text: `Submitted ${new Date(entry.submittedAt).toLocaleString('en-GB')} · Source: ${entry.source} · <https://fleek-nps-dashboard.vercel.app/dashboard|View Dashboard>` }
             ]
           },
           { type: 'divider' }
-        ].filter(Boolean)
+        ]
       };
 
-      await fetch('https://slack.com/api/chat.postMessage', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${slackToken}`
-        },
-        body: JSON.stringify(slackMsg)
-      }).catch(e => console.error('[survey-submit] Slack error:', e.message));
+      try {
+        await fetch(slackWebhook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(slackBody)
+        });
+        console.log('[survey-submit] Slack notified for', entry.seller);
+      } catch (slackErr) {
+        console.error('[survey-submit] Slack error:', slackErr.message);
+        // Don't fail the submission if Slack fails
+      }
     }
 
-    return res.status(201).json({ success: true, period: entry.period, score: entry.score });
+    return res.status(201).json({
+      success: true,
+      message: 'Response recorded',
+      seller: entry.seller,
+      score: entry.score,
+      period: entry.period
+    });
 
   } catch (err) {
     console.error('[survey-submit] Error:', err.message);
