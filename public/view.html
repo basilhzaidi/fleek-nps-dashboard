@@ -180,6 +180,7 @@ tr:last-child td{border-bottom:none}
     <button class="vtab active" onclick="showVTab('overview')">Overview</button>
     <button class="vtab" onclick="showVTab('satisfaction')">Satisfaction</button>
     <button class="vtab" onclick="showVTab('summary')">Smart Summary</button>
+    <button class="vtab" onclick="showVTab('area')">Area NPS</button>
   </div>
   <button class="pdf-btn" onclick="exportPDF()">⬇ Download Report PDF</button>
 </div>
@@ -201,6 +202,11 @@ tr:last-child td{border-bottom:none}
 
   <!-- SMART SUMMARY TAB -->
   <div class="vtab-content" id="vtab-summary">
+    <div style="padding:60px;text-align:center;color:var(--muted)">Loading...</div>
+  </div>
+
+  <!-- AREA NPS TAB -->
+  <div class="vtab-content" id="vtab-area">
     <div style="padding:60px;text-align:center;color:var(--muted)">Loading...</div>
   </div>
 
@@ -256,9 +262,12 @@ function getPeriods() {
     return(parseInt(ay)-parseInt(by))||((order[am]||0)-(order[bm]||0));
   });
 }
+function periodData() { return allData.filter(e=>!e.areaTag); }
 function filtered() {
-  return activePeriod==='all' ? allData : allData.filter(e=>e.period===activePeriod);
+  const base = periodData();
+  return activePeriod==='all' ? base : base.filter(e=>e.period===activePeriod);
 }
+function areaData() { return allData.filter(e=>e.areaTag); }
 
 // ── Period bar ────────────────────────────────────────────────────────────
 function renderPeriodBar() {
@@ -282,7 +291,8 @@ function renderAll() { renderPeriodBar(); renderActiveTab(); }
 function renderActiveTab() {
   if (activeTab==='overview') renderOverview();
   else if (activeTab==='satisfaction') renderSatisfaction();
-  else renderSummary();
+  else if (activeTab==='summary') renderSummary();
+  else if (activeTab==='area') renderAreaNPS();
 }
 
 // ── OVERVIEW TAB ─────────────────────────────────────────────────────────
@@ -337,32 +347,21 @@ function renderOverview() {
     </div>`;
   }).join('');
 
-  // Dept rows
+  // Dept chart data (horizontal bar)
   const depts = ['Seller Support','Quality Check','Payments','Shipping & Logistics','Vendor App','Sales & Visibility'];
-  const deptRows = depts.map(d=>{
-    const dd=data.filter(e=>e.department===d); if(!dd.length)return '';
-    const dn=calcNPS(dd); const c=npsColor(dn.nps); const bw=Math.min(100,Math.abs(dn.nps));
-    return `<tr><td style="font-weight:600">${d}</td>
-      <td style="font-family:'JetBrains Mono',monospace;font-size:0.76rem;color:var(--muted)">${dn.total}</td>
-      <td><div class="nps-bar-cell"><span style="font-family:'League Gothic',sans-serif;font-size:1.3rem;color:${c};min-width:42px">${dn.nps>0?'+':''}${dn.nps}</span>
-        <div class="nps-bar-mini"><div class="nps-bar-mini-fill" style="width:${bw}%;background:${c}"></div></div></div></td>
-      <td style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:0.76rem">${Math.round(dd.filter(e=>e.score>=9).length/dn.total*100)}%</td>
-      <td style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:0.76rem">${Math.round(dd.filter(e=>e.score<=6).length/dn.total*100)}%</td></tr>`;
-  }).filter(Boolean).join('');
+  const deptChartData = depts.map(d=>{
+    const dd=data.filter(e=>e.department===d); if(!dd.length)return null;
+    const dn=calcNPS(dd);
+    return {name:d, nps:dn.nps, total:dn.total};
+  }).filter(Boolean);
 
-  // Geo rows
+  // Geo chart data (horizontal bar)
   const zones=['PK Zone','PK Non-Zone','India','ROW'];
-  const flags={'PK Zone':'🇵🇰','PK Non-Zone':'🇵🇰','India':'🇮🇳','ROW':'🌍'};
-  const geoRows = zones.map(z=>{
-    const zd=data.filter(e=>e.geography===z); if(!zd.length)return '';
-    const zn=calcNPS(zd); const c=npsColor(zn.nps); const bw=Math.min(100,Math.abs(zn.nps));
-    return `<tr><td style="font-weight:600">${flags[z]} ${z}</td>
-      <td style="font-family:'JetBrains Mono',monospace;font-size:0.76rem;color:var(--muted)">${zn.total}</td>
-      <td><div class="nps-bar-cell"><span style="font-family:'League Gothic',sans-serif;font-size:1.3rem;color:${c};min-width:42px">${zn.nps>0?'+':''}${zn.nps}</span>
-        <div class="nps-bar-mini"><div class="nps-bar-mini-fill" style="width:${bw}%;background:${c}"></div></div></div></td>
-      <td style="color:var(--green);font-family:'JetBrains Mono',monospace;font-size:0.76rem">${Math.round(zd.filter(e=>e.score>=9).length/zn.total*100)}%</td>
-      <td style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:0.76rem">${Math.round(zd.filter(e=>e.score<=6).length/zn.total*100)}%</td></tr>`;
-  }).filter(Boolean).join('');
+  const geoChartData = zones.map(z=>{
+    const zd=data.filter(e=>e.geography===z); if(!zd.length)return null;
+    const zn=calcNPS(zd);
+    return {zone:z, nps:zn.nps, total:zn.total};
+  }).filter(Boolean);
 
   // Comments
   const wc = data.filter(e=>e.comment&&e.comment.trim().length>8&&Number.isFinite(e.score));
@@ -436,16 +435,14 @@ function renderOverview() {
     </div>
     <div style="display:grid;grid-template-columns:260px 1fr;gap:16px;margin-bottom:16px">
       <div class="chart-card"><div class="chart-title">Segment Breakdown</div><canvas id="donutChart" height="180"></canvas></div>
-      <div style="display:flex;flex-direction:column;gap:16px">
-        <div class="section-card" style="margin-bottom:0">
-          <div class="section-title">By Department</div>
-          ${deptRows?`<table><thead><tr><th>Department</th><th>Responses</th><th>NPS</th><th>Promoters</th><th>Detractors</th></tr></thead><tbody>${deptRows}</tbody></table>`:'<div style="color:var(--muted);font-size:0.83rem">No data.</div>'}
-        </div>
-        <div class="section-card" style="margin-bottom:0">
-          <div class="section-title">By Geography</div>
-          ${geoRows?`<table><thead><tr><th>Zone</th><th>Responses</th><th>NPS</th><th>Promoters</th><th>Detractors</th></tr></thead><tbody>${geoRows}</tbody></table>`:'<div style="color:var(--muted);font-size:0.83rem">No data.</div>'}
-        </div>
+      <div class="chart-card">
+        <div class="chart-title">NPS by Department</div>
+        ${deptChartData.length?`<canvas id="deptChart" height="${Math.max(120,deptChartData.length*38)}"></canvas>`:'<div style="color:var(--muted);font-size:0.83rem;padding-top:8px">No data.</div>'}
       </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:16px">
+      <div class="chart-title">NPS by Geography</div>
+      ${geoChartData.length?`<canvas id="geoChart" height="${Math.max(100,geoChartData.length*48)}"></canvas>`:'<div style="color:var(--muted);font-size:0.83rem;padding-top:8px">No data.</div>'}
     </div>
     ${dCom||pCom?`<div class="section-card">
       <div class="section-title">Seller Feedback</div>
@@ -474,6 +471,24 @@ function renderOverview() {
     if (window._dChart) window._dChart.destroy();
     window._dChart = new Chart(dc,{type:'doughnut',data:{labels:['Promoters','Passives','Detractors'],datasets:[{data:[pro,pass,det],backgroundColor:['#3DD68C','#F25C2A','#E8453C'],borderWidth:0,hoverOffset:8}]},
       options:{cutout:'68%',plugins:{legend:{position:'bottom',labels:{color:'#666',padding:14,font:{family:'Montserrat',size:10}}},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw} (${Math.round(c.raw/total*100)}%)`}}}}});
+  }
+  // Dept horizontal bar chart
+  const deptCtx = document.getElementById('deptChart')?.getContext('2d');
+  if (deptCtx&&deptChartData.length) {
+    if (window._deptChart) window._deptChart.destroy();
+    window._deptChart = new Chart(deptCtx,{type:'bar',
+      data:{labels:deptChartData.map(d=>d.name),datasets:[{data:deptChartData.map(d=>d.nps),backgroundColor:deptChartData.map(d=>d.nps>=0?'#3DD68C':'#E8453C'),borderWidth:0,borderRadius:2}]},
+      options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`NPS: ${c.raw>0?'+':''}${c.raw} · n=${deptChartData[c.dataIndex].total}`}}},
+        scales:{x:{min:-100,max:100,grid:{color:'#E5E5E5'},ticks:{color:'#666',font:{family:'Montserrat',size:10}},border:{dash:[4,4]}},y:{grid:{display:false},ticks:{color:'#444',font:{family:'Montserrat',size:10}}}}}});
+  }
+  // Geo horizontal bar chart
+  const geoCtx = document.getElementById('geoChart')?.getContext('2d');
+  if (geoCtx&&geoChartData.length) {
+    if (window._geoChart) window._geoChart.destroy();
+    window._geoChart = new Chart(geoCtx,{type:'bar',
+      data:{labels:geoChartData.map(g=>g.zone),datasets:[{data:geoChartData.map(g=>g.nps),backgroundColor:geoChartData.map(g=>g.nps>=0?'#3DD68C':'#E8453C'),borderWidth:0,borderRadius:2}]},
+      options:{indexAxis:'y',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`NPS: ${c.raw>0?'+':''}${c.raw} · n=${geoChartData[c.dataIndex].total}`}}},
+        scales:{x:{min:-100,max:100,grid:{color:'#E5E5E5'},ticks:{color:'#666',font:{family:'Montserrat',size:10}},border:{dash:[4,4]}},y:{grid:{display:false},ticks:{color:'#444',font:{family:'Montserrat',size:10}}}}}});
   }
 }
 
@@ -677,6 +692,100 @@ function renderSummary() {
     <div class="footer">
       <div class="footer-left"><div style="font-weight:700;color:var(--cream);margin-bottom:2px">Fleek Seller Experience — Smart Summary</div>
         <div>Generated ${now} · ${total} responses · ${activePeriod==='all'?'All Time':activePeriod} · Confidential</div></div>
+      <div class="footer-right"><span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px">POWERED BY</span>
+        <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek"/></div>
+    </div>`;
+}
+
+// ── AREA NPS TAB ─────────────────────────────────────────────────────────
+function renderAreaNPS() {
+  const el = document.getElementById('vtab-area');
+  const data = areaData();
+  if (!data.length) {
+    el.innerHTML = `<div style="padding:60px;text-align:center;color:var(--muted)">
+      <div style="font-family:'League Gothic',sans-serif;font-size:1rem;letter-spacing:2px;color:var(--yellow);margin-bottom:8px">NO AREA NPS DATA</div>
+      <div style="font-size:0.82rem">Area-specific NPS responses will appear here. These are tracked separately from the monthly period NPS.</div>
+    </div>`;
+    return;
+  }
+
+  // Group by areaTag
+  const areas = [...new Set(data.map(e=>e.areaTag))].filter(Boolean).sort();
+  const areaStats = areas.map(area=>{
+    const ad = data.filter(e=>e.areaTag===area);
+    const n = calcNPS(ad);
+    const periods = [...new Set(ad.map(e=>e.period))].filter(Boolean);
+    return { area, ...n, periods, responses: ad };
+  });
+
+  const now = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+
+  el.innerHTML = `
+    <div style="margin-bottom:20px">
+      <div style="font-family:'League Gothic',sans-serif;font-size:1.4rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase">Area NPS</div>
+      <div style="color:var(--muted);font-size:0.78rem;margin-top:4px">Tracked separately from monthly period NPS · ${data.length} total responses across ${areas.length} area${areas.length>1?'s':''}</div>
+    </div>
+
+    <div class="period-cards" style="margin-bottom:20px">
+      ${areaStats.map(s=>{const c=npsColor(s.nps);return`
+        <div class="period-card active" style="border-color:${c}">
+          <div class="pc-period">${s.area}</div>
+          <div class="pc-nps" style="color:${c}">${s.nps>0?'+':''}${s.nps}</div>
+          <div class="pc-total">${s.total} responses</div>
+          <div style="font-size:0.65rem;color:var(--muted);margin-top:4px">${s.periods.join(', ')}</div>
+        </div>`;}).join('')}
+    </div>
+
+    ${areaStats.map(s=>{
+      const health=s.nps>=50?{l:'EXCELLENT',bg:'rgba(61,214,140,0.08)',c:'var(--green)',b:'rgba(61,214,140,0.2)'}
+                  :s.nps>=20?{l:'GOOD',bg:'rgba(61,214,140,0.06)',c:'var(--green)',b:'rgba(61,214,140,0.15)'}
+                  :s.nps>=0 ?{l:'NEEDS WORK',bg:'rgba(242,92,42,0.06)',c:'var(--orange)',b:'rgba(242,92,42,0.2)'}
+                             :{l:'CRITICAL',bg:'rgba(232,69,60,0.06)',c:'var(--red)',b:'rgba(232,69,60,0.2)'};
+      const proP=s.total?Math.round(s.pro/s.total*100):0;
+      const passP=s.total?Math.round(s.pass/s.total*100):0;
+      const detP=s.total?Math.round(s.det/s.total*100):0;
+      const comments=s.responses.filter(e=>e.comment&&e.comment.trim().length>8&&Number.isFinite(e.score));
+      const detComs=comments.filter(e=>e.score<=6).slice(0,4);
+      const proComs=comments.filter(e=>e.score>=9).slice(0,3);
+      return `
+      <div class="section-card">
+        <div class="section-title">${s.area}</div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:center;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
+          <div style="text-align:center;padding-right:32px;border-right:1px solid var(--border)">
+            <div style="font-size:0.6rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:6px">NPS SCORE</div>
+            <div style="font-family:'League Gothic',sans-serif;font-size:4rem;color:${npsColor(s.nps)};line-height:1">${s.nps>0?'+':''}${s.nps}</div>
+            <div style="display:inline-block;font-family:'League Gothic',sans-serif;font-size:0.68rem;letter-spacing:2px;padding:3px 10px;margin-top:6px;border-radius:2px;background:${health.bg};color:${health.c};border:1px solid ${health.b}">${health.l}</div>
+            <div style="font-size:0.7rem;color:var(--muted);margin-top:8px">${s.total} responses</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            ${[{l:'Promoters',v:proP,n:s.pro,c:'var(--green)'},{l:'Passives',v:passP,n:s.pass,c:'var(--orange)'},{l:'Detractors',v:detP,n:s.det,c:'var(--red)'}].map(seg=>`
+              <div style="display:flex;align-items:center;gap:12px">
+                <span style="font-size:0.65rem;letter-spacing:1px;font-weight:700;color:${seg.c};min-width:80px">${seg.l}</span>
+                <div style="flex:1;background:#EEEEEE;border-radius:2px;height:10px;overflow:hidden">
+                  <div style="width:${seg.v}%;height:100%;background:${seg.c};border-radius:2px"></div>
+                </div>
+                <span style="font-family:'League Gothic',sans-serif;font-size:1.2rem;color:${seg.c};min-width:42px;text-align:right">${seg.v}%</span>
+                <span style="font-size:0.7rem;color:var(--muted);min-width:60px">${seg.n} sellers</span>
+              </div>`).join('')}
+          </div>
+        </div>
+        ${detComs.length||proComs.length?`
+          ${detComs.length?`<div class="comments-divider" style="color:var(--red)">⚠ Detractor Voices</div>
+            ${detComs.map(e=>`<div class="comment-row"><span class="score-pill D">${e.score}</span>
+              <div style="flex:1"><div style="font-size:0.73rem;font-weight:700;color:var(--cream);margin-bottom:3px">${e.storeHandle||e.seller||'Unknown'} <span style="color:var(--muted);font-weight:400;font-size:0.68rem">${e.period}</span></div>
+              <div style="font-size:0.83rem;color:var(--cream);line-height:1.5">${e.comment}</div>
+              ${e.biggestIssues?`<div style="font-size:0.75rem;color:var(--muted);margin-top:3px">⚠ ${e.biggestIssues}</div>`:''}</div></div>`).join('')}`:''}
+          ${proComs.length?`<div class="comments-divider" style="color:var(--green);margin-top:12px">✓ Promoter Voices</div>
+            ${proComs.map(e=>`<div class="comment-row"><span class="score-pill P">${e.score}</span>
+              <div style="flex:1"><div style="font-size:0.73rem;font-weight:700;color:var(--cream);margin-bottom:3px">${e.storeHandle||e.seller||'Unknown'} <span style="color:var(--muted);font-weight:400;font-size:0.68rem">${e.period}</span></div>
+              <div style="font-size:0.83rem;color:var(--cream);line-height:1.5">${e.comment}</div></div></div>`).join('')}`:''}
+        `:''}
+      </div>`;
+    }).join('')}
+
+    <div class="footer">
+      <div class="footer-left"><div style="font-weight:700;color:var(--cream);margin-bottom:2px">Fleek Seller Experience — Area NPS Report</div>
+        <div>Generated ${now} · ${data.length} responses · Separate from Monthly NPS · Confidential</div></div>
       <div class="footer-right"><span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px">POWERED BY</span>
         <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek"/></div>
     </div>`;

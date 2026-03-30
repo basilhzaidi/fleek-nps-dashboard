@@ -76,7 +76,7 @@ module.exports = async function handler(req, res) {
       function buildEntry(b) {
         const score = parseInt(b.score);
         if (isNaN(score) || score < 0 || score > 10) return null;
-        return {
+        const entry = {
           seller: b.seller || b.storeHandle || 'Unknown',
           storeHandle: b.storeHandle || b.seller || '',
           email: b.email || '',
@@ -93,6 +93,8 @@ module.exports = async function handler(req, res) {
           submittedAt: b.submittedAt || new Date().toISOString(),
           source: b.source || 'survey_form'
         };
+        if (b.areaTag) entry.areaTag = b.areaTag;
+        return entry;
       }
 
       // Bulk mode: body is an array
