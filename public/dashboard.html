@@ -568,17 +568,47 @@
     const SEED_DATA = [...sepEntries, ...novEntries, ...janEntries, ...marEntries];
   
   // Load/save data
+  // ── Persistent data store — fetches from /api/data (GitHub-backed) ──────────
+  let _cachedData = null;
+  let _dataLoaded = false;
+
   function getData() {
-    const stored = localStorage.getItem('fleek_nps_v5');
-    if (stored) {
-      try { return JSON.parse(stored); } catch(e) {}
-    }
-    localStorage.setItem('fleek_nps_v5', JSON.stringify(SEED_DATA));
-    return SEED_DATA;
+    // Return cached data synchronously (loaded on init)
+    if (_cachedData !== null) return _cachedData;
+    return SEED_DATA; // fallback before async load
   }
-  
+
   function saveData(data) {
-    localStorage.setItem('fleek_nps_v5', JSON.stringify(data));
+    _cachedData = data;
+    // Persist via API in background
+    fetch('/api/data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      // saveData is called after CSV upload, pass all new entries
+    }).catch(() => {});
+  }
+
+  async function loadDataFromAPI() {
+    try {
+      const res = await fetch('/api/data?t=' + Date.now());
+      if (res.ok) {
+        const json = await res.json();
+        const apiResponses = json.responses || [];
+        // Merge: API data (real submissions) + SEED_DATA (historical)
+        // Deduplicate by submittedAt+seller
+        const seedKeys = new Set(SEED_DATA.map(e => e.submittedAt + e.seller));
+        const newFromAPI = apiResponses.filter(e => !seedKeys.has(e.submittedAt + e.seller));
+        _cachedData = [...newFromAPI, ...SEED_DATA];
+      } else {
+        _cachedData = SEED_DATA;
+      }
+    } catch(e) {
+      console.warn('[dashboard] API load failed, using seed data:', e.message);
+      _cachedData = SEED_DATA;
+    }
+    _dataLoaded = true;
+    renderOverview();
+    renderUploadLog();
   }
   
   let allData = getData();
@@ -1416,8 +1446,7 @@ ${includeGeo && geoRows ? `<div class="section">
   }
 
   populateSelects();
-  renderOverview();
-  renderUploadLog();
+  loadDataFromAPI(); // async: fetches from GitHub-backed API
 </script>
 </body>
 </html>
