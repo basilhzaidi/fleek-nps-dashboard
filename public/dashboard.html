@@ -163,6 +163,7 @@
     <button class="tab" onclick="showTab('upload')">⬆️ Upload CSV</button>
     <button class="tab" onclick="showTab('responses')">📋 Responses</button>
     <button class="tab" onclick="showTab('automation')">⚙️ Automation</button>
+    <button class="tab" onclick="showTab('satisfaction')">😊 Satisfaction</button>
     <button class="tab" onclick="showTab('report')">📄 Report</button>
   </div>
 
@@ -326,6 +327,18 @@
 
 
     <!-- REPORT GENERATOR TAB -->
+
+    <!-- SATISFACTION TAB -->
+    <div class="tab-content" id="tab-satisfaction">
+      <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center">
+        <select id="satPeriodFilter" onchange="renderSatisfaction()" style="background:#161616;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Syne',sans-serif;padding:8px 14px;font-size:0.85rem;outline:none">
+          <option value="all">All Periods</option>
+        </select>
+        <span style="color:var(--muted);font-size:0.82rem">Satisfaction ratings from April 2026 new survey format</span>
+      </div>
+      <div id="satContent"></div>
+    </div>
+
     <div class="tab-content" id="tab-report">
       <div class="auto-card">
         <h3>📄 Generate NPS Report</h3>
@@ -534,20 +547,37 @@
     {seller:"Idraees",score:8,department:"Vendor App",geography:"PK Non-Zone",city:"Peshawar",comment:"Can sell one piece at a good price without going to another platform. AI generates wrong brand sometimes.",mainIssue:"Quality Check",period:"Mar 2026",submittedAt:"2026-03-17T23:51:29Z",source:"csv_upload"},
   ];
 
-  const SEED_DATA = [...sepEntries, ...novEntries, ...janEntries, ...marEntries];
+
+  // ===== APRIL 2026 DATA (new survey format) =====
+  const aprEntries = [
+    {email:"elegantvin@gmail.com",seller:"Elegant Vintage",storeHandle:"ElegantVintage",score:9,department:"Quality Check",geography:"PK Zone",city:"Lahore",comment:"Quality check is much better now.",mainIssue:"Need faster processing",aspects:"Quality Check",satisfaction:{"Payment":"Satisfied","Quality Check":"Satisfied","Sales":"Neutral","Seller Support":"Satisfied","Shipping & Logistics":"Neutral","Vendor Application":"Neutral","Refund":"Neutral"},biggestIssues:"Background remover still needs work",period:"Apr 2026",submittedAt:"2026-04-03T09:12:00Z",source:"survey_form"},
+    {email:"reloadedfits@gmail.com",seller:"ReloadedFits",storeHandle:"ReloadedFits",score:10,department:"Seller Support",geography:"PK Zone",city:"Karachi",comment:"Fleek Sort is a game changer for y2k.",mainIssue:"Min order from one seller not multiple",aspects:"Sales & Visibility",satisfaction:{"Payment":"Satisfied","Quality Check":"Satisfied","Sales":"Satisfied","Seller Support":"Satisfied","Shipping & Logistics":"Satisfied","Vendor Application":"Satisfied","Refund":"Neutral"},biggestIssues:"Min order split across sellers",period:"Apr 2026",submittedAt:"2026-04-03T10:30:00Z",source:"survey_form"},
+    {email:"fabtex@gmail.com",seller:"fabtexvintage",storeHandle:"fabtexvintage",score:7,department:"Shipping & Logistics",geography:"PK Zone",city:"Karachi",comment:"Shipping improved but still slow.",mainIssue:"Faster shipping and better tracking",aspects:"Shipping & Logistics",satisfaction:{"Payment":"Neutral","Quality Check":"Neutral","Sales":"Neutral","Seller Support":"Neutral","Shipping & Logistics":"Not Satisfied","Vendor Application":"Not Satisfied","Refund":"Neutral"},biggestIssues:"Duplicate orders and slow platform",period:"Apr 2026",submittedAt:"2026-04-04T11:00:00Z",source:"survey_form"},
+    {email:"khannvintage@gmail.com",seller:"Khan Vintage",storeHandle:"KhanVintage",score:6,department:"Vendor App",geography:"PK Zone",city:"Lahore",comment:"App still crashes, AI titles are wrong.",mainIssue:"Fix app crashes and AI brand tags",aspects:"Vendor Application",satisfaction:{"Payment":"Neutral","Quality Check":"Neutral","Sales":"Not Satisfied","Seller Support":"Neutral","Shipping & Logistics":"Neutral","Vendor Application":"Not Satisfied","Refund":"Not Satisfied"},biggestIssues:"App crashes and wrong AI brand tags",period:"Apr 2026",submittedAt:"2026-04-04T12:15:00Z",source:"survey_form"},
+    {email:"retrothrift@gmail.com",seller:"Retro thrift store",storeHandle:"RetroThrift",score:8,department:"Payments",geography:"PK Zone",city:"Islamabad",comment:"Payment speed is better this month.",mainIssue:"Refund for specific product not generic",aspects:"Payment",satisfaction:{"Payment":"Satisfied","Quality Check":"Neutral","Sales":"Satisfied","Seller Support":"Satisfied","Shipping & Logistics":"Neutral","Vendor Application":"Neutral","Refund":"Not Satisfied"},biggestIssues:"Refund process is too generic",period:"Apr 2026",submittedAt:"2026-04-05T09:00:00Z",source:"survey_form"},
+    {email:"carpediem@gmail.com",seller:"Carpediem-Vintage",storeHandle:"CarpediemVintage",score:7,department:"Vendor App",geography:"PK Zone",city:"Karachi",comment:"Individual product upload would help.",mainIssue:"Individual upload per piece with custom pricing",aspects:"Vendor Application",satisfaction:{"Payment":"Neutral","Quality Check":"Neutral","Sales":"Neutral","Seller Support":"Neutral","Shipping & Logistics":"Neutral","Vendor Application":"Not Satisfied","Refund":"Neutral"},biggestIssues:"No individual product pricing like Etsy",period:"Apr 2026",submittedAt:"2026-04-05T13:00:00Z",source:"survey_form"},
+    {email:"adeela@gmail.com",seller:"Adeela",storeHandle:"Adeela",score:9,department:"Seller Support",geography:"PK Zone",city:"Islamabad",comment:"Good platform for resellers, improving.",mainIssue:"Keep improving Seller Support response time",aspects:"Seller Support",satisfaction:{"Payment":"Satisfied","Quality Check":"Satisfied","Sales":"Satisfied","Seller Support":"Satisfied","Shipping & Logistics":"Satisfied","Vendor Application":"Neutral","Refund":"Neutral"},biggestIssues:"Faster support response needed",period:"Apr 2026",submittedAt:"2026-04-06T10:00:00Z",source:"survey_form"},
+    {email:"rewear@gmail.com",seller:"Rewear",storeHandle:"Rewear",score:4,department:"Vendor App",geography:"PK Zone",city:"Karachi",comment:"App still hangs a lot, no improvement.",mainIssue:"App performance and categorisation",aspects:"Vendor Application",satisfaction:{"Payment":"Not Satisfied","Quality Check":"Neutral","Sales":"Not Satisfied","Seller Support":"Not Satisfied","Shipping & Logistics":"Not Satisfied","Vendor Application":"Not Satisfied","Refund":"Not Satisfied"},biggestIssues:"App hangs, poor visibility, no categorisation",period:"Apr 2026",submittedAt:"2026-04-07T08:30:00Z",source:"survey_form"},
+    {email:"idraees@gmail.com",seller:"Idraees",storeHandle:"Idraees",score:8,department:"Vendor App",geography:"PK Non-Zone",city:"Peshawar",comment:"Can now sell individual pieces at good price.",mainIssue:"AI brand tagging needs improvement",aspects:"Sales & Visibility",satisfaction:{"Payment":"Satisfied","Quality Check":"Neutral","Sales":"Satisfied","Seller Support":"Satisfied","Shipping & Logistics":"Neutral","Vendor Application":"Neutral","Refund":"Neutral"},biggestIssues:"AI generates wrong brand names",period:"Apr 2026",submittedAt:"2026-04-07T11:00:00Z",source:"survey_form"},
+    {email:"mrenterprise@gmail.com",seller:"Mr enterprise",storeHandle:"MrEnterprise",score:8,department:"Seller Support",geography:"PK Non-Zone",city:"Multan",comment:"Good price for individual items.",mainIssue:"Nothing major at the moment",aspects:"Seller Support",satisfaction:{"Payment":"Satisfied","Quality Check":"Satisfied","Sales":"Satisfied","Seller Support":"Satisfied","Shipping & Logistics":"Neutral","Vendor Application":"Neutral","Refund":"Neutral"},biggestIssues:"Minor issues with listing duration",period:"Apr 2026",submittedAt:"2026-04-08T09:00:00Z",source:"survey_form"},
+    {email:"retroesthetic@gmail.com",seller:"RetroEsthetic",storeHandle:"RetroEsthetic",score:5,department:"Shipping & Logistics",geography:"PK Zone",city:"Lahore",comment:"Shipping charges are still too high.",mainIssue:"Reduce shipping charges",aspects:"Shipping & Logistics",satisfaction:{"Payment":"Neutral","Quality Check":"Neutral","Sales":"Neutral","Seller Support":"Neutral","Shipping & Logistics":"Not Satisfied","Vendor Application":"Not Satisfied","Refund":"Neutral"},biggestIssues:"High shipping charges and app lag",period:"Apr 2026",submittedAt:"2026-04-09T10:00:00Z",source:"survey_form"},
+    {email:"classical@gmail.com",seller:"Classical cloth",storeHandle:"ClassicalCloth",score:3,department:"Seller Support",geography:"PK Zone",city:"Karachi",comment:"Still not beneficial vs bulk model.",mainIssue:"Seller to buyer chat needed",aspects:"Seller Support",satisfaction:{"Payment":"Not Satisfied","Quality Check":"Neutral","Sales":"Not Satisfied","Seller Support":"Not Satisfied","Shipping & Logistics":"Neutral","Vendor Application":"Not Satisfied","Refund":"Not Satisfied"},biggestIssues:"No seller-buyer chat, warehouse management hard",period:"Apr 2026",submittedAt:"2026-04-10T11:00:00Z",source:"survey_form"},
+  ];
+
+  const SEED_DATA = [...sepEntries, ...novEntries, ...janEntries, ...marEntries, ...aprEntries];
   
   // Load/save data
   function getData() {
-    const stored = localStorage.getItem('fleek_nps_v3');
+    const stored = localStorage.getItem('fleek_nps_v4');
     if (stored) {
       try { return JSON.parse(stored); } catch(e) {}
     }
-    localStorage.setItem('fleek_nps_v3', JSON.stringify(SEED_DATA));
+    localStorage.setItem('fleek_nps_v4', JSON.stringify(SEED_DATA));
     return SEED_DATA;
   }
   
   function saveData(data) {
-    localStorage.setItem('fleek_nps_v3', JSON.stringify(data));
+    localStorage.setItem('fleek_nps_v4', JSON.stringify(data));
   }
   
   let allData = getData();
@@ -757,20 +787,23 @@
     const rows = data.map(e => {
       const cat = e.score >= 9 ? 'P' : e.score >= 7 ? 'S' : 'D';
       const catLabel = e.score >= 9 ? 'Promoter' : e.score >= 7 ? 'Passive' : 'Detractor';
+      const issueSnip = e.biggestIssues ? e.biggestIssues.substring(0,45)+'...' : '';
+      const aspectCell = (e.aspects ? '<span style="color:var(--yellow);font-weight:600">'+e.aspects+'</span>' : '—') + (issueSnip ? '<br/><span style="font-size:0.75rem;color:var(--muted)">'+issueSnip+'</span>' : '');
       return `<tr>
-        <td style="font-weight:600">${e.seller || '—'}</td>
+        <td style="font-weight:600">${e.seller || e.storeHandle || '—'}</td>
+        <td style="color:var(--muted);font-size:0.8rem">${e.email || '—'}</td>
         <td><span class="score-pill ${cat}">${e.score}</span></td>
         <td><span class="badge ${cat}">${catLabel}</span></td>
         <td style="color:#888">${e.department || '—'}</td>
         <td style="color:#4B9EFF;font-weight:600">${e.geography || '—'}</td>
-        <td style="color:#888">${e.city || '—'}</td>
-        <td style="color:var(--muted);font-size:0.82rem;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${e.comment}">${e.comment || '—'}</td>
+        <td style="color:var(--muted);font-size:0.82rem;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${e.comment}">${e.comment || '—'}</td>
+        <td style="font-size:0.82rem;max-width:160px">${aspectCell}</td>
         <td style="color:var(--muted);font-size:0.82rem">${e.period || '—'}</td>
       </tr>`;
     }).join('');
     
     document.getElementById('responsesTableContainer').innerHTML = `<table>
-      <thead><tr><th>Seller</th><th>Score</th><th>Category</th><th>Dept</th><th>Geography</th><th>City</th><th>Comment</th><th>Period</th></tr></thead>
+      <thead><tr><th>Seller</th><th>Email</th><th>Score</th><th>Category</th><th>Dept</th><th>Geography</th><th>Comment</th><th>Aspects / Issues</th><th>Period</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
   }
@@ -936,7 +969,7 @@
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.getElementById('tab-' + id).classList.add('active');
-    document.querySelectorAll('.tab')[['overview','geography','departments','history','upload','responses','automation','report'].indexOf(id)]?.classList.add('active');
+    document.querySelectorAll('.tab')[['overview','geography','departments','history','upload','responses','automation','satisfaction','report'].indexOf(id)]?.classList.add('active');
     if (id === 'overview') renderOverview();
     else if (id === 'geography') renderGeography();
     else if (id === 'departments') renderDepartments();
@@ -944,6 +977,7 @@
     else if (id === 'upload') renderUploadLog();
     else if (id === 'responses') renderResponses();
     else if (id === 'automation') renderAutomation();
+    else if (id === 'satisfaction') renderSatisfaction();
     else if (id === 'report') { renderReport(); }
   }
   
@@ -953,6 +987,76 @@
     if (active) showTab(active);
   }
   
+
+
+  // ===================== SATISFACTION =====================
+  function renderSatisfaction() {
+    const allData = getData();
+    const sel = document.getElementById('satPeriodFilter');
+    if (sel) {
+      const cur = sel.value;
+      const periods = [...new Set(allData.map(e=>e.period))].sort();
+      sel.innerHTML = '<option value="all">All Periods</option>' + periods.map(p=>`<option value="${p}"${p===cur?' selected':''}>${p}</option>`).join('');
+    }
+    const pf = document.getElementById('satPeriodFilter')?.value || 'all';
+    const data = pf === 'all' ? allData : allData.filter(e => e.period === pf);
+    const withSat = data.filter(e => e.satisfaction && Object.keys(e.satisfaction).length > 0);
+    if (!withSat.length) {
+      document.getElementById('satContent').innerHTML = '<div style="color:var(--muted);padding:40px;text-align:center">No satisfaction data for this period.<br/><small>Collected from April 2026 onwards via new survey form.</small></div>';
+      return;
+    }
+    const areas = ['Payment','Quality Check','Sales','Seller Support','Shipping & Logistics','Vendor Application','Refund'];
+    const areaStats = areas.map(area => {
+      const responses = withSat.filter(e => e.satisfaction[area]);
+      const counts = {'Satisfied':0,'Neutral':0,'Not Satisfied':0};
+      responses.forEach(e => { if (counts[e.satisfaction[area]] !== undefined) counts[e.satisfaction[area]]++; });
+      const total = responses.length;
+      return { area, counts, total, pct: total > 0 ? {
+        Satisfied: Math.round(counts.Satisfied/total*100),
+        Neutral: Math.round(counts.Neutral/total*100),
+        NotSat: Math.round(counts['Not Satisfied']/total*100)
+      } : {Satisfied:0,Neutral:0,NotSat:0} };
+    });
+    const aspectCounts = {};
+    withSat.forEach(e => { if (e.aspects) aspectCounts[e.aspects] = (aspectCounts[e.aspects]||0)+1; });
+    const topAspects = Object.entries(aspectCounts).sort((a,b)=>b[1]-a[1]);
+    document.getElementById('satContent').innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+        <div style="background:#161616;border:1px solid var(--border);border-radius:14px;padding:20px">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:2px;color:var(--yellow);margin-bottom:8px">RESPONSES WITH SATISFACTION DATA</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--text)">${withSat.length}</div>
+        </div>
+        <div style="background:#161616;border:1px solid var(--border);border-radius:14px;padding:20px">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:0.75rem;letter-spacing:2px;color:var(--yellow);margin-bottom:8px">TOP VALUED ASPECT</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--text)">${topAspects[0]?.[0]||'—'}</div>
+          <div style="color:var(--muted);font-size:0.8rem">${topAspects[0]?.[1]||0} sellers</div>
+        </div>
+      </div>
+      <div style="background:#161616;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:0.8rem;letter-spacing:2px;color:var(--yellow);margin-bottom:14px">MOST VALUED ASPECTS</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">${topAspects.map(([a,c])=>`<div style="background:#0c0c0c;border:1px solid var(--border);border-radius:8px;padding:7px 14px;display:flex;align-items:center;gap:8px"><span style="font-weight:600">${a}</span><span style="background:var(--yellow);color:#0c0c0c;font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:4px">${c}</span></div>`).join('')}</div>
+      </div>
+      <div style="background:#161616;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:0.8rem;letter-spacing:2px;color:var(--yellow);margin-bottom:16px">SATISFACTION BY AREA</div>
+        ${areaStats.map(({area,pct,total})=>total===0?'': `<div style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-weight:600;font-size:0.9rem">${area}</span><span style="color:var(--muted);font-size:0.78rem">${total} responses</span></div>
+          <div style="display:flex;height:10px;border-radius:6px;overflow:hidden;background:#1e1e1e">
+            <div style="width:${pct.Satisfied}%;background:#3DD68C"></div>
+            <div style="width:${pct.Neutral}%;background:#F59E0B"></div>
+            <div style="width:${pct.NotSat}%;background:#E8453C"></div>
+          </div>
+          <div style="display:flex;gap:14px;margin-top:4px;font-size:0.73rem;color:var(--muted)">
+            <span><span style="color:#3DD68C">■</span> Satisfied ${pct.Satisfied}%</span>
+            <span><span style="color:#F59E0B">■</span> Neutral ${pct.Neutral}%</span>
+            <span><span style="color:#E8453C">■</span> Not Satisfied ${pct.NotSat}%</span>
+          </div>
+        </div>`).join('')}
+      </div>
+      <div style="background:#161616;border:1px solid var(--border);border-radius:14px;padding:20px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:0.8rem;letter-spacing:2px;color:var(--yellow);margin-bottom:14px">TOP REPORTED ISSUES</div>
+        ${withSat.filter(e=>e.biggestIssues).slice(0,10).map(e=>`<div style="padding:10px 0;border-bottom:1px solid #1e1e1e;display:flex;gap:12px"><span style="color:var(--yellow);font-family:'Bebas Neue';font-size:0.72rem;min-width:64px;padding-top:2px">${e.period}</span><span style="font-size:0.84rem;color:var(--muted)">${e.biggestIssues}</span></div>`).join('')}
+      </div>`;
+  }
 
   // ===================== REPORT GENERATOR =====================
   function renderReport() {
