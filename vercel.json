@@ -12,8 +12,24 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "src": "/api/claude-proxy",
+      "dest": "/api/claude-proxy.js"
+    },
+    {
+      "src": "/api/tally-webhook",
+      "dest": "/api/tally-webhook.js"
+    },
+    {
+      "src": "/api/survey-submit",
+      "dest": "/api/survey-submit.js"
+    },
+    {
+      "src": "/api/results",
+      "dest": "/api/results.js"
+    },
+    {
+      "src": "/api/submit",
+      "dest": "/api/submit.js"
     },
     {
       "src": "/dashboard",
@@ -22,10 +38,6 @@
     {
       "src": "/view",
       "dest": "/public/view.html"
-    },
-    {
-      "src": "/survey",
-      "dest": "/public/survey.html"
     },
     {
       "src": "/survey(.*)",
