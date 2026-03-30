@@ -9,11 +9,11 @@
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
-    :root{--bg:#0c0c0c;--card:#161616;--border:#252525;--yellow:#FFD400;--red:#E8453C;--green:#3DD68C;--blue:#4B9EFF;--text:#f0f0f0;--muted:#888}
+    :root{--bg:#FFFFFF;--card:#F8F8F8;--border:#E5E5E5;--yellow:#FFD400;--red:#E8453C;--green:#3DD68C;--blue:#4B9EFF;--text:#111111;--muted:#777}
     body{background:var(--bg);color:var(--text);font-family:'Montserrat',sans-serif;min-height:100vh}
     
     /* TOPBAR */
-    .topbar{background:#111;border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100}
+    .topbar{background:var(--bg);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100}
     .brand{font-family:'League Gothic',sans-serif;font-size:1.6rem;color:var(--yellow);letter-spacing:2px}
     .brand span{color:var(--text);margin-left:8px;font-size:1rem;font-family:'Montserrat',sans-serif;font-weight:600;opacity:0.6}
     .topbar-right{display:flex;align-items:center;gap:12px}
@@ -23,10 +23,10 @@
     .logout-btn:hover{border-color:var(--text);color:var(--text)}
     
     /* TABS */
-    .tabs{display:flex;gap:4px;padding:24px 32px 0;border-bottom:1px solid var(--border);background:#111}
+    .tabs{display:flex;gap:4px;padding:24px 32px 0;border-bottom:1px solid var(--border);background:var(--bg)}
     .tab{padding:10px 20px;border-radius:8px 8px 0 0;background:transparent;border:none;color:var(--muted);font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;transition:all 0.2s;border:1px solid transparent;border-bottom:none}
     .tab:hover{color:var(--text)}
-    .tab.active{background:var(--bg);color:var(--yellow);border-color:var(--border)}
+    .tab.active{background:var(--card);color:var(--yellow);border-color:var(--border)}
     
     /* MAIN */
     .main{padding:32px;max-width:1300px;margin:0 auto}
@@ -57,18 +57,18 @@
     /* PERIOD FILTER */
     .filter-bar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
     .filter-bar label{color:var(--muted);font-size:0.82rem;font-weight:700;text-transform:uppercase;letter-spacing:1px}
-    .filter-bar select{background:#1a1a1a;border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:8px;font-family:'Montserrat',sans-serif;font-size:0.88rem;outline:none}
+    .filter-bar select{background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 14px;border-radius:8px;font-family:'Montserrat',sans-serif;font-size:0.88rem;outline:none}
     .filter-bar select:focus{border-color:var(--yellow)}
-    .filter-bar select option{background:#111}
+    .filter-bar select option{background:var(--bg)}
     
     /* TABLE */
     .table-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;overflow:auto}
     .table-box h3{font-size:0.8rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:12px}
     table{width:100%;border-collapse:collapse;min-width:700px}
     th{text-align:left;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--border)}
-    td{padding:11px 12px;border-bottom:1px solid #1a1a1a;font-size:0.87rem;color:var(--text)}
+    td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:0.87rem;color:var(--text)}
     tr:last-child td{border-bottom:none}
-    tr:hover td{background:#1a1a1a}
+    tr:hover td{background:rgba(0,0,0,0.02)}
     .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;font-family:'JetBrains Mono',monospace}
     .badge.P{background:rgba(61,214,140,0.15);color:var(--green)}
     .badge.S{background:rgba(245,158,11,0.15);color:var(--orange)}
@@ -84,7 +84,7 @@
     .dept-name{font-weight:700;font-size:0.95rem;margin-bottom:4px}
     .dept-nps{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;margin-bottom:8px}
     .dept-nps.positive{color:var(--green)}.dept-nps.zero{color:var(--orange)}.dept-nps.negative{color:var(--red)}
-    .dept-bar-bg{height:6px;background:#1a1a1a;border-radius:3px;overflow:hidden}
+    .dept-bar-bg{height:6px;background:#EEEEEE;border-radius:3px;overflow:hidden}
     .dept-bar-fill{height:100%;border-radius:3px;transition:width 0.8s}
     .dept-meta{display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-top:8px}
     
@@ -96,14 +96,14 @@
     .geo-nps{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700}
     .geo-nps.positive{color:var(--green)}.geo-nps.zero{color:var(--orange)}.geo-nps.negative{color:var(--red)}
     .geo-segs{display:flex;gap:8px;margin-top:10px;font-size:0.75rem}
-    .geo-seg{display:flex;flex-direction:column;align-items:center;background:#1a1a1a;border-radius:6px;padding:6px 10px;flex:1}
+    .geo-seg{display:flex;flex-direction:column;align-items:center;background:#EEEEEE;border-radius:6px;padding:6px 10px;flex:1}
     .geo-seg .seg-label{color:var(--muted);font-size:0.65rem;text-transform:uppercase;letter-spacing:0.8px}
     .geo-seg .seg-val{font-family:'JetBrains Mono',monospace;font-size:0.95rem;font-weight:700;margin-top:2px}
     
     /* HISTORY TABLE */
     .history-table{width:100%;border-collapse:collapse}
     .history-table th{text-align:left;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:10px 16px;border-bottom:1px solid var(--border)}
-    .history-table td{padding:14px 16px;border-bottom:1px solid #1a1a1a;font-size:0.9rem}
+    .history-table td{padding:14px 16px;border-bottom:1px solid var(--border);font-size:0.9rem}
     .nps-trend{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700}
     .nps-trend.p{color:var(--green)}.nps-trend.z{color:var(--orange)}.nps-trend.n{color:var(--red)}
     .delta-chip{font-size:0.75rem;padding:2px 8px;border-radius:12px;margin-left:8px;font-family:'JetBrains Mono',monospace}
@@ -119,7 +119,7 @@
     .upload-zone input{display:none}
     .info-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;font-size:0.85rem}
     .info-box h4{color:var(--yellow);margin-bottom:10px;font-size:0.9rem}
-    .info-box code{background:#1a1a1a;padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--green)}
+    .info-box code{background:#EEEEEE;padding:2px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--green)}
     .action-btn{padding:10px 22px;border-radius:8px;border:none;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.88rem;cursor:pointer;transition:opacity 0.2s}
     .action-btn.primary{background:var(--yellow);color:#0c0c0c}
     .action-btn.ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
@@ -136,12 +136,12 @@
     .tl-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;margin-top:2px}
     .tl-content h4{font-size:0.88rem;font-weight:700;margin-bottom:4px}
     .tl-content p{font-size:0.82rem;color:var(--muted);line-height:1.5}
-    .copy-link{background:#1a1a1a;border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:10px;margin-top:12px}
+    .copy-link{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:10px;margin-top:12px}
     .copy-link code{flex:1;font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:var(--green);word-break:break-all}
     .copy-btn{background:var(--yellow);color:#0c0c0c;border:none;padding:6px 14px;border-radius:6px;font-weight:700;font-size:0.78rem;cursor:pointer;white-space:nowrap}
     
     /* TOAST */
-    .toast{position:fixed;bottom:24px;right:24px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 20px;font-size:0.88rem;display:none;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.5)}
+    .toast{position:fixed;bottom:24px;right:24px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 20px;font-size:0.88rem;display:none;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.12)}
     .toast.show{display:flex;align-items:center;gap:10px}
     .toast.success{border-left:3px solid var(--green)}
     .toast.error{border-left:3px solid var(--red)}
@@ -149,7 +149,7 @@
 </head>
 <body>
   <div class="topbar">
-    <div class="brand"><img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek" style="height:32px;vertical-align:middle;margin-right:10px;filter:brightness(0) invert(1)"/><span style="font-family:'Montserrat',sans-serif;font-size:0.95rem;font-weight:600;opacity:0.6;color:var(--text)">NPS Dashboard</span></div>
+    <div class="brand"><img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek" style="height:32px;vertical-align:middle;margin-right:10px;filter:brightness(0)"/><span style="font-family:'Montserrat',sans-serif;font-size:0.95rem;font-weight:600;opacity:0.6;color:var(--text)">NPS Dashboard</span></div>
     <div class="topbar-right">
       <a href="/survey" target="_blank" class="survey-link">📋 Survey Form</a>
       <button class="logout-btn" onclick="logout()">Logout</button>
@@ -333,7 +333,7 @@
     <!-- SATISFACTION TAB -->
     <div class="tab-content" id="tab-satisfaction">
       <div style="display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;align-items:center">
-        <select id="satPeriodFilter" onchange="renderSatisfaction()" style="background:#161616;border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Montserrat',sans-serif;padding:8px 14px;font-size:0.85rem;outline:none">
+        <select id="satPeriodFilter" onchange="renderSatisfaction()" style="background:var(--card);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:'Montserrat',sans-serif;padding:8px 14px;font-size:0.85rem;outline:none">
           <option value="all">All Periods</option>
         </select>
         <span style="color:var(--muted);font-size:0.82rem">Satisfaction ratings from April 2026 new survey format</span>
@@ -351,7 +351,7 @@
           <div style="color:var(--muted);font-size:0.8rem;margin-top:4px">Auto-generated analysis from real seller data — no AI API needed</div>
         </div>
         <div style="display:flex;gap:10px;align-items:center">
-          <select id="summaryPeriod" onchange="renderSummary()" style="background:#161616;border:1.5px solid var(--border);border-radius:4px;color:var(--text);font-family:'Montserrat',sans-serif;padding:9px 14px;font-size:0.82rem;outline:none">
+          <select id="summaryPeriod" onchange="renderSummary()" style="background:var(--card);border:1.5px solid var(--border);border-radius:4px;color:var(--text);font-family:'Montserrat',sans-serif;padding:9px 14px;font-size:0.82rem;outline:none">
             <option value="all">All Periods</option>
           </select>
           <button onclick="exportSummaryPDF()" style="background:transparent;border:1.5px solid var(--yellow);color:var(--yellow);padding:9px 18px;border-radius:4px;font-family:'League Gothic',sans-serif;font-size:0.9rem;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.15s;white-space:nowrap" onmouseover="this.style.background='var(--yellow)';this.style.color='#0F0F0F'" onmouseout="this.style.background='transparent';this.style.color='var(--yellow)'">⬇ EXPORT PDF</button>
@@ -368,19 +368,19 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px">
           <div class="field-group">
             <label style="display:block;font-size:0.78rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700">Report Period</label>
-            <select id="reportPeriod" style="width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:0.9rem;padding:10px 14px;outline:none">
+            <select id="reportPeriod" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:0.9rem;padding:10px 14px;outline:none">
               <option value="all">All Time</option>
             </select>
           </div>
           <div class="field-group">
             <label style="display:block;font-size:0.78rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700">Prepared By</label>
-            <input type="text" id="reportAuthor" placeholder="e.g. Seller Support Team" value="Seller Support Team" style="width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:0.9rem;padding:10px 14px;outline:none"/>
+            <input type="text" id="reportAuthor" placeholder="e.g. Seller Support Team" value="Seller Support Team" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:0.9rem;padding:10px 14px;outline:none"/>
           </div>
         </div>
 
         <div style="margin-top:16px">
           <label style="display:block;font-size:0.78rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700">Executive Note <span style="font-size:0.7rem;color:var(--muted);text-transform:none;letter-spacing:0">(optional — appears at top of report)</span></label>
-          <textarea id="reportNote" placeholder="Add a brief executive summary or key highlights..." style="width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;resize:vertical;min-height:80px"></textarea>
+          <textarea id="reportNote" placeholder="Add a brief executive summary or key highlights..." style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;resize:vertical;min-height:80px"></textarea>
         </div>
 
         <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap">
@@ -393,27 +393,27 @@
         <h3>📋 What's Included in the Report</h3>
         <p class="desc">The generated report is a self-contained HTML file with the official Fleek design, matching the format used for leadership presentations.</p>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">
-          <div style="background:#0c0c0c;border-radius:10px;padding:14px;border:1px solid var(--border)">
+          <div style="background:var(--card);border-radius:10px;padding:14px;border:1px solid var(--border)">
             <div style="color:var(--yellow);font-weight:700;font-size:0.85rem;margin-bottom:6px">📊 NPS Overview</div>
             <p style="color:var(--muted);font-size:0.82rem;line-height:1.5">Overall NPS score, promoter/passive/detractor breakdown with animated counters</p>
           </div>
-          <div style="background:#0c0c0c;border-radius:10px;padding:14px;border:1px solid var(--border)">
+          <div style="background:var(--card);border-radius:10px;padding:14px;border:1px solid var(--border)">
             <div style="color:var(--yellow);font-weight:700;font-size:0.85rem;margin-bottom:6px">📈 Score Trend</div>
             <p style="color:var(--muted);font-size:0.82rem;line-height:1.5">Month-over-month NPS trend across all historical periods</p>
           </div>
-          <div style="background:#0c0c0c;border-radius:10px;padding:14px;border:1px solid var(--border)">
+          <div style="background:var(--card);border-radius:10px;padding:14px;border:1px solid var(--border)">
             <div style="color:var(--yellow);font-weight:700;font-size:0.85rem;margin-bottom:6px">🌍 Geography Breakdown</div>
             <p style="color:var(--muted);font-size:0.82rem;line-height:1.5">NPS by zone: PK Zone, PK Non-Zone, India, and ROW with response counts</p>
           </div>
-          <div style="background:#0c0c0c;border-radius:10px;padding:14px;border:1px solid var(--border)">
+          <div style="background:var(--card);border-radius:10px;padding:14px;border:1px solid var(--border)">
             <div style="color:var(--yellow);font-weight:700;font-size:0.85rem;margin-bottom:6px">🏢 Departments</div>
             <p style="color:var(--muted);font-size:0.82rem;line-height:1.5">NPS score per department with visual progress bars</p>
           </div>
-          <div style="background:#0c0c0c;border-radius:10px;padding:14px;border:1px solid var(--border)">
+          <div style="background:var(--card);border-radius:10px;padding:14px;border:1px solid var(--border)">
             <div style="color:var(--yellow);font-weight:700;font-size:0.85rem;margin-bottom:6px">💬 Top Feedback</div>
             <p style="color:var(--muted);font-size:0.82rem;line-height:1.5">Most common improvement areas and verbatim seller comments</p>
           </div>
-          <div style="background:#0c0c0c;border-radius:10px;padding:14px;border:1px solid var(--border)">
+          <div style="background:var(--card);border-radius:10px;padding:14px;border:1px solid var(--border)">
             <div style="color:var(--yellow);font-weight:700;font-size:0.85rem;margin-bottom:6px">🔒 Shareable</div>
             <p style="color:var(--muted);font-size:0.82rem;line-height:1.5">Single HTML file — email it, upload to Drive, or open in any browser</p>
           </div>
@@ -524,13 +524,13 @@
     if (distChart) distChart.destroy();
     distChart = new Chart(document.getElementById('distChart'), {
       type:'bar', data: { labels:['0','1','2','3','4','5','6','7','8','9','10'], datasets:[{data:dist,backgroundColor:colors,borderRadius:6,borderSkipped:false}] },
-      options:{ plugins:{legend:{display:false}}, scales:{x:{grid:{color:'#1a1a1a'},ticks:{color:'#888'}},y:{beginAtZero:true,grid:{color:'#1a1a1a'},ticks:{color:'#888',stepSize:1}}}}
+      options:{ plugins:{legend:{display:false}}, scales:{x:{grid:{color:'#E5E5E5'},ticks:{color:'#666'}},y:{beginAtZero:true,grid:{color:'#E5E5E5'},ticks:{color:'#666',stepSize:1}}}}
     });
     
     if (segChart) segChart.destroy();
     segChart = new Chart(document.getElementById('segChart'), {
       type:'doughnut', data: { labels:['Promoters','Passives','Detractors'], datasets:[{data:[pro,pass,det],backgroundColor:['#3DD68C','var(--orange)','#E8453C'],borderWidth:0}] },
-      options:{ plugins:{legend:{position:'bottom',labels:{color:'#888',padding:16}}}, cutout:'65%' }
+      options:{ plugins:{legend:{position:'bottom',labels:{color:'#666',padding:16}}}, cutout:'65%' }
     });
   }
   
@@ -568,13 +568,13 @@
     geoNpsChart = new Chart(document.getElementById('geoNpsChart'), {
       type: 'bar',
       data: { labels: zones, datasets:[{data:zoneData.map(z=>z.nps||0),backgroundColor:zoneData.map(z=>(z.nps||0)>0?'#3DD68C':'#E8453C'),borderRadius:6,borderSkipped:false}] },
-      options: { plugins:{legend:{display:false}}, scales:{x:{grid:{color:'#1a1a1a'},ticks:{color:'#888'}},y:{grid:{color:'#1a1a1a'},ticks:{color:'#888'}}},indexAxis:'y' }
+      options: { plugins:{legend:{display:false}}, scales:{x:{grid:{color:'#E5E5E5'},ticks:{color:'#666'}},y:{grid:{color:'#E5E5E5'},ticks:{color:'#666'}}},indexAxis:'y' }
     });
     
     if (geoVolChart) geoVolChart.destroy();
     geoVolChart = new Chart(document.getElementById('geoVolChart'), {
       type:'doughnut', data:{ labels:zones, datasets:[{data:zoneData.map(z=>z.total),backgroundColor:['#FFD400','#4B9EFF','#3DD68C','var(--orange)'],borderWidth:0}] },
-      options:{ plugins:{legend:{position:'bottom',labels:{color:'#888',padding:12}}}, cutout:'55%' }
+      options:{ plugins:{legend:{position:'bottom',labels:{color:'#666',padding:12}}}, cutout:'55%' }
     });
   }
   
@@ -603,7 +603,7 @@
     deptChart = new Chart(document.getElementById('deptChart'), {
       type:'bar', 
       data:{ labels:deptData.map(d=>d.dept.replace(' & ',' &\n')), datasets:[{data:deptData.map(d=>d.nps),backgroundColor:deptData.map(d=>(d.nps||0)>0?'rgba(61,214,140,0.7)':'rgba(232,69,60,0.7)'),borderRadius:6,borderSkipped:false}] },
-      options:{ plugins:{legend:{display:false}}, scales:{x:{grid:{color:'#1a1a1a'},ticks:{color:'#888',maxRotation:30}},y:{grid:{color:'#1a1a1a'},ticks:{color:'#888'}}}}
+      options:{ plugins:{legend:{display:false}}, scales:{x:{grid:{color:'#E5E5E5'},ticks:{color:'#666',maxRotation:30}},y:{grid:{color:'#E5E5E5'},ticks:{color:'#666'}}}}
     });
   }
   
@@ -638,7 +638,7 @@
             }
           }
         },
-        scales:{x:{grid:{color:'#1a1a1a'},ticks:{color:'#888'}},y:{grid:{color:'#1a1a1a'},ticks:{color:'#888'}}}
+        scales:{x:{grid:{color:'#E5E5E5'},ticks:{color:'#666'}},y:{grid:{color:'#E5E5E5'},ticks:{color:'#666'}}}
       }
     });
     
@@ -646,7 +646,7 @@
     volChart = new Chart(document.getElementById('volChart'), {
       type:'bar',
       data:{ labels:periodStats.map(p=>p.period), datasets:[{label:'Responses',data:periodStats.map(p=>p.total),backgroundColor:'rgba(75,158,255,0.6)',borderRadius:6,borderSkipped:false}] },
-      options:{ plugins:{legend:{display:false}}, scales:{x:{grid:{color:'#1a1a1a'},ticks:{color:'#888'}},y:{beginAtZero:true,grid:{color:'#1a1a1a'},ticks:{color:'#888'}}}}
+      options:{ plugins:{legend:{display:false}}, scales:{x:{grid:{color:'#E5E5E5'},ticks:{color:'#666'}},y:{beginAtZero:true,grid:{color:'#E5E5E5'},ticks:{color:'#666'}}}}
     });
     
     // Table
@@ -942,21 +942,21 @@
     const topAspects = Object.entries(aspectCounts).sort((a,b)=>b[1]-a[1]);
     document.getElementById('satContent').innerHTML = `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
-        <div style="background:#161616;border:1px solid var(--border);border-radius:14px;padding:20px">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px">
           <div style="font-family:'League Gothic',sans-serif;font-size:0.75rem;letter-spacing:2px;color:var(--yellow);margin-bottom:8px">RESPONSES WITH SATISFACTION DATA</div>
           <div style="font-family:'League Gothic',sans-serif;font-size:2.5rem;color:var(--text)">${withSat.length}</div>
         </div>
-        <div style="background:#161616;border:1px solid var(--border);border-radius:14px;padding:20px">
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px">
           <div style="font-family:'League Gothic',sans-serif;font-size:0.75rem;letter-spacing:2px;color:var(--yellow);margin-bottom:8px">TOP VALUED ASPECT</div>
           <div style="font-family:'League Gothic',sans-serif;font-size:1.6rem;color:var(--text)">${topAspects[0]?.[0]||'—'}</div>
           <div style="color:var(--muted);font-size:0.8rem">${topAspects[0]?.[1]||0} sellers</div>
         </div>
       </div>
-      <div style="background:#161616;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px">
         <div style="font-family:'League Gothic',sans-serif;font-size:0.8rem;letter-spacing:2px;color:var(--yellow);margin-bottom:14px">MOST VALUED ASPECTS</div>
-        <div style="display:flex;flex-wrap:wrap;gap:8px">${topAspects.map(([a,c])=>`<div style="background:#0c0c0c;border:1px solid var(--border);border-radius:8px;padding:7px 14px;display:flex;align-items:center;gap:8px"><span style="font-weight:600">${a}</span><span style="background:var(--yellow);color:#0c0c0c;font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:4px">${c}</span></div>`).join('')}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">${topAspects.map(([a,c])=>`<div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 14px;display:flex;align-items:center;gap:8px"><span style="font-weight:600">${a}</span><span style="background:var(--yellow);color:#0c0c0c;font-size:0.72rem;font-weight:700;padding:2px 8px;border-radius:4px">${c}</span></div>`).join('')}</div>
       </div>
-      <div style="background:#161616;border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px">
         <div style="font-family:'League Gothic',sans-serif;font-size:0.8rem;letter-spacing:2px;color:var(--yellow);margin-bottom:16px">SATISFACTION BY AREA</div>
         ${areaStats.map(({area,pct,total})=>total===0?'': `<div style="margin-bottom:14px">
           <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-weight:600;font-size:0.9rem">${area}</span><span style="color:var(--muted);font-size:0.78rem">${total} responses</span></div>
@@ -972,7 +972,7 @@
           </div>
         </div>`).join('')}
       </div>
-      <div style="background:#161616;border:1px solid var(--border);border-radius:14px;padding:20px">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px">
         <div style="font-family:'League Gothic',sans-serif;font-size:0.8rem;letter-spacing:2px;color:var(--yellow);margin-bottom:14px">TOP REPORTED ISSUES</div>
         ${withSat.filter(e=>e.biggestIssues).slice(0,10).map(e=>`<div style="padding:10px 0;border-bottom:1px solid #1e1e1e;display:flex;gap:12px"><span style="color:var(--yellow);font-family:'League Gothic';font-size:0.72rem;min-width:64px;padding-top:2px">${e.period}</span><span style="font-size:0.84rem;color:var(--muted)">${e.biggestIssues}</span></div>`).join('')}
       </div>`;
@@ -1110,7 +1110,7 @@
         ${secTitle('🏢 Department Performance')}
         ${deptStats.map(d => {
           const c = d.nps >= 10 ? '#3DD68C' : d.nps >= 0 ? 'var(--orange)' : 'var(--red)';
-          return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1a1a1a">
+          return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)">
             <span style="font-size:0.88rem;font-weight:600">${d.name}</span>
             <div style="display:flex;gap:16px;align-items:center">
               <span style="color:var(--muted);font-size:0.78rem">${d.total} responses</span>
@@ -1125,7 +1125,7 @@
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
           ${geoStats.map(g => {
             const c = g.nps >= 10 ? '#3DD68C' : g.nps >= 0 ? 'var(--orange)' : 'var(--red)';
-            return `<div style="background:#0c0c0c;border:1px solid var(--border);border-radius:4px;padding:14px;text-align:center">
+            return `<div style="background:var(--card);border:1px solid var(--border);border-radius:4px;padding:14px;text-align:center">
               <div style="font-size:0.68rem;letter-spacing:2px;color:var(--muted);font-weight:700;margin-bottom:6px">${g.zone}</div>
               <div style="font-family:'League Gothic',sans-serif;font-size:2rem;color:${c}">${g.nps > 0 ? '+' : ''}${g.nps}</div>
               <div style="font-size:0.72rem;color:var(--muted);margin-top:2px">${g.total} responses</div>
@@ -1137,7 +1137,7 @@
       ${detractorComments.length ? card(`
         ${secTitle('⚠️ Detractor Voices (churn risk)')}
         ${detractorComments.map(c => `
-          <div style="padding:12px 0;border-bottom:1px solid #1a1a1a;display:flex;gap:12px;align-items:flex-start">
+          <div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start">
             <span style="background:rgba(232,69,60,0.15);border:1px solid rgba(232,69,60,0.3);color:var(--red);font-family:'League Gothic',sans-serif;padding:2px 8px;border-radius:2px;font-size:0.85rem;white-space:nowrap">${c.score}/10</span>
             <div>
               <div style="font-weight:600;font-size:0.82rem;color:var(--muted);margin-bottom:3px">${c.seller}</div>
@@ -1149,7 +1149,7 @@
       ${promoterComments.length ? card(`
         ${secTitle('🟢 Promoter Voices (what\'s working)')}
         ${promoterComments.map(c => `
-          <div style="padding:12px 0;border-bottom:1px solid #1a1a1a;display:flex;gap:12px;align-items:flex-start">
+          <div style="padding:12px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start">
             <span style="background:rgba(61,214,140,0.15);border:1px solid rgba(61,214,140,0.3);color:#3DD68C;font-family:'League Gothic',sans-serif;padding:2px 8px;border-radius:2px;font-size:0.85rem;white-space:nowrap">${c.score}/10</span>
             <div>
               <div style="font-weight:600;font-size:0.82rem;color:var(--muted);margin-bottom:3px">${c.seller}</div>
@@ -1191,7 +1191,7 @@
     [style*="color:var(--text)"]{color:#111!important}
     [style*="border:1px solid var(--border)"],[style*="border:1px solid #1a1a1a"],[style*="border:1px solid #2a2a2a"]{border-color:#ddd!important}
     [style*="border-left:3px solid var(--yellow)"]{border-left:3px solid #FFD400!important}
-    [style*="border-bottom:1px solid #1a1a1a"]{border-bottom:1px solid #eee!important}
+    [style*="border-bottom:1px solid var(--border)"]{border-bottom:1px solid #eee!important}
     [style*="background:var(--yellow)"]{background:#FFD400!important;color:#0F0F0F!important}
     [style*="background:#0F0F0F"],[style*="background:#0c0c0c"]{background:#f0f0f0!important}
     [style*="color:var(--yellow)"]{color:#c8a000!important}
@@ -1285,34 +1285,34 @@
 <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#0c0c0c;color:#f0f0f0;font-family:'Montserrat',sans-serif;padding:40px 24px;max-width:900px;margin:0 auto}
-.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;padding-bottom:24px;border-bottom:1px solid #252525}
-.logo-area img{height:36px;filter:brightness(0) invert(1)}
+body{background:#FFFFFF;color:#111111;font-family:'Montserrat',sans-serif;padding:40px 24px;max-width:900px;margin:0 auto}
+.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;padding-bottom:24px;border-bottom:1px solid #E5E5E5}
+.logo-area img{height:36px;filter:brightness(0)}
 .report-meta{text-align:right}
 .report-title{font-family:'League Gothic',sans-serif;font-size:2rem;letter-spacing:3px;color:#FFD400}
 .report-sub{color:#888;font-size:0.8rem;margin-top:4px}
 .hero{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-bottom:32px}
-.metric-card{background:#161616;border:1px solid #2a2a2a;border-radius:4px;padding:20px;text-align:center}
+.metric-card{background:#F8F8F8;border:1px solid #E5E5E5;border-radius:4px;padding:20px;text-align:center}
 .metric-label{font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:#888;margin-bottom:8px;font-family:'Montserrat',sans-serif;font-weight:700}
 .metric-value{font-family:'League Gothic',sans-serif;font-size:2.4rem;letter-spacing:2px}
 .nps-val{color:#FFD400}
 .pro-val{color:#3DD68C}
 .det-val{color:#E8453C}
-.pass-val{color:var(--orange)}
-.section{background:#161616;border:1px solid #2a2a2a;border-left:3px solid #FFD400;border-radius:4px;padding:24px;margin-bottom:20px}
-.section-title{font-family:'League Gothic',sans-serif;font-size:1rem;letter-spacing:2px;color:#FFD400;margin-bottom:16px}
+.pass-val{color:#F25C2A}
+.section{background:#F8F8F8;border:1px solid #E5E5E5;border-left:3px solid #FFD400;border-radius:4px;padding:24px;margin-bottom:20px}
+.section-title{font-family:'League Gothic',sans-serif;font-size:1rem;letter-spacing:2px;color:#333;margin-bottom:16px}
 table{width:100%;border-collapse:collapse;font-size:0.88rem}
-th{text-align:left;padding:8px 12px;border-bottom:1px solid #252525;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;color:#888;font-weight:600}
-td{padding:10px 12px;border-bottom:1px solid #181818;color:#f0f0f0}
+th{text-align:left;padding:8px 12px;border-bottom:1px solid #E5E5E5;font-size:0.7rem;letter-spacing:1.5px;text-transform:uppercase;color:#888;font-weight:600}
+td{padding:10px 12px;border-bottom:1px solid #E5E5E5;color:#111111}
 tr:last-child td{border-bottom:none}
-.bar-wrap{background:#1e1e1e;border-radius:6px;height:10px;overflow:hidden;margin-top:12px}
+.bar-wrap{background:#EEEEEE;border-radius:6px;height:10px;overflow:hidden;margin-top:12px}
 .bar-fill{height:100%;border-radius:6px;transition:width 0.5s}
 .bar-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px}
-.bar-label{font-size:0.82rem;min-width:100px;color:#888}
+.bar-label{font-size:0.82rem;min-width:100px;color:#666}
 .bar-val{font-size:0.82rem;font-weight:700;min-width:40px;text-align:right}
-.footer{margin-top:40px;padding-top:20px;border-top:1px solid #252525;display:flex;justify-content:space-between;align-items:center;color:#555;font-size:0.75rem}
-.internal-badge{background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.2);color:#FFD400;padding:4px 12px;border-radius:6px;font-size:0.7rem;letter-spacing:1px}
-@media print{body{background:#fff;color:#000}.metric-card,.section{background:#f8f8f8;border-color:#ddd}.metric-label,.section-title,.report-sub,.bar-label,.footer{color:#555}th{color:#555}td{color:#222}}
+.footer{margin-top:40px;padding-top:20px;border-top:1px solid #E5E5E5;display:flex;justify-content:space-between;align-items:center;color:#888;font-size:0.75rem}
+.internal-badge{background:rgba(255,212,0,0.1);border:1px solid rgba(255,212,0,0.3);color:#111;padding:4px 12px;border-radius:6px;font-size:0.7rem;letter-spacing:1px}
+@media print{body{background:#fff;color:#000}.metric-card,.section{background:#f8f8f8;border-color:#ddd}th,td{color:#222}}
 </style>
 </head>
 <body>

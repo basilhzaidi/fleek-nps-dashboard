@@ -262,10 +262,8 @@ function getPeriods() {
     return(parseInt(ay)-parseInt(by))||((order[am]||0)-(order[bm]||0));
   });
 }
-function periodData() { return allData.filter(e=>!e.areaTag); }
 function filtered() {
-  const base = periodData();
-  return activePeriod==='all' ? base : base.filter(e=>e.period===activePeriod);
+  return activePeriod==='all' ? allData : allData.filter(e=>e.period===activePeriod);
 }
 function areaData() { return allData.filter(e=>e.areaTag); }
 
