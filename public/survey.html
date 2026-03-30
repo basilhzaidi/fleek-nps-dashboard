@@ -1,307 +1,440 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Fleek — Seller Experience Survey</title>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    :root{--bg:#0c0c0c;--card:#161616;--border:#252525;--yellow:#F5C518;--red:#E8453C;--green:#3DD68C;--text:#f0f0f0;--muted:#888}
-    body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 16px 60px}
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fleek — Net Promoter Survey</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#F5C518;font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center}
 
-    .header{width:100%;max-width:640px;text-align:center;padding:48px 0 24px}
-    .logo-img{height:48px;margin-bottom:20px;filter:brightness(0) invert(1)}
-    .tagline{color:var(--muted);font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
-    .survey-title{font-size:1.6rem;font-weight:800;line-height:1.3}
-    .survey-title em{color:var(--yellow);font-style:normal}
-    .supplier-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.3);color:var(--yellow);border-radius:20px;padding:8px 16px;font-size:0.78rem;letter-spacing:1.5px;text-transform:uppercase;margin-top:14px;font-weight:700}
+/* Header banner */
+.banner{width:100%;background:#fff;position:relative;overflow:hidden;min-height:200px;display:flex;align-items:center;justify-content:center}
+.banner-inner{position:relative;width:100%;max-width:960px;padding:24px 32px;display:flex;align-items:center;justify-content:center}
+.banner-logo{font-family:'Inter',sans-serif;font-size:3rem;font-weight:900;color:#F5C518;letter-spacing:4px;text-transform:uppercase;position:relative;z-index:2}
+.banner-logo span{color:#1a1a1a}
+.banner-deco{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1}
 
-    .card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px;width:100%;max-width:640px;margin-bottom:20px}
-    .section-label{font-family:'Bebas Neue',sans-serif;font-size:0.78rem;letter-spacing:2.5px;color:var(--yellow);margin-bottom:16px}
+/* Illustrated figures - CSS drawn */
+.fig{position:absolute;opacity:0.85}
 
-    .nps-question{font-size:1.05rem;font-weight:700;margin-bottom:20px;line-height:1.4}
-    .nps-scale{display:flex;gap:7px;flex-wrap:wrap;justify-content:space-between;margin-bottom:12px}
-    .nps-btn{flex:1;min-width:42px;height:52px;border-radius:10px;border:2px solid var(--border);background:transparent;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;cursor:pointer;transition:all 0.15s}
-    .nps-btn:hover{border-color:var(--yellow);color:var(--yellow);transform:translateY(-2px)}
-    .nps-btn.selected.detractor{background:var(--red);border-color:var(--red);color:#fff}
-    .nps-btn.selected.passive{background:#F59E0B;border-color:#F59E0B;color:#fff}
-    .nps-btn.selected.promoter{background:var(--green);border-color:var(--green);color:#0c0c0c}
-    .nps-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:0.75rem;margin-top:6px}
+/* Main content */
+.main{width:100%;max-width:720px;padding:0 20px 60px}
 
-    .field{margin-bottom:20px}
-    .field label{display:block;font-weight:700;font-size:0.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px}
-    .field input,.field select,.field textarea{width:100%;background:#0c0c0c;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.95rem;padding:12px 16px;outline:none;transition:border-color 0.2s}
-    .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--yellow)}
-    .field select option{background:#0c0c0c}
-    .field textarea{resize:vertical;min-height:90px}
-    .required{color:var(--red)}
+/* Page cards */
+.page{display:none}
+.page.active{display:block}
 
-    .importance-grid{display:grid;gap:14px}
-    .importance-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .importance-row .topic{font-size:0.9rem;flex:1}
-    .star-row{display:flex;gap:5px}
-    .star{font-size:1.4rem;cursor:pointer;color:var(--border);transition:color 0.1s;line-height:1}
-    .star.active{color:var(--yellow)}
+.form-title{font-size:1.6rem;font-weight:800;color:#1a1a1a;margin:32px 0 24px;line-height:1.3}
+.form-title span{color:#1a1a1a}
 
-    .submit-btn{width:100%;padding:18px;background:var(--yellow);color:#0c0c0c;border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;cursor:pointer;transition:opacity 0.2s;margin-top:8px}
-    .submit-btn:hover{opacity:0.9}
-    .submit-btn:disabled{opacity:0.4;cursor:not-allowed}
+/* Form fields */
+.field{margin-bottom:20px}
+.field label{display:block;font-size:0.95rem;font-weight:600;color:#1a1a1a;margin-bottom:8px}
+.field label .req{color:#c0392b}
+.field input,.field select,.field textarea{
+  width:100%;background:#fff8d6;border:2px solid rgba(0,0,0,0.12);
+  border-radius:6px;color:#1a1a1a;font-family:'Inter',sans-serif;
+  font-size:0.95rem;padding:12px 14px;outline:none;transition:border-color 0.2s
+}
+.field input:focus,.field select,.field textarea:focus{border-color:#1a1a1a}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%231a1a1a' stroke-width='2' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+.field textarea{resize:vertical;min-height:80px}
 
-    .success-screen{display:none;text-align:center;padding:60px 32px}
-    .success-icon{font-size:4rem;margin-bottom:20px}
-    .success-logo{height:36px;margin-bottom:12px;filter:brightness(0) invert(1)}
-    .success-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--green);letter-spacing:2px}
-    .success-msg{color:var(--muted);margin-top:12px;font-size:1rem;line-height:1.7}
+/* NPS buttons */
+.nps-row{display:flex;gap:8px;flex-wrap:wrap}
+.nps-btn{width:46px;height:46px;border-radius:6px;border:2px solid rgba(0,0,0,0.2);background:#fff8d6;
+  color:#1a1a1a;font-family:'Inter',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:all 0.12s}
+.nps-btn:hover{border-color:#1a1a1a;background:#fff}
+.nps-btn.sel-det{background:#e74c3c;border-color:#e74c3c;color:#fff}
+.nps-btn.sel-pass{background:#e67e22;border-color:#e67e22;color:#fff}
+.nps-btn.sel-pro{background:#27ae60;border-color:#27ae60;color:#fff}
+.nps-labels{display:flex;justify-content:space-between;color:rgba(0,0,0,0.5);font-size:0.75rem;margin-top:6px}
 
-    .progress-bar{height:3px;background:var(--border);border-radius:2px;width:100%;max-width:640px;margin-bottom:32px}
-    .progress-fill{height:100%;background:var(--yellow);border-radius:2px;transition:width 0.3s;width:0%}
-    .error-msg{color:var(--red);font-size:0.82rem;margin-top:6px;display:none}
-    .confidential-note{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:0.78rem;margin-bottom:20px}
-    .confidential-note span{font-size:1rem}
-  </style>
+/* Satisfaction grid */
+.sat-table{width:100%;border-collapse:collapse;background:#fff8d6;border-radius:8px;overflow:hidden;border:2px solid rgba(0,0,0,0.1)}
+.sat-table th{padding:10px 14px;font-size:0.82rem;font-weight:600;color:#555;text-align:center;background:#fff3b0;border-bottom:1px solid rgba(0,0,0,0.1)}
+.sat-table th:first-child{text-align:left}
+.sat-table td{padding:10px 14px;border-bottom:1px solid rgba(0,0,0,0.06);font-size:0.9rem;color:#1a1a1a;text-align:center}
+.sat-table td:first-child{text-align:left;font-weight:500}
+.sat-table tr:last-child td{border-bottom:none}
+.sat-table input[type=radio]{width:18px;height:18px;accent-color:#1a1a1a;cursor:pointer}
+
+/* Buttons */
+.btn-row{display:flex;gap:12px;margin-top:24px;align-items:center}
+.btn-next,.btn-submit{
+  background:#1a1a1a;color:#F5C518;border:none;border-radius:6px;
+  font-family:'Inter',sans-serif;font-size:0.95rem;font-weight:700;
+  padding:13px 28px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:opacity 0.2s
+}
+.btn-next:hover,.btn-submit:hover{opacity:0.85}
+.btn-back{background:transparent;color:#1a1a1a;border:none;font-family:'Inter',sans-serif;
+  font-size:0.9rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:4px 0}
+.btn-back:hover{text-decoration:underline}
+
+/* Progress dots */
+.progress{display:flex;gap:8px;margin:24px 0 4px;align-items:center}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,0.2);transition:background 0.2s}
+.dot.active{background:#1a1a1a}
+
+/* Error */
+.err{color:#c0392b;font-size:0.82rem;margin-top:6px;display:none}
+.field.has-error input,.field.has-error select,.field.has-error textarea{border-color:#c0392b}
+
+/* Success */
+#successPage{text-align:center;padding:60px 20px}
+.success-icon{font-size:3rem;margin-bottom:16px}
+.success-title{font-size:1.8rem;font-weight:800;color:#1a1a1a;margin-bottom:12px}
+.success-msg{color:rgba(0,0,0,0.6);font-size:1rem;line-height:1.6}
+
+/* Fleek banner image area */
+.banner-img-wrap{width:100%;max-width:960px;margin:0 auto;background:#fff;overflow:hidden}
+.banner-svg{width:100%;display:block}
+</style>
 </head>
 <body>
 
+<!-- White header banner with Fleek illustration style -->
+<div class="banner">
+  <div class="banner-inner">
+    <!-- Illustrated SVG banner matching the Tally form style -->
+    <svg viewBox="0 0 900 180" xmlns="http://www.w3.org/2000/svg" class="banner-svg" style="position:absolute;top:0;left:0;width:100%;height:100%">
+      <!-- Background -->
+      <rect width="900" height="180" fill="#fff"/>
+      
+      <!-- Central Fleek logo area - yellow card -->
+      <rect x="330" y="30" width="240" height="120" rx="12" fill="#F5C518" opacity="0.15"/>
+      <text x="450" y="105" text-anchor="middle" font-family="Inter,sans-serif" font-weight="900" font-size="44" fill="#F5C518" letter-spacing="4">FLEEK</text>
+      
+      <!-- Magnifying glass / chart icon center -->
+      <circle cx="450" cy="72" r="22" fill="none" stroke="#F5C518" stroke-width="3"/>
+      <line x1="466" y1="88" x2="476" y2="98" stroke="#F5C518" stroke-width="3" stroke-linecap="round"/>
+      <polyline points="438,72 444,78 454,65" fill="none" stroke="#F5C518" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
 
-<div style="background:rgba(245,197,24,0.08);border-bottom:1px solid rgba(245,197,24,0.2);padding:10px 20px;text-align:center;width:100%">
-  <span style="color:#F5C518;font-size:0.78rem;letter-spacing:2px;text-transform:uppercase;font-weight:700">🔒 Seller Survey — For Suppliers Only · Not the Admin Dashboard</span>
-</div>
+      <!-- Left side figures -->
+      <!-- Person 1: sitting with dollar -->
+      <circle cx="80" cy="60" r="12" fill="none" stroke="#333" stroke-width="1.5"/>
+      <line x1="80" y1="72" x2="80" y2="100" stroke="#333" stroke-width="1.5"/>
+      <line x1="65" y1="83" x2="95" y2="83" stroke="#333" stroke-width="1.5"/>
+      <line x1="80" y1="100" x2="65" y2="118" stroke="#333" stroke-width="1.5"/>
+      <line x1="80" y1="100" x2="95" y2="118" stroke="#333" stroke-width="1.5"/>
+      <text x="68" y="52" font-size="12" fill="#F5C518" font-weight="700">$</text>
+      <!-- Arrow up -->
+      <line x1="110" y1="100" x2="130" y2="70" stroke="#333" stroke-width="1.5" stroke-dasharray="3"/>
+      <polygon points="128,62 134,72 124,70" fill="#333"/>
 
-<div class="header">
-  <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek" class="logo-img"/>
-  <p class="tagline">Seller Experience Survey</p>
-  <h1 class="survey-title">How likely are you to recommend <em>Fleek</em> to other sellers?</h1>
-  <div class="supplier-badge"><span>🔒</span> Confidential · Seller Feedback Only</div>
-</div>
+      <!-- Person 2: with stars -->
+      <circle cx="170" cy="55" r="11" fill="none" stroke="#333" stroke-width="1.5"/>
+      <line x1="170" y1="66" x2="170" y2="92" stroke="#333" stroke-width="1.5"/>
+      <line x1="157" y1="76" x2="183" y2="76" stroke="#333" stroke-width="1.5"/>
+      <line x1="170" y1="92" x2="158" y2="108" stroke="#333" stroke-width="1.5"/>
+      <line x1="170" y1="92" x2="182" y2="108" stroke="#333" stroke-width="1.5"/>
+      <!-- Stars -->
+      <text x="152" y="48" font-size="14" fill="#F5C518">★</text>
+      <text x="172" y="42" font-size="10" fill="#F5C518">★</text>
 
-<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <!-- Person 3: thinking bubble -->
+      <circle cx="240" cy="95" r="11" fill="none" stroke="#333" stroke-width="1.5"/>
+      <line x1="240" y1="106" x2="240" y2="130" stroke="#333" stroke-width="1.5"/>
+      <line x1="228" y1="116" x2="252" y2="116" stroke="#333" stroke-width="1.5"/>
+      <line x1="240" y1="130" x2="228" y2="148" stroke="#333" stroke-width="1.5"/>
+      <line x1="240" y1="130" x2="252" y2="148" stroke="#333" stroke-width="1.5"/>
+      <!-- Thought bubble -->
+      <circle cx="252" cy="80" r="8" fill="none" stroke="#aaa" stroke-width="1"/>
+      <circle cx="263" cy="70" r="6" fill="none" stroke="#aaa" stroke-width="1"/>
+      <circle cx="272" cy="63" r="5" fill="none" stroke="#aaa" stroke-width="1"/>
+      <text x="258" y="67" font-size="9" fill="#888">?</text>
 
-<form id="surveyForm">
+      <!-- Right side figures -->
+      <!-- Person 4: delivery box -->
+      <circle cx="780" cy="55" r="11" fill="none" stroke="#333" stroke-width="1.5"/>
+      <line x1="780" y1="66" x2="780" y2="90" stroke="#333" stroke-width="1.5"/>
+      <line x1="768" y1="75" x2="792" y2="75" stroke="#333" stroke-width="1.5"/>
+      <line x1="780" y1="90" x2="768" y2="108" stroke="#333" stroke-width="1.5"/>
+      <line x1="780" y1="90" x2="792" y2="108" stroke="#333" stroke-width="1.5"/>
+      <rect x="792" y="80" width="28" height="22" rx="3" fill="none" stroke="#333" stroke-width="1.5"/>
+      <line x1="806" y1="80" x2="806" y2="102" stroke="#333" stroke-width="1"/>
 
-  <!-- NPS Score -->
-  <div class="card">
-    <div class="section-label">01 / NPS Score</div>
-    <p class="nps-question">On a scale of 0–10, how likely are you to recommend Fleek to a fellow seller or business partner? <span class="required">*</span></p>
-    <div class="nps-scale" id="npsScale">
-      <button type="button" class="nps-btn" data-score="0">0</button>
-      <button type="button" class="nps-btn" data-score="1">1</button>
-      <button type="button" class="nps-btn" data-score="2">2</button>
-      <button type="button" class="nps-btn" data-score="3">3</button>
-      <button type="button" class="nps-btn" data-score="4">4</button>
-      <button type="button" class="nps-btn" data-score="5">5</button>
-      <button type="button" class="nps-btn" data-score="6">6</button>
-      <button type="button" class="nps-btn" data-score="7">7</button>
-      <button type="button" class="nps-btn" data-score="8">8</button>
-      <button type="button" class="nps-btn" data-score="9">9</button>
-      <button type="button" class="nps-btn" data-score="10">10</button>
+      <!-- Person 5: puzzle pieces -->
+      <circle cx="680" cy="80" r="11" fill="none" stroke="#333" stroke-width="1.5"/>
+      <line x1="680" y1="91" x2="680" y2="115" stroke="#333" stroke-width="1.5"/>
+      <line x1="668" y1="100" x2="692" y2="100" stroke="#333" stroke-width="1.5"/>
+      <line x1="680" y1="115" x2="668" y2="133" stroke="#333" stroke-width="1.5"/>
+      <line x1="680" y1="115" x2="692" y2="133" stroke="#333" stroke-width="1.5"/>
+      <!-- Puzzle pieces -->
+      <rect x="700" y="95" width="18" height="18" rx="3" fill="none" stroke="#F5C518" stroke-width="2"/>
+      <rect x="722" y="95" width="18" height="18" rx="3" fill="none" stroke="#F5C518" stroke-width="2"/>
+      <circle cx="722" cy="104" r="3" fill="#F5C518"/>
+
+      <!-- Person 6: with laptop/chart -->
+      <circle cx="840" cy="100" r="11" fill="none" stroke="#333" stroke-width="1.5"/>
+      <line x1="840" y1="111" x2="840" y2="135" stroke="#333" stroke-width="1.5"/>
+      <line x1="828" y1="121" x2="852" y2="121" stroke="#333" stroke-width="1.5"/>
+      <line x1="840" y1="135" x2="828" y2="153" stroke="#333" stroke-width="1.5"/>
+      <line x1="840" y1="135" x2="852" y2="153" stroke="#333" stroke-width="1.5"/>
+
+      <!-- Smiley top -->
+      <circle cx="450" cy="18" r="10" fill="none" stroke="#888" stroke-width="1.5"/>
+      <path d="M444,20 Q450,25 456,20" fill="none" stroke="#888" stroke-width="1.2"/>
+      <circle cx="447" cy="16" r="1.5" fill="#888"/>
+      <circle cx="453" cy="16" r="1.5" fill="#888"/>
+
+      <!-- Star decorations -->
+      <text x="620" y="45" font-size="22" fill="#F5C518" opacity="0.9">★</text>
+      <text x="650" y="30" font-size="14" fill="#F5C518" opacity="0.7">★</text>
+      <text x="670" y="52" font-size="10" fill="#F5C518" opacity="0.5">★</text>
+
+      <!-- Fleek badge circle (bottom left of banner) -->
+      <circle cx="60" cy="160" r="30" fill="#fff" stroke="#e8e8e8" stroke-width="2"/>
+      <circle cx="60" cy="160" r="24" fill="#e8e8e8"/>
+      <text x="60" y="165" text-anchor="middle" font-size="20" fill="#F5C518">✦</text>
+    </svg>
+
+    <!-- Fleek text on top of SVG -->
+    <div style="position:relative;z-index:3;text-align:center">
+      <div style="font-family:'Inter',sans-serif;font-size:2.8rem;font-weight:900;color:#F5C518;letter-spacing:6px;text-shadow:0 2px 8px rgba(0,0,0,0.08)">FLEEK</div>
     </div>
-    <div class="nps-labels"><span>Not at all likely</span><span>Extremely likely</span></div>
-    <p class="error-msg" id="scoreError">Please select a score to continue.</p>
+  </div>
+</div>
+
+<!-- Form content -->
+<div class="main">
+
+  <!-- Progress -->
+  <div class="progress">
+    <div class="dot active" id="dot1"></div>
+    <div class="dot" id="dot2"></div>
   </div>
 
-  <!-- Seller Info -->
-  <div class="card">
-    <div class="section-label">02 / Your Information</div>
-    <div class="field">
-      <label>Seller / Business Name <span class="required">*</span></label>
-      <input type="text" id="sellerName" placeholder="e.g. Ahmed Traders" required/>
+  <!-- PAGE 1 -->
+  <div class="page active" id="page1">
+    <div class="form-title">Net Promoter Survey</div>
+
+    <div class="field" id="f-email">
+      <label>Fleek Registered Email Address: <span class="req">*</span></label>
+      <input type="email" id="inp-email" placeholder="your@email.com"/>
+      <div class="err" id="err-email">Please enter your registered email address.</div>
     </div>
-    <div class="field">
-      <label>Department / Team handling your account <span class="required">*</span></label>
-      <select id="department" required>
-        <option value="">Select department...</option>
+
+    <div class="field" id="f-store">
+      <label>Your Store Handle: <span class="req">*</span></label>
+      <input type="text" id="inp-store" placeholder="e.g. ClassicalCloth"/>
+      <div class="err" id="err-store">Please enter your store handle.</div>
+    </div>
+
+    <div class="field" id="f-score">
+      <label>On a scale of 1 to 10, how likely are you to recommend Fleek to a friend or colleague? <span class="req">*</span></label>
+      <div class="nps-row" id="npsRow">
+        <button type="button" class="nps-btn" data-v="1">1</button>
+        <button type="button" class="nps-btn" data-v="2">2</button>
+        <button type="button" class="nps-btn" data-v="3">3</button>
+        <button type="button" class="nps-btn" data-v="4">4</button>
+        <button type="button" class="nps-btn" data-v="5">5</button>
+        <button type="button" class="nps-btn" data-v="6">6</button>
+        <button type="button" class="nps-btn" data-v="7">7</button>
+        <button type="button" class="nps-btn" data-v="8">8</button>
+        <button type="button" class="nps-btn" data-v="9">9</button>
+        <button type="button" class="nps-btn" data-v="10">10</button>
+      </div>
+      <div class="nps-labels"><span>Not at all likely</span><span>Extremely likely</span></div>
+      <div class="err" id="err-score">Please select a score.</div>
+    </div>
+
+    <div class="field" id="f-reason">
+      <label>What is the main reason for the score you gave? <span class="req">*</span></label>
+      <input type="text" id="inp-reason" placeholder="Tell us why..."/>
+      <div class="err" id="err-reason">Please enter the main reason for your score.</div>
+    </div>
+
+    <div class="field" id="f-improve">
+      <label>What could we do to improve your experience and make you more likely to recommend us? <span class="req">*</span></label>
+      <input type="text" id="inp-improve" placeholder="Your suggestions..."/>
+      <div class="err" id="err-improve">Please enter your improvement suggestion.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-next" onclick="goPage2()">Next →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 2 -->
+  <div class="page" id="page2">
+    <button class="btn-back" onclick="goPage1()">← Back</button>
+
+    <div class="form-title" style="margin-top:20px">A bit more detail</div>
+
+    <div class="field" id="f-aspects">
+      <label>Which aspects of Fleek do you value the most? <span class="req">*</span></label>
+      <select id="inp-aspects">
+        <option value="">Select an option...</option>
+        <option value="Payment">Payment</option>
+        <option value="Quality Check">Quality Check</option>
+        <option value="Sales & Visibility">Sales &amp; Visibility</option>
         <option value="Seller Support">Seller Support</option>
-        <option value="Quality Check">Quality Check (QC)</option>
-        <option value="Payments">Payments</option>
-        <option value="Shipping & Logistics">Shipping & Logistics</option>
-        <option value="Vendor App">Vendor App</option>
-        <option value="Sales & Visibility">Sales & Visibility</option>
-        <option value="Other">Other</option>
+        <option value="Shipping & Logistics">Shipping &amp; Logistics</option>
+        <option value="Vendor Application">Vendor Application</option>
+        <option value="Refund">Refund</option>
       </select>
+      <div class="err" id="err-aspects">Please select which aspect you value the most.</div>
     </div>
+
     <div class="field">
-      <label>Geography / Zone <span class="required">*</span></label>
-      <select id="geography" required>
-        <option value="">Select your zone...</option>
-        <option value="PK Zone">PK Zone (Pakistan — Metro Cities)</option>
-        <option value="PK Non-Zone">PK Non-Zone (Pakistan — Other Cities)</option>
-        <option value="India">India</option>
-        <option value="ROW">ROW (Rest of World)</option>
-      </select>
+      <label>How satisfied are you with the area? <span class="req">*</span></label>
+      <table class="sat-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Satisfied</th>
+            <th>Neutral</th>
+            <th>Not Satisfied</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Payment</td><td><input type="radio" name="sat-Payment" value="Satisfied"/></td><td><input type="radio" name="sat-Payment" value="Neutral"/></td><td><input type="radio" name="sat-Payment" value="Not Satisfied"/></td></tr>
+          <tr><td>Quality Check</td><td><input type="radio" name="sat-QualityCheck" value="Satisfied"/></td><td><input type="radio" name="sat-QualityCheck" value="Neutral"/></td><td><input type="radio" name="sat-QualityCheck" value="Not Satisfied"/></td></tr>
+          <tr><td>Sales</td><td><input type="radio" name="sat-Sales" value="Satisfied"/></td><td><input type="radio" name="sat-Sales" value="Neutral"/></td><td><input type="radio" name="sat-Sales" value="Not Satisfied"/></td></tr>
+          <tr><td>Seller Support</td><td><input type="radio" name="sat-SellerSupport" value="Satisfied"/></td><td><input type="radio" name="sat-SellerSupport" value="Neutral"/></td><td><input type="radio" name="sat-SellerSupport" value="Not Satisfied"/></td></tr>
+          <tr><td>Shipping &amp; Logistics</td><td><input type="radio" name="sat-Shipping" value="Satisfied"/></td><td><input type="radio" name="sat-Shipping" value="Neutral"/></td><td><input type="radio" name="sat-Shipping" value="Not Satisfied"/></td></tr>
+          <tr><td>Vendor Application</td><td><input type="radio" name="sat-VendorApp" value="Satisfied"/></td><td><input type="radio" name="sat-VendorApp" value="Neutral"/></td><td><input type="radio" name="sat-VendorApp" value="Not Satisfied"/></td></tr>
+          <tr><td>Refund</td><td><input type="radio" name="sat-Refund" value="Satisfied"/></td><td><input type="radio" name="sat-Refund" value="Neutral"/></td><td><input type="radio" name="sat-Refund" value="Not Satisfied"/></td></tr>
+        </tbody>
+      </table>
+      <div class="err" id="err-sat">Please rate at least one area.</div>
     </div>
-    <div class="field">
-      <label>City</label>
-      <input type="text" id="city" placeholder="e.g. Karachi, Lahore, Delhi..."/>
+
+    <div class="field" id="f-issues">
+      <label>What are the biggest issues you face in these areas? <span class="req">*</span></label>
+      <input type="text" id="inp-issues" placeholder="Describe your biggest challenges..."/>
+      <div class="err" id="err-issues">Please describe the biggest issues you face.</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-submit" onclick="submitForm()">Submit →</button>
     </div>
   </div>
 
-  <!-- Feedback -->
-  <div class="card">
-    <div class="section-label">03 / Your Feedback</div>
-    <div class="field">
-      <label>What is the main reason for your score?</label>
-      <textarea id="mainReason" placeholder="Tell us what's working well or what needs improvement..."></textarea>
-    </div>
-    <div class="field">
-      <label>Which area needs the most improvement?</label>
-      <select id="mainIssue">
-        <option value="">Select area...</option>
-        <option value="Refund Policy">Refund Policy</option>
-        <option value="Seller Support">Seller Support responsiveness</option>
-        <option value="Quality Check">Quality Check process</option>
-        <option value="Vendor App">Vendor App experience</option>
-        <option value="Sales & Visibility">Sales & Visibility tools</option>
-        <option value="Shipping & Logistics">Shipping & Logistics speed</option>
-        <option value="Payment Timeline">Payment Timeline</option>
-        <option value="None">No major issues</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Anything else you'd like to share?</label>
-      <textarea id="extraComment" placeholder="Additional comments, suggestions, or praise..."></textarea>
-    </div>
+  <!-- SUCCESS -->
+  <div class="page" id="successPage">
+    <div class="success-icon">🎉</div>
+    <div class="success-title">Thanks for completing this form!</div>
+    <div class="success-msg">Your feedback helps Fleek improve the seller experience.<br/>We review every response carefully.</div>
   </div>
 
-  <!-- Importance Ratings -->
-  <div class="card">
-    <div class="section-label">04 / What Matters Most</div>
-    <p style="margin-bottom:18px;font-size:0.88rem;color:var(--muted)">Rate how important each area is to your business (1–5 stars)</p>
-    <div class="importance-grid" id="importanceGrid">
-      <div class="importance-row"><span class="topic">Fast payments</span><div class="star-row" data-topic="fastPayments"><span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span></div></div>
-      <div class="importance-row"><span class="topic">Quality check accuracy</span><div class="star-row" data-topic="qcAccuracy"><span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span></div></div>
-      <div class="importance-row"><span class="topic">Delivery speed</span><div class="star-row" data-topic="deliverySpeed"><span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span></div></div>
-      <div class="importance-row"><span class="topic">Seller app usability</span><div class="star-row" data-topic="appUsability"><span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span></div></div>
-      <div class="importance-row"><span class="topic">Product visibility & sales</span><div class="star-row" data-topic="salesVisibility"><span class="star" data-val="1">★</span><span class="star" data-val="2">★</span><span class="star" data-val="3">★</span><span class="star" data-val="4">★</span><span class="star" data-val="5">★</span></div></div>
-    </div>
-  </div>
-
-  <!-- Submit -->
-  <div class="card" style="text-align:center">
-    <div class="confidential-note"><span>🔒</span><span>Your responses are confidential and used only to improve the Fleek seller experience. This form is exclusively for Fleek suppliers.</span></div>
-    <button type="submit" class="submit-btn" id="submitBtn">SUBMIT MY FEEDBACK →</button>
-    <p class="error-msg" id="formError" style="display:none;text-align:center;margin-top:12px">Please fill in all required fields marked with *</p>
-  </div>
-
-</form>
-
-<!-- Success Screen -->
-<div class="card success-screen" id="successScreen">
-  <div class="success-icon">🎉</div>
-  <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek" class="success-logo"/>
-  <div class="success-title">Thank You!</div>
-  <p class="success-msg">Your feedback has been recorded and will be reviewed by the Fleek team.<br/><br/>We're committed to making Fleek better for every seller.</p>
 </div>
 
 <script>
-  let selectedScore = null;
-  const importanceRatings = {};
+let npsScore = null;
+const urlParams = new URLSearchParams(window.location.search);
+const period = urlParams.get('period') || (() => {
+  const d = new Date();
+  return d.toLocaleString('en-US',{month:'short'}) + ' ' + d.getFullYear();
+})();
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const surveyPeriod = urlParams.get('period') || getCurrentPeriod();
+// NPS button clicks
+document.getElementById('npsRow').addEventListener('click', e => {
+  const btn = e.target.closest('.nps-btn');
+  if (!btn) return;
+  npsScore = parseInt(btn.dataset.v);
+  document.querySelectorAll('.nps-btn').forEach(b => b.className = 'nps-btn');
+  const cls = npsScore >= 9 ? 'sel-pro' : npsScore >= 7 ? 'sel-pass' : 'sel-det';
+  btn.classList.add(cls);
+  document.getElementById('err-score').style.display = 'none';
+});
 
-  function getCurrentPeriod() {
-    const now = new Date();
-    return now.toLocaleString('en-US', { month: 'short' }) + ' ' + now.getFullYear();
-  }
+function goPage2() {
+  let ok = true;
+  const email = document.getElementById('inp-email').value.trim();
+  const store = document.getElementById('inp-store').value.trim();
+  const reason = document.getElementById('inp-reason').value.trim();
+  const improve = document.getElementById('inp-improve').value.trim();
 
-  document.getElementById('npsScale').addEventListener('click', e => {
-    const btn = e.target.closest('.nps-btn');
-    if (!btn) return;
-    const score = parseInt(btn.dataset.score);
-    selectedScore = score;
-    document.querySelectorAll('.nps-btn').forEach(b => b.classList.remove('selected','detractor','passive','promoter'));
-    const cat = score >= 9 ? 'promoter' : score >= 7 ? 'passive' : 'detractor';
-    btn.classList.add('selected', cat);
-    document.getElementById('scoreError').style.display = 'none';
-    updateProgress();
+  const show = (id, fid) => { document.getElementById(id).style.display='block'; document.getElementById(fid).classList.add('has-error'); ok=false; };
+  const hide = (id, fid) => { document.getElementById(id).style.display='none'; document.getElementById(fid).classList.remove('has-error'); };
+
+  email ? hide('err-email','f-email') : show('err-email','f-email');
+  store ? hide('err-store','f-store') : show('err-store','f-store');
+  npsScore !== null ? hide('err-score','f-score') : (document.getElementById('err-score').style.display='block', ok=false);
+  reason ? hide('err-reason','f-reason') : show('err-reason','f-reason');
+  improve ? hide('err-improve','f-improve') : show('err-improve','f-improve');
+
+  if (!ok) return;
+  document.getElementById('page1').classList.remove('active');
+  document.getElementById('page2').classList.add('active');
+  document.getElementById('dot1').classList.remove('active');
+  document.getElementById('dot2').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function goPage1() {
+  document.getElementById('page2').classList.remove('active');
+  document.getElementById('page1').classList.add('active');
+  document.getElementById('dot2').classList.remove('active');
+  document.getElementById('dot1').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function submitForm() {
+  let ok = true;
+  const aspects = document.getElementById('inp-aspects').value;
+  const issues = document.getElementById('inp-issues').value.trim();
+
+  if (!aspects) { document.getElementById('err-aspects').style.display='block'; document.getElementById('f-aspects').classList.add('has-error'); ok=false; }
+  else { document.getElementById('err-aspects').style.display='none'; document.getElementById('f-aspects').classList.remove('has-error'); }
+
+  // Check at least one radio answered
+  const satAreas = ['Payment','QualityCheck','Sales','SellerSupport','Shipping','VendorApp','Refund'];
+  const satLabels = ['Payment','Quality Check','Sales','Seller Support','Shipping & Logistics','Vendor Application','Refund'];
+  const satisfaction = {};
+  let anySat = false;
+  satAreas.forEach((a,i) => {
+    const sel = document.querySelector(`input[name="sat-${a}"]:checked`);
+    if (sel) { satisfaction[satLabels[i]] = sel.value; anySat = true; }
   });
+  if (!anySat) { document.getElementById('err-sat').style.display='block'; ok=false; }
+  else document.getElementById('err-sat').style.display='none';
 
-  document.querySelectorAll('.star-row').forEach(row => {
-    const topic = row.dataset.topic;
-    importanceRatings[topic] = 0;
-    row.querySelectorAll('.star').forEach(star => {
-      star.addEventListener('click', () => {
-        const val = parseInt(star.dataset.val);
-        importanceRatings[topic] = val;
-        row.querySelectorAll('.star').forEach(s => s.classList.toggle('active', parseInt(s.dataset.val) <= val));
-      });
-    });
-  });
+  if (!issues) { document.getElementById('err-issues').style.display='block'; document.getElementById('f-issues').classList.add('has-error'); ok=false; }
+  else { document.getElementById('err-issues').style.display='none'; document.getElementById('f-issues').classList.remove('has-error'); }
 
-  function updateProgress() {
-    const filled = [
-      selectedScore !== null,
-      document.getElementById('sellerName').value.trim(),
-      document.getElementById('department').value,
-      document.getElementById('geography').value
-    ].filter(Boolean).length;
-    document.getElementById('progressFill').style.width = (filled / 4 * 100) + '%';
-  }
+  if (!ok) return;
 
-  document.querySelectorAll('#sellerName,#department,#geography').forEach(el => {
-    el.addEventListener('input', updateProgress);
-    el.addEventListener('change', updateProgress);
-  });
+  const payload = {
+    email: document.getElementById('inp-email').value.trim(),
+    seller: document.getElementById('inp-store').value.trim(),
+    storeHandle: document.getElementById('inp-store').value.trim(),
+    score: npsScore,
+    comment: document.getElementById('inp-reason').value.trim(),
+    mainIssue: document.getElementById('inp-improve').value.trim(),
+    aspects,
+    satisfaction,
+    biggestIssues: issues,
+    period,
+    submittedAt: new Date().toISOString(),
+    source: 'survey_form',
+    department: aspects,
+    geography: 'PK Zone',
+    city: ''
+  };
 
-  document.getElementById('surveyForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    if (selectedScore === null) {
-      document.getElementById('scoreError').style.display = 'block';
-      document.getElementById('npsScale').scrollIntoView({ behavior: 'smooth' });
-      return;
-    }
-    const sellerName = document.getElementById('sellerName').value.trim();
-    const department = document.getElementById('department').value;
-    const geography = document.getElementById('geography').value;
-    if (!sellerName || !department || !geography) {
-      document.getElementById('formError').style.display = 'block';
-      return;
-    }
-    const payload = {
-      seller: sellerName,
-      score: selectedScore,
-      department,
-      geography,
-      city: document.getElementById('city').value.trim(),
-      comment: document.getElementById('mainReason').value.trim(),
-      mainIssue: document.getElementById('mainIssue').value,
-      extraComment: document.getElementById('extraComment').value.trim(),
-      importance: importanceRatings,
-      period: surveyPeriod,
-      submittedAt: new Date().toISOString(),
-      source: 'survey_form'
-    };
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.textContent = 'SUBMITTING...';
+  const btn = document.querySelector('.btn-submit');
+  btn.disabled = true; btn.textContent = 'Submitting...';
+
+  fetch('/api/survey-submit', {
+    method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
+  }).catch(() => {
+    // fallback: store locally
     try {
-      const res = await fetch('/api/survey-submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) {
-        showSuccess();
-      } else throw new Error('err');
-    } catch(err) {
-      try {
-        const existing = JSON.parse(localStorage.getItem('fleek_nps_v2') || '[]');
-        existing.unshift(payload);
-        localStorage.setItem('fleek_nps_v2', JSON.stringify(existing));
-      } catch(e) {}
-      showSuccess();
-    }
+      const ex = JSON.parse(localStorage.getItem('fleek_pending_surveys')||'[]');
+      ex.push(payload);
+      localStorage.setItem('fleek_pending_surveys', JSON.stringify(ex));
+    } catch(e){}
+  }).finally(() => {
+    document.getElementById('page2').classList.remove('active');
+    document.getElementById('successPage').classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
   });
-
-  function showSuccess() {
-    document.getElementById('surveyForm').style.display = 'none';
-    document.getElementById('progressFill').style.width = '100%';
-    const s = document.getElementById('successScreen');
-    s.style.display = 'block';
-    s.scrollIntoView({ behavior: 'smooth' });
-  }
+}
 </script>
 </body>
 </html>
-
