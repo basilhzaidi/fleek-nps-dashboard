@@ -12,6 +12,10 @@
   ],
   "routes": [
     {
+      "src": "/api/data",
+      "dest": "/api/data.js"
+    },
+    {
       "src": "/api/claude-proxy",
       "dest": "/api/claude-proxy.js"
     },
