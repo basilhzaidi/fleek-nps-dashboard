@@ -1,299 +1,437 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Fleek — NPS Report</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=Montserrat:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#0c0c0c;--surface:#141414;--card:#1a1a1a;--border:#272727;--border2:#333;--yellow:#F5C518;--red:#E8453C;--red-dim:rgba(232,69,60,.13);--green:#3DD68C;--green-dim:rgba(61,214,140,.12);--orange:#F07C3A;--blue:#5B9EF5;--text:#ededed;--muted:#999;--subtle:#666}
-body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;overflow-x:hidden}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes barGrow{from{width:0}to{width:var(--w)}}
-.reveal{opacity:0;animation:fadeUp .6s ease forwards}
-.reveal:nth-child(1){animation-delay:.05s}.reveal:nth-child(2){animation-delay:.12s}.reveal:nth-child(3){animation-delay:.19s}.reveal:nth-child(4){animation-delay:.26s}
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.logo{display:flex;align-items:center;gap:10px}
-.logo-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;color:var(--yellow)}
-.header-right{text-align:right}
-.report-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px}
-.report-sub{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--muted);margin-top:2px}
-.btn-logout{background:transparent;border:1px solid var(--border2);color:var(--muted);padding:7px 14px;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;transition:all 0.2s}
-.btn-logout:hover{border-color:var(--yellow);color:var(--yellow)}
-.hero{background:linear-gradient(135deg,#111 0%,#161410 50%,#0f1108 100%);border-bottom:1px solid var(--border);padding:56px 40px 44px;position:relative;overflow:hidden}
-.hero::after{content:'NPS';position:absolute;right:-20px;top:-20px;font-family:'Bebas Neue',sans-serif;font-size:260px;letter-spacing:-4px;color:rgba(245,197,24,.03);pointer-events:none;line-height:1}
-.hero-kicker{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--yellow);margin-bottom:10px}
-.hero-heading{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:1px;line-height:1;margin-bottom:8px}
-.hero-heading span{color:var(--yellow)}
-.hero-sub{color:var(--muted);font-size:14px;max-width:520px;line-height:1.6;margin-bottom:36px}
-.hero-stats{display:flex;gap:40px;align-items:flex-end;flex-wrap:wrap}
-.hs-val{font-family:'Bebas Neue',sans-serif;font-size:48px;line-height:1}
-.hs-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:4px}
-.hero-div{width:1px;height:56px;background:var(--border2)}
-.page{padding:32px 40px;max-width:1360px;margin:0 auto}
-.sec-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:3px;color:var(--yellow);margin-bottom:6px;text-transform:uppercase}
-.sec-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;margin-bottom:24px}
-.sec-divider{border:none;border-top:1px solid var(--border);margin:44px 0 36px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
-@media(max-width:900px){.two-col{grid-template-columns:1fr}}
-/* Trend cards */
-.trend-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
-@media(max-width:700px){.trend-grid{grid-template-columns:1fr}}
-.trend-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 18px}
-.trend-card.active{border-color:var(--yellow);background:linear-gradient(135deg,#1e1c10,#1a1a1a)}
-.tc-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted)}
-.tc-score{font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1}
-.tc-n{font-size:10px;color:var(--subtle);margin-top:-2px;margin-bottom:8px}
-.tc-bar-row{display:flex;align-items:center;gap:8px;font-size:10px;margin-bottom:4px}
-.tc-bar-bg{flex:1;height:4px;background:var(--border2);border-radius:999px;overflow:hidden}
-.tc-bar-fill{height:100%;border-radius:999px;animation:barGrow .9s .3s ease both;width:var(--w)}
-/* Dist bars */
-.dist-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border)}
-.dist-row:last-child{border-bottom:none}
-.dist-score{font-family:'Bebas Neue',sans-serif;font-size:18px;width:24px;flex-shrink:0;text-align:center}
-.dist-cat{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;width:60px;flex-shrink:0}
-.cat-pro{color:var(--green)}.cat-pass{color:var(--yellow)}.cat-det{color:var(--red)}
-.dist-bar-bg{flex:1;height:5px;background:var(--border2);border-radius:999px;overflow:hidden}
-.dist-bar-fill{height:100%;border-radius:999px;animation:barGrow .9s .3s ease both;width:var(--w)}
-.dist-count{font-size:12px;color:var(--muted);width:24px;text-align:right;flex-shrink:0}
-.dist-pct{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--subtle);width:38px;text-align:right;flex-shrink:0}
-/* Donut */
-.donut-wrap{position:relative;width:180px;height:180px;flex-shrink:0}
-.donut-wrap svg{width:100%;height:100%;transform:rotate(-90deg)}
-.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.donut-num{font-family:'Bebas Neue',sans-serif;font-size:44px;line-height:1;color:var(--red)}
-.donut-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px}
-.dl-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
-.dl-item:last-child{border-bottom:none}
-.dl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.dl-label{flex:1;font-size:13px}
-.dl-vals{font-family:'Bebas Neue',sans-serif;font-size:20px}
-.dl-pct{font-size:11px;color:var(--muted)}
-/* Dept */
-.dept-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:28px}
-.dept-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px}
-.dept-name{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1px;margin-bottom:4px}
-.dept-nps{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;margin-bottom:10px}
-/* Problems */
-.prob-row{display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--border)}
-.prob-row:last-child{border-bottom:none}
-.prob-rank{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--yellow);width:32px;flex-shrink:0}
-.prob-name{font-weight:700;font-size:13px;margin-bottom:1px}
-.prob-desc{font-size:11px;color:var(--muted)}
-.impact-badge{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;padding:3px 7px;border-radius:4px;flex-shrink:0}
-.impact-critical{background:var(--red-dim);color:var(--red)}
-.impact-high{background:rgba(240,124,58,0.13);color:var(--orange)}
-.impact-medium{background:rgba(91,158,245,0.12);color:var(--blue)}
-.prob-pct{font-family:'Bebas Neue',sans-serif;font-size:22px;margin-left:auto;flex-shrink:0}
-/* VOD */
-.vod-cat-title{font-family:'Syne',sans-serif;font-weight:800;font-size:13px;padding:10px 0 10px;border-bottom:1px solid var(--border);margin-bottom:0}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0F0F0F;--card:#141414;--border:#2a2a2a;--yellow:#FFD400;--orange:#F25C2A;--blue:#0D2BFF;--red:#E8453C;--green:#3DD68C;--cream:#F6F1E7;--text:#F6F1E7;--muted:#888}
+body{background:var(--bg);color:var(--text);font-family:'Montserrat',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* TOPBAR */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:0 28px;height:64px;background:#0F0F0F;border-bottom:2px solid var(--yellow);position:sticky;top:0;z-index:100}
+.brand{display:flex;align-items:center;gap:14px}
+.brand img{height:28px;filter:brightness(0) invert(1)}
+.brand-label{font-family:'League Gothic',sans-serif;font-size:1.1rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.period-select{background:#161616;border:1.5px solid var(--border);border-radius:4px;color:var(--text);font-family:'Montserrat',sans-serif;font-size:0.78rem;font-weight:700;padding:8px 14px;outline:none;cursor:pointer;transition:border-color 0.2s}
+.period-select:focus{border-color:var(--yellow)}
+.logout-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px 18px;border-radius:2px;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all 0.15s}
+.logout-btn:hover{border-color:var(--yellow);color:var(--yellow)}
+
+/* MAIN */
+.main{max-width:1100px;margin:0 auto;padding:32px 24px}
+
+/* PERIOD HERO */
+.period-hero{margin-bottom:28px;display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.period-title{font-family:'League Gothic',sans-serif;font-size:2.8rem;letter-spacing:4px;color:var(--cream);text-transform:uppercase;line-height:1}
+.period-subtitle{color:var(--muted);font-size:0.82rem;margin-top:6px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.trend-badge{display:flex;align-items:center;gap:8px;background:#161616;border:1px solid var(--border);border-radius:4px;padding:10px 16px}
+.trend-val{font-family:'League Gothic',sans-serif;font-size:1.2rem;letter-spacing:2px}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+@media(max-width:700px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:24px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%}
+.stat-card.nps::before{background:var(--yellow)}
+.stat-card.pro::before{background:var(--green)}
+.stat-card.pass::before{background:var(--orange)}
+.stat-card.det::before{background:var(--red)}
+.stat-label{font-size:0.65rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:700}
+.stat-value{font-family:'League Gothic',sans-serif;font-size:3rem;line-height:1;letter-spacing:2px}
+.stat-sub{font-size:0.75rem;color:var(--muted);margin-top:6px}
+
+/* SECTIONS */
+.section{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--yellow);border-radius:4px;padding:24px;margin-bottom:20px}
+.section-title{font-family:'League Gothic',sans-serif;font-size:0.85rem;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin-bottom:18px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+@media(max-width:700px){.two-col{grid-template-columns:1fr}}
+
+/* BARS */
+.bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.bar-label{font-size:0.82rem;font-weight:600;min-width:140px;color:var(--text)}
+.bar-track{flex:1;background:#1e1e1e;border-radius:3px;height:8px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width 0.6s ease}
+.bar-val{font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;min-width:38px;text-align:right}
+
+/* TABLE */
 table{width:100%;border-collapse:collapse}
-th{text-align:left;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--subtle);text-transform:uppercase;padding:10px 14px;border-bottom:1px solid var(--border)}
-td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px}
+th{text-align:left;padding:10px 14px;border-bottom:1px solid var(--border);font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--yellow);font-weight:700}
+td{padding:10px 14px;border-bottom:1px solid #1a1a1a;font-size:0.84rem}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(255,255,255,0.02)}
-/* Val cards */
-.val-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:28px}
-.val-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
-.val-area{font-size:12px;color:var(--muted);margin-bottom:6px}
-.val-pct{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;margin-bottom:8px}
-.val-status{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1px;padding:3px 8px;border-radius:4px;display:inline-block;margin-bottom:8px}
-.s-strength{background:var(--green-dim);color:var(--green)}.s-opportunity{background:rgba(91,158,245,0.12);color:var(--blue)}.s-mixed{background:rgba(245,197,24,0.12);color:var(--yellow)}.s-broken{background:var(--red-dim);color:var(--red)}
-.val-meter{height:3px;background:var(--border2);border-radius:999px;overflow:hidden;margin-top:4px}
-.val-meter-fill{height:100%;border-radius:999px;animation:barGrow .9s .3s ease both;width:var(--w)}
-footer{background:var(--surface);border-top:1px solid var(--border);padding:18px 40px;display:flex;align-items:center;justify-content:space-between}
-.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:var(--muted)}
-.footer-note{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--subtle);letter-spacing:1px}
+tr:hover td{background:rgba(255,212,0,0.02)}
+
+/* SEGMENT RING */
+.ring-wrap{display:flex;align-items:center;justify-content:center;gap:32px;padding:8px 0}
+.ring-svg{overflow:visible}
+.ring-legend{display:flex;flex-direction:column;gap:12px}
+.legend-row{display:flex;align-items:center;gap:10px;font-size:0.84rem}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+/* HISTORY TREND */
+.trend-chart{margin-top:8px}
+.trend-points{display:flex;align-items:flex-end;gap:0;height:80px;border-bottom:1px solid var(--border);padding:0 4px}
+.trend-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;padding:0 4px;cursor:pointer}
+.trend-bar{width:100%;border-radius:3px 3px 0 0;transition:all 0.3s;min-height:4px}
+.trend-bar-wrap.active .trend-bar{outline:2px solid var(--yellow)}
+.trend-labels{display:flex;gap:0;margin-top:8px}
+.trend-label{flex:1;text-align:center;font-size:0.68rem;color:var(--muted);font-weight:600;padding:0 4px}
+.trend-nps-labels{display:flex;gap:0}
+.trend-nps-label{flex:1;text-align:center;font-family:'League Gothic',sans-serif;font-size:0.9rem;letter-spacing:1px}
+
+/* SCORE DIST */
+.score-dist{display:flex;align-items:flex-end;gap:4px;height:70px}
+.score-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.score-bar{width:100%;border-radius:2px 2px 0 0;min-height:3px}
+.score-num{font-size:0.6rem;color:var(--muted);margin-top:4px;text-align:center}
+
+/* COMMENT CARDS */
+.comment-card{padding:12px 0;border-bottom:1px solid #1a1a1a;display:flex;gap:12px;align-items:flex-start}
+.comment-card:last-child{border-bottom:none}
+.score-badge{font-family:'League Gothic',sans-serif;font-size:0.9rem;padding:3px 10px;border-radius:2px;white-space:nowrap;letter-spacing:1px}
+.comment-seller{font-size:0.78rem;color:var(--muted);font-weight:700;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px}
+.comment-text{font-size:0.84rem;color:var(--cream);line-height:1.55}
+
+/* GEO GRID */
+.geo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.geo-card{background:#0c0c0c;border:1px solid var(--border);border-radius:4px;padding:16px;text-align:center}
+.geo-name{font-size:0.65rem;letter-spacing:2px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-bottom:8px}
+.geo-nps{font-family:'League Gothic',sans-serif;font-size:2.2rem;letter-spacing:2px;line-height:1}
+.geo-total{font-size:0.72rem;color:var(--muted);margin-top:4px}
+
+/* FOOTER */
+.footer{margin-top:40px;padding:20px 28px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-brand{font-family:'League Gothic',sans-serif;font-size:0.8rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase}
+.footer-meta{font-size:0.72rem;color:var(--muted)}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:60px 24px;color:var(--muted)}
+.empty-title{font-family:'League Gothic',sans-serif;font-size:1.2rem;letter-spacing:3px;color:var(--yellow);margin-bottom:8px;text-transform:uppercase}
 </style>
 </head>
 <body>
-<header>
-  <div class="logo">
-    <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek" style="height:28px;filter:brightness(0) invert(1)"/>
-  </div>
-  <div class="header-right">
-    <div class="report-title">SELLER NPS REPORT</div>
-    <div class="report-sub">JANUARY 2026 · SELLER SUPPORT TEAM · 147 RESPONDENTS</div>
-  </div>
-  <button class="btn-logout" onclick="logout()">Logout</button>
-</header>
 
-<div class="hero">
-  <div class="hero-kicker">WHERE WE STAND TODAY → WHERE WE CAN BE → HOW TO GET THERE</div>
-  <h1 class="hero-heading">Supplier <span>Sentiment</span><br>at an Inflection Point</h1>
-  <p class="hero-sub">147 suppliers responded to our January NPS survey. The data highlights key friction points — and a clear roadmap for targeted improvement.</p>
-  <div class="hero-stats">
-    <div><div class="hs-val" style="color:var(--yellow)">+1</div><div class="hs-label">Jan NPS Score</div></div>
-    <div class="hero-div"></div>
-    <div><div class="hs-val" style="color:var(--green)">53</div><div class="hs-label">Promoters</div></div>
-    <div class="hero-div"></div>
-    <div><div class="hs-val" style="color:var(--muted)">43</div><div class="hs-label">Passives</div></div>
-    <div class="hero-div"></div>
-    <div><div class="hs-val" style="color:var(--red)">51</div><div class="hs-label">Detractors</div></div>
-    <div class="hero-div"></div>
-    <div><div class="hs-val" style="color:var(--blue)">$1.02M</div><div class="hs-label">Dec GMV</div></div>
+<div class="topbar">
+  <div class="brand">
+    <img src="https://www.joinfleek.com/_next/static/media/Logo.6ba37d95.webp" alt="Fleek"/>
+    <span class="brand-label">Seller NPS Report</span>
+  </div>
+  <div class="topbar-right">
+    <select class="period-select" id="periodSelect" onchange="renderView()">
+      <option value="latest">Latest Period</option>
+    </select>
+    <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
 </div>
 
-<div class="page">
+<div class="main" id="mainContent">
+  <div class="empty"><div class="empty-title">Loading...</div></div>
+</div>
 
-  <!-- SCORE TREND -->
-  <div class="sec-tag">PART ONE · WHERE WE STAND TODAY</div>
-  <div class="sec-title">NPS Score Trend</div>
-  <div class="trend-grid reveal">
-    <div class="trend-card">
-      <div class="tc-label">SEPTEMBER 2025</div>
-      <div class="tc-score" style="color:var(--red)">–10</div>
-      <div class="tc-n">n = 203 respondents</div>
-      <div class="tc-bar-row"><span style="width:60px;color:var(--green);font-size:10px">Promoters</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:33%;background:var(--green)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">33%</span></div>
-      <div class="tc-bar-row"><span style="width:60px;color:var(--yellow);font-size:10px">Passives</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:24%;background:var(--yellow)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">24%</span></div>
-      <div class="tc-bar-row"><span style="width:60px;color:var(--red);font-size:10px">Detractors</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:43%;background:var(--red)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">43%</span></div>
-    </div>
-    <div class="trend-card">
-      <div class="tc-label">NOVEMBER 2025</div>
-      <div class="tc-score" style="color:var(--green)">+4</div>
-      <div class="tc-n">n = 84 respondents</div>
-      <div class="tc-bar-row"><span style="width:60px;color:var(--green);font-size:10px">Promoters</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:35.7%;background:var(--green)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">35.7%</span></div>
-      <div class="tc-bar-row"><span style="width:60px;color:var(--yellow);font-size:10px">Passives</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:32.1%;background:var(--yellow)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">32.1%</span></div>
-      <div class="tc-bar-row"><span style="width:60px;color:var(--red);font-size:10px">Detractors</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:32.1%;background:var(--red)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">32.1%</span></div>
-    </div>
-    <div class="trend-card active">
-      <div class="tc-label">JANUARY 2026 ← CURRENT</div>
-      <div class="tc-score" style="color:var(--yellow)">+1</div>
-      <div class="tc-n">n = 147 respondents</div>
-      <div class="tc-bar-row"><span style="width:60px;color:var(--green);font-size:10px">Promoters</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:36.1%;background:var(--green)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">36.1%</span></div>
-      <div class="tc-bar-row"><span style="width:60px;color:var(--yellow);font-size:10px">Passives</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:29.3%;background:var(--yellow)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">29.3%</span></div>
-      <div class="tc-bar-row"><span style="width:60px;color:var(--red);font-size:10px">Detractors</span><div class="tc-bar-bg"><div class="tc-bar-fill" style="--w:34.7%;background:var(--red)"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);width:32px;text-align:right">34.7%</span></div>
-    </div>
-  </div>
+<div class="footer">
+  <span class="footer-brand">Fleek — Seller Experience Team</span>
+  <span class="footer-meta" id="footerMeta">Internal Report · Confidential</span>
+</div>
 
-  <div class="reveal" style="margin-top:12px;background:var(--card);border:1px solid var(--yellow);border-radius:12px;padding:20px 18px;display:flex;align-items:center;gap:20px;background:linear-gradient(135deg,#1e1c10,#1a1a1a)">
-    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--muted)">OVERALL NPS</div>
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1;color:var(--red)">–3</div>
-    <div style="font-size:12px;color:var(--subtle)">Cumulative across all periods</div>
-  </div>
+<script>
+// ─── AUTH CHECK ───────────────────────────────────────────────────────────────
+const role = sessionStorage.getItem('nps_role');
+if (!role) window.location.href = '/';
+function logout() { sessionStorage.removeItem('nps_role'); window.location.href = '/'; }
 
-  <hr class="sec-divider">
+// ─── SAME SEED DATA AS DASHBOARD (copied so view is self-contained) ───────────
+function makeEntries(period, total, targetNPS, geoWeights) {
+  const depts = ['Seller Support','Quality Check','Payments','Shipping & Logistics','Vendor App','Sales & Visibility'];
+  const geos = geoWeights;
+  const entries = [];
+  const proCount = Math.round(total * (50 + targetNPS) / 200 * 1.2);
+  const detCount = Math.round(total * (50 - targetNPS) / 200 * 1.2);
+  const passCount = total - proCount - detCount;
+  const posComments = ['Great platform for sourcing vintage','Fleek Sort saves a lot of time','Really happy with the quality check','Orders are processing faster now','Good inventory management'];
+  const negComments = ['Payments are slow','App performance is poor','Background remover is buggy','Shipping takes too long','Catalog management needs improvement'];
+  let gi = 0;
+  const pickGeo = () => { let r = Math.random(), acc = 0; for (const [g,w] of geos){ acc+=w; if(r<=acc) return g; } return geos[0][0]; };
+  for (let i=0;i<proCount;i++) entries.push({ seller:`Seller${entries.length+1}`, score:Math.random()>.4?10:9, department:depts[i%depts.length], geography:pickGeo(), city:'', comment:posComments[i%posComments.length], period, submittedAt:new Date(2025,period.includes('Sep')?8:period.includes('Nov')?10:0,Math.floor(Math.random()*25)+1).toISOString(), source:'seed' });
+  for (let i=0;i<passCount;i++) entries.push({ seller:`Seller${entries.length+1}`, score:Math.random()>.5?8:7, department:depts[i%depts.length], geography:pickGeo(), city:'', comment:'Service is okay, could be better', period, submittedAt:new Date(2025,period.includes('Sep')?8:period.includes('Nov')?10:0,Math.floor(Math.random()*25)+1).toISOString(), source:'seed' });
+  for (let i=0;i<detCount;i++) entries.push({ seller:`Seller${entries.length+1}`, score:[0,1,2,3,4,5,6][i%7], department:depts[i%depts.length], geography:pickGeo(), city:'', comment:negComments[i%negComments.length], period, submittedAt:new Date(2025,period.includes('Sep')?8:period.includes('Nov')?10:0,Math.floor(Math.random()*25)+1).toISOString(), source:'seed' });
+  return entries;
+}
 
-  <!-- DIST + DONUT -->
-  <div class="two-col reveal">
-    <div>
-      <div class="sec-tag">SCORE BREAKDOWN</div>
-      <div class="sec-title" style="margin-bottom:16px">Score Distribution</div>
+const sepEntries = makeEntries('Sep 2025',100,-10,[['PK Zone',0.55],['PK Non-Zone',0.25],['India',0.12],['ROW',0.08]]);
+const novEntries = makeEntries('Nov 2025',100,4, [['PK Zone',0.55],['PK Non-Zone',0.25],['India',0.12],['ROW',0.08]]);
+const janEntries = makeEntries('Jan 2026',147,2, [['PK Zone',0.50],['PK Non-Zone',0.25],['India',0.15],['ROW',0.10]]);
+const marEntries = [
+  {seller:"Unknown Seller",score:5,department:"Seller Support",geography:"PK Zone",city:"Karachi",comment:"Receive price of each product according to its actual value. Catalog should be removed.",mainIssue:"Seller Support",period:"Mar 2026",submittedAt:"2026-03-04T12:36:38Z",source:"csv_upload"},
+  {seller:"Unknown Seller",score:7,department:"Vendor App",geography:"PK Zone",city:"Lahore",comment:"Handpick from exact bundle is now easier with Fleek Sort. Allow more than 3 product photos.",mainIssue:"Vendor App",period:"Mar 2026",submittedAt:"2026-03-04T13:27:48Z",source:"csv_upload"},
+  {seller:"Unknown Seller",score:7,department:"Vendor App",geography:"PK Non-Zone",city:"Faisalabad",comment:"Easier to conduct handpick. Background remover is buggy. Not able to preview pictures.",mainIssue:"Vendor App",period:"Mar 2026",submittedAt:"2026-03-04T19:23:17Z",source:"csv_upload"},
+  {seller:"Unknown Seller",score:3,department:"Payments",geography:"PK Zone",city:"Karachi",comment:"No advantage. Payments, traction, lack of return. No accountability from the team.",mainIssue:"Payment Timeline",period:"Mar 2026",submittedAt:"2026-03-05T09:25:05Z",source:"csv_upload"},
+  {seller:"Unknown Seller",score:10,department:"Seller Support",geography:"PK Zone",city:"Lahore",comment:"Long time listed. Please keep uploading option for long time.",mainIssue:"None",period:"Mar 2026",submittedAt:"2026-03-07T10:07:34Z",source:"csv_upload"},
+  {seller:"Classical cloth",score:0,department:"Seller Support",geography:"PK Zone",city:"Karachi",comment:"Not beneficial as compared to fleek bulk. Very difficult to arrange single piece orders in warehouse.",mainIssue:"Seller Support",period:"Mar 2026",submittedAt:"2026-03-07T10:40:25Z",source:"csv_upload"},
+  {seller:"Carpediem-Vintage",score:8,department:"Vendor App",geography:"PK Zone",city:"Karachi",comment:"Sell very easy. Improve uploading with Etsy/eBay style individual pricing per piece.",mainIssue:"Vendor App",period:"Mar 2026",submittedAt:"2026-03-07T15:07:48Z",source:"csv_upload"},
+  {seller:"Elegant Vintage",score:10,department:"Quality Check",geography:"PK Zone",city:"Lahore",comment:"Helps quickly grade clothes, much faster than manual. Improve supplier verification.",mainIssue:"Quality Check",period:"Mar 2026",submittedAt:"2026-03-08T13:30:52Z",source:"csv_upload"},
+  {seller:"fabtexvintage",score:8,department:"Shipping & Logistics",geography:"PK Zone",city:"Karachi",comment:"Saves time in sorting vintage items. Platform is slow, duplicate orders occur.",mainIssue:"Vendor App",period:"Mar 2026",submittedAt:"2026-03-08T19:42:24Z",source:"csv_upload"},
+  {seller:"Khan Vintage",score:7,department:"Vendor App",geography:"PK Zone",city:"Lahore",comment:"Sell individual items. AI Automated Bundles upload is very difficult to sell.",mainIssue:"Vendor App",period:"Mar 2026",submittedAt:"2026-03-08T21:17:38Z",source:"csv_upload"},
+  {seller:"Retro thrift store",score:8,department:"Payments",geography:"PK Zone",city:"Islamabad",comment:"Order ratio increased. Refund for correct product not general refund.",mainIssue:"Refund Policy",period:"Mar 2026",submittedAt:"2026-03-17T11:07:45Z",source:"csv_upload"},
+  {seller:"ReloadedFits",score:10,department:"Seller Support",geography:"PK Zone",city:"Karachi",comment:"Fast selling clears out good y2k stock.",mainIssue:"None",period:"Mar 2026",submittedAt:"2026-03-17T11:29:26Z",source:"csv_upload"},
+  {seller:"Mr enterprise",score:8,department:"Seller Support",geography:"PK Non-Zone",city:"Multan",comment:"Can sell one pair at a good price. Working good so far.",mainIssue:"None",period:"Mar 2026",submittedAt:"2026-03-17T14:34:26Z",source:"csv_upload"},
+  {seller:"Adeela",score:9,department:"Seller Support",geography:"PK Zone",city:"Islamabad",comment:"Good for reseller. Everything is okay.",mainIssue:"None",period:"Mar 2026",submittedAt:"2026-03-17T15:04:11Z",source:"csv_upload"},
+  {seller:"RetroEsthetic",score:3,department:"Shipping & Logistics",geography:"PK Zone",city:"Lahore",comment:"Just holding inventory. App hangs a lot. Shipping charges are an issue.",mainIssue:"Shipping & Logistics",period:"Mar 2026",submittedAt:"2026-03-17T15:35:25Z",source:"csv_upload"},
+  {seller:"Rewear",score:3,department:"Vendor App",geography:"PK Zone",city:"Karachi",comment:"App hangs a lot. Bundles and payouts issues. Visibility and categorisation needed.",mainIssue:"Vendor App",period:"Mar 2026",submittedAt:"2026-03-17T15:39:24Z",source:"csv_upload"},
+  {seller:"Carpediem-vintage",score:5,department:"Vendor App",geography:"PK Zone",city:"Karachi",comment:"Easy to sell best pieces. Want individual upload with separate pricing.",mainIssue:"Vendor App",period:"Mar 2026",submittedAt:"2026-03-17T16:39:29Z",source:"csv_upload"},
+  {seller:"Idraees",score:8,department:"Vendor App",geography:"PK Non-Zone",city:"Peshawar",comment:"Can sell one piece at a good price. AI generates wrong brand sometimes.",mainIssue:"Quality Check",period:"Mar 2026",submittedAt:"2026-03-17T23:51:29Z",source:"csv_upload"},
+];
+
+const SEED = [...sepEntries, ...novEntries, ...janEntries, ...marEntries];
+
+function getAllData() {
+  try {
+    const stored = localStorage.getItem('fleek_nps_v5');
+    if (stored) return JSON.parse(stored);
+  } catch(e){}
+  return SEED;
+}
+
+function calcNPS(entries) {
+  const total = entries.length;
+  if (!total) return { nps:0, total:0, pro:0, pass:0, det:0 };
+  const pro = entries.filter(e => e.score >= 9).length;
+  const pass = entries.filter(e => e.score >= 7 && e.score <= 8).length;
+  const det = entries.filter(e => e.score <= 6).length;
+  return { nps: Math.round((pro - det) / total * 100), total, pro, pass, det };
+}
+
+// ─── POPULATE PERIOD SELECTOR ─────────────────────────────────────────────────
+function populatePeriods() {
+  const allData = getAllData();
+  const periods = [...new Set(allData.map(e => e.period))].sort();
+  const sel = document.getElementById('periodSelect');
+  sel.innerHTML = '<option value="latest">Latest — ' + periods[periods.length-1] + '</option>' +
+    '<option value="all">All Time</option>' +
+    periods.map(p => `<option value="${p}"${p === periods[periods.length-1] ? '' : ''}>${p}</option>`).join('');
+}
+
+// ─── MAIN RENDER ──────────────────────────────────────────────────────────────
+function renderView() {
+  const allData = getAllData();
+  const periods = [...new Set(allData.map(e => e.period))].sort();
+  const latestPeriod = periods[periods.length - 1];
+  const sel = document.getElementById('periodSelect').value;
+  const isAll = sel === 'all';
+  const activePeriod = (sel === 'latest') ? latestPeriod : sel;
+  const data = isAll ? allData : allData.filter(e => e.period === activePeriod);
+  const label = isAll ? 'All Time' : activePeriod;
+
+  const { nps, total, pro, pass, det } = calcNPS(data);
+  const proP = total ? Math.round(pro/total*100) : 0;
+  const passP = total ? Math.round(pass/total*100) : 0;
+  const detP = total ? Math.round(det/total*100) : 0;
+
+  // Previous period delta
+  const curIdx = periods.indexOf(activePeriod);
+  const prevPeriod = (!isAll && curIdx > 0) ? periods[curIdx-1] : null;
+  const prevNPS = prevPeriod ? calcNPS(allData.filter(e=>e.period===prevPeriod)).nps : null;
+  const delta = prevNPS !== null ? nps - prevNPS : null;
+
+  const npsColor = nps >= 20 ? 'var(--green)' : nps >= 0 ? 'var(--orange)' : 'var(--red)';
+  const health = nps >= 50 ? 'EXCELLENT' : nps >= 20 ? 'GOOD' : nps >= 0 ? 'NEEDS WORK' : 'CRITICAL';
+
+  // Score distribution 0-10
+  const dist = Array(11).fill(0);
+  data.forEach(e => { if(e.score>=0 && e.score<=10) dist[e.score]++; });
+  const maxDist = Math.max(...dist, 1);
+
+  // Dept breakdown
+  const depts = ['Seller Support','Quality Check','Payments','Shipping & Logistics','Vendor App','Sales & Visibility'];
+  const deptRows = depts.map(d => {
+    const dd = data.filter(e=>e.department===d);
+    if (!dd.length) return null;
+    const n = calcNPS(dd);
+    const c = n.nps>=10?'var(--green)':n.nps>=0?'var(--orange)':'var(--red)';
+    return { name:d, total:dd.length, nps:n.nps, color:c, proP:Math.round(dd.filter(e=>e.score>=9).length/dd.length*100), detP:Math.round(dd.filter(e=>e.score<=6).length/dd.length*100) };
+  }).filter(Boolean).sort((a,b)=>b.nps-a.nps);
+
+  // Geo breakdown
+  const zones = ['PK Zone','PK Non-Zone','India','ROW'];
+  const geoCards = zones.map(z => {
+    const zd = data.filter(e=>e.geography===z);
+    if (!zd.length) return null;
+    const n = calcNPS(zd);
+    const c = n.nps>=10?'var(--green)':n.nps>=0?'var(--orange)':'var(--red)';
+    return { zone:z, total:zd.length, nps:n.nps, color:c };
+  }).filter(Boolean);
+
+  // History for trend chart
+  const histData = periods.map(p => {
+    const pd = allData.filter(e=>e.period===p);
+    const n = calcNPS(pd);
+    return { period:p, nps:n.nps, total:n.total };
+  });
+  const minNPS = Math.min(...histData.map(h=>h.nps), -15);
+  const maxNPS = Math.max(...histData.map(h=>h.nps), 15);
+  const range = maxNPS - minNPS || 1;
+
+  // Promoter/detractor comments
+  const detComments = data.filter(e=>e.score<=6&&(e.comment||e.biggestIssues)).slice(0,4);
+  const proComments = data.filter(e=>e.score>=9&&e.comment).slice(0,3);
+
+  const now = new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+
+  document.getElementById('footerMeta').textContent = `Generated ${now} · Internal Report · Confidential`;
+
+  document.getElementById('mainContent').innerHTML = `
+
+    <!-- PERIOD HEADER -->
+    <div class="period-hero">
       <div>
-        <div class="dist-row"><div class="dist-score" style="color:var(--yellow)">10</div><div class="dist-cat cat-pro">PROMOTER</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:100%;background:var(--green)"></div></div><div class="dist-count">38</div><div class="dist-pct">25.9%</div></div>
-        <div class="dist-row"><div class="dist-score" style="color:var(--yellow)">9</div><div class="dist-cat cat-pro">PROMOTER</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:39.5%;background:var(--green)"></div></div><div class="dist-count">15</div><div class="dist-pct">10.2%</div></div>
-        <div class="dist-row"><div class="dist-score" style="color:var(--yellow)">8</div><div class="dist-cat cat-pass">PASSIVE</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:73.7%;background:var(--yellow)"></div></div><div class="dist-count">28</div><div class="dist-pct">19.0%</div></div>
-        <div class="dist-row"><div class="dist-score" style="color:var(--yellow)">7</div><div class="dist-cat cat-pass">PASSIVE</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:39.5%;background:var(--yellow)"></div></div><div class="dist-count">15</div><div class="dist-pct">10.2%</div></div>
-        <div class="dist-row"><div class="dist-score" style="color:var(--red)">6</div><div class="dist-cat cat-det">DETRACTOR</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:26.3%;background:var(--red)"></div></div><div class="dist-count">10</div><div class="dist-pct">6.8%</div></div>
-        <div class="dist-row"><div class="dist-score" style="color:var(--red)">5</div><div class="dist-cat cat-det">DETRACTOR</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:39.5%;background:var(--red)"></div></div><div class="dist-count">15</div><div class="dist-pct">10.2%</div></div>
-        <div class="dist-row"><div class="dist-score" style="color:var(--red)">4</div><div class="dist-cat cat-det">DETRACTOR</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:23.7%;background:var(--red)"></div></div><div class="dist-count">9</div><div class="dist-pct">6.1%</div></div>
-        <div class="dist-row"><div class="dist-score" style="color:var(--red)">3</div><div class="dist-cat cat-det">DETRACTOR</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:21.1%;background:var(--red)"></div></div><div class="dist-count">8</div><div class="dist-pct">5.4%</div></div>
-        <div class="dist-row"><div class="dist-score" style="color:var(--red)">1</div><div class="dist-cat cat-det">DETRACTOR</div><div class="dist-bar-bg"><div class="dist-bar-fill" style="--w:21.1%;background:var(--red)"></div></div><div class="dist-count">8</div><div class="dist-pct">5.4%</div></div>
+        <div class="period-title">${label}</div>
+        <div class="period-subtitle">SELLER NPS REPORT · ${total} RESPONSES · <span style="color:${npsColor}">${health}</span></div>
+      </div>
+      ${delta !== null ? `<div class="trend-badge">
+        <span style="color:var(--muted);font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase">vs ${prevPeriod}</span>
+        <span class="trend-val" style="color:${delta>0?'var(--green)':delta<0?'var(--red)':'var(--muted)'}">${delta>0?'▲ +':'▼ '}${delta}</span>
+      </div>` : ''}
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="stats-grid">
+      <div class="stat-card nps">
+        <div class="stat-label">NPS Score</div>
+        <div class="stat-value" style="color:${npsColor}">${nps>0?'+':''}${nps}</div>
+        <div class="stat-sub">${health}</div>
+      </div>
+      <div class="stat-card pro">
+        <div class="stat-label">Promoters (9–10)</div>
+        <div class="stat-value" style="color:var(--green)">${proP}%</div>
+        <div class="stat-sub">${pro} sellers</div>
+      </div>
+      <div class="stat-card pass">
+        <div class="stat-label">Passives (7–8)</div>
+        <div class="stat-value" style="color:var(--orange)">${passP}%</div>
+        <div class="stat-sub">${pass} sellers</div>
+      </div>
+      <div class="stat-card det">
+        <div class="stat-label">Detractors (0–6)</div>
+        <div class="stat-value" style="color:var(--red)">${detP}%</div>
+        <div class="stat-sub">${det} sellers</div>
       </div>
     </div>
-    <div>
-      <div class="sec-tag">VISUAL BREAKDOWN</div>
-      <div class="sec-title" style="margin-bottom:16px">January 2026 NPS</div>
-      <div class="card">
-        <div style="display:flex;gap:24px;align-items:center">
-          <div class="donut-wrap">
-            <svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="80" fill="none" stroke="#E8453C" stroke-width="28" stroke-dasharray="174.3 327.4" stroke-dashoffset="0"></circle><circle cx="100" cy="100" r="80" fill="none" stroke="#F5C518" stroke-width="28" stroke-dasharray="147.3 354.4" stroke-dashoffset="-174.3"></circle><circle cx="100" cy="100" r="80" fill="none" stroke="#3DD68C" stroke-width="28" stroke-dasharray="181.6 320.1" stroke-dashoffset="-321.6"></circle></svg>
-            <div class="donut-center"><div class="donut-num">+1</div><div class="donut-sub">NPS</div></div>
+
+    <!-- TREND + SCORE DIST -->
+    <div class="two-col">
+
+      <div class="section" style="border-left-color:var(--yellow)">
+        <div class="section-title">NPS Trend Over Time</div>
+        <div class="trend-chart">
+          <div class="trend-points">
+            ${histData.map(h => {
+              const heightPct = Math.round(((h.nps - minNPS) / range) * 80) + 5;
+              const c = h.nps>=20?'var(--green)':h.nps>=0?'var(--orange)':'var(--red)';
+              const isActive = (!isAll && h.period === activePeriod) || isAll;
+              return `<div class="trend-bar-wrap${isActive?' active':''}" title="${h.period}: NPS ${h.nps>0?'+':''}${h.nps}">
+                <div class="trend-bar" style="height:${heightPct}%;background:${c};opacity:${isAll||h.period===activePeriod?1:0.35}"></div>
+              </div>`;
+            }).join('')}
           </div>
-          <div style="flex:1">
-            <div class="dl-item"><div class="dl-dot" style="background:var(--green)"></div><div class="dl-label">Promoters</div><div class="dl-vals" style="color:var(--green)">53 <span class="dl-pct">36.1%</span></div></div>
-            <div class="dl-item"><div class="dl-dot" style="background:var(--yellow)"></div><div class="dl-label">Passives</div><div class="dl-vals" style="color:var(--yellow)">43 <span class="dl-pct">29.3%</span></div></div>
-            <div class="dl-item"><div class="dl-dot" style="background:var(--red)"></div><div class="dl-label">Detractors</div><div class="dl-vals" style="color:var(--red)">51 <span class="dl-pct">34.7%</span></div></div>
+          <div class="trend-nps-labels" style="margin-top:6px">
+            ${histData.map(h => {
+              const c = h.nps>=20?'var(--green)':h.nps>=0?'var(--orange)':'var(--red)';
+              return `<div class="trend-nps-label" style="color:${c}">${h.nps>0?'+':''}${h.nps}</div>`;
+            }).join('')}
+          </div>
+          <div class="trend-labels">
+            ${histData.map(h => `<div class="trend-label">${h.period.replace(' ','<br/>')}</div>`).join('')}
           </div>
         </div>
       </div>
+
+      <div class="section" style="border-left-color:var(--yellow)">
+        <div class="section-title">Score Distribution</div>
+        <div class="ring-wrap" style="flex-direction:column;gap:16px">
+          <div class="score-dist">
+            ${dist.map((count,score) => {
+              const c = score>=9?'var(--green)':score>=7?'var(--orange)':'var(--red)';
+              const h = Math.round((count/maxDist)*60)+4;
+              return `<div class="score-bar-wrap" title="${score}: ${count} responses">
+                <div class="score-bar" style="height:${h}px;background:${c}"></div>
+                <div class="score-num">${score}</div>
+              </div>`;
+            }).join('')}
+          </div>
+          <div style="display:flex;gap:20px;justify-content:center;font-size:0.75rem">
+            <span><span style="color:var(--green)">■</span> Promoters ${proP}%</span>
+            <span><span style="color:var(--orange)">■</span> Passives ${passP}%</span>
+            <span><span style="color:var(--red)">■</span> Detractors ${detP}%</span>
+          </div>
+        </div>
+      </div>
+
     </div>
-  </div>
 
-  <hr class="sec-divider">
+    <!-- DEPARTMENT BREAKDOWN -->
+    ${deptRows.length ? `<div class="section">
+      <div class="section-title">By Department</div>
+      ${deptRows.map(d => `
+        <div class="bar-row">
+          <span class="bar-label">${d.name}</span>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${Math.max(5,50+d.nps/2)}%;background:${d.color}"></div>
+          </div>
+          <span class="bar-val" style="color:${d.color}">${d.nps>0?'+':''}${d.nps}</span>
+          <span style="color:var(--muted);font-size:0.72rem;min-width:60px;text-align:right">${d.total} resp.</span>
+        </div>`).join('')}
+    </div>` : ''}
 
-  <!-- TOP PROBLEMS -->
-  <div class="sec-tag reveal">EXECUTIVE SUMMARY</div>
-  <div class="sec-title reveal">Top 5 Problems Driving Detractor Scores</div>
-  <div class="card reveal" style="margin-bottom:28px">
-    <div class="prob-row"><div class="prob-rank">01</div><div><div class="prob-name">Refund Policy</div><div class="prob-desc">Perceived as unfair to sellers — most cited issue by far</div></div><span class="impact-badge impact-critical">CRITICAL</span><div class="prob-pct" style="color:var(--red)">33.3%</div></div>
-    <div class="prob-row"><div class="prob-rank">02</div><div><div class="prob-name">Seller Support</div><div class="prob-desc">Slow response times, unhelpful resolutions</div></div><span class="impact-badge impact-high">HIGH</span><div class="prob-pct" style="color:var(--orange)">25.2%</div></div>
-    <div class="prob-row"><div class="prob-rank">03</div><div><div class="prob-name">Quality Check</div><div class="prob-desc">Inconsistent QC — items wrongly flagged or rejected</div></div><span class="impact-badge impact-high">HIGH</span><div class="prob-pct" style="color:var(--orange)">19.0%</div></div>
-    <div class="prob-row"><div class="prob-rank">04</div><div><div class="prob-name">Vendor App</div><div class="prob-desc">Performance issues, crashes, poor UX</div></div><span class="impact-badge impact-high">HIGH</span><div class="prob-pct" style="color:var(--orange)">17.7%</div></div>
-    <div class="prob-row"><div class="prob-rank">05</div><div><div class="prob-name">Sales &amp; Visibility</div><div class="prob-desc">New sellers struggle with discoverability</div></div><span class="impact-badge impact-medium">MEDIUM</span><div class="prob-pct" style="color:var(--blue)">17.7%</div></div>
-  </div>
+    <!-- GEO BREAKDOWN -->
+    ${geoCards.length ? `<div class="section">
+      <div class="section-title">By Geography</div>
+      <div class="geo-grid">
+        ${geoCards.map(g => `
+          <div class="geo-card">
+            <div class="geo-name">${g.zone}</div>
+            <div class="geo-nps" style="color:${g.color}">${g.nps>0?'+':''}${g.nps}</div>
+            <div class="geo-total">${g.total} responses</div>
+          </div>`).join('')}
+      </div>
+    </div>` : ''}
 
-  <hr class="sec-divider">
+    <!-- COMMENTS -->
+    <div class="two-col">
 
-  <!-- DEPT -->
-  <div class="sec-tag reveal">DEPARTMENT VIEW</div>
-  <div class="sec-title reveal">NPS by Department — Jan 2026</div>
-  <div class="dept-grid reveal">
-    <div class="dept-card">
-      <div class="dept-name">Seller Support</div>
-      <div class="dept-nps" style="color:var(--red)">–18</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:10px">OPPORTUNITY · 47 RESPONSES</div>
-      <div style="height:4px;background:var(--border2);border-radius:999px;overflow:hidden"><div style="height:100%;width:41%;background:var(--red);border-radius:999px"></div></div>
+      ${detComments.length ? `<div class="section" style="border-left-color:var(--red)">
+        <div class="section-title" style="color:var(--red)">⚠️ Detractor Voices</div>
+        ${detComments.map(c => `
+          <div class="comment-card">
+            <span class="score-badge" style="background:rgba(232,69,60,0.15);border:1px solid rgba(232,69,60,0.3);color:var(--red)">${c.score}/10</span>
+            <div>
+              <div class="comment-seller">${c.seller||'Unknown'}</div>
+              <div class="comment-text">${c.comment||c.biggestIssues||'—'}</div>
+            </div>
+          </div>`).join('')}
+      </div>` : '<div></div>'}
+
+      ${proComments.length ? `<div class="section" style="border-left-color:var(--green)">
+        <div class="section-title" style="color:var(--green)">🟢 Promoter Voices</div>
+        ${proComments.map(c => `
+          <div class="comment-card">
+            <span class="score-badge" style="background:rgba(61,214,140,0.15);border:1px solid rgba(61,214,140,0.3);color:var(--green)">${c.score}/10</span>
+            <div>
+              <div class="comment-seller">${c.seller||'Unknown'}</div>
+              <div class="comment-text">${c.comment||'—'}</div>
+            </div>
+          </div>`).join('')}
+      </div>` : '<div></div>'}
+
     </div>
-    <div class="dept-card">
-      <div class="dept-name">Quality Check</div>
-      <div class="dept-nps" style="color:var(--yellow)">–5</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:10px">MIXED · 28 RESPONSES</div>
-      <div style="height:4px;background:var(--border2);border-radius:999px;overflow:hidden"><div style="height:100%;width:40%;background:var(--yellow);border-radius:999px"></div></div>
-    </div>
-    <div class="dept-card">
-      <div class="dept-name">Payments</div>
-      <div class="dept-nps" style="color:var(--red)">–12</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:10px">BROKEN · 22 RESPONSES</div>
-      <div style="height:4px;background:var(--border2);border-radius:999px;overflow:hidden"><div style="height:100%;width:33.8%;background:var(--blue);border-radius:999px"></div></div>
-    </div>
-    <div class="dept-card">
-      <div class="dept-name">Shipping & Logistics</div>
-      <div class="dept-nps" style="color:var(--green)">+42</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:10px">STRENGTH · 18 RESPONSES</div>
-      <div style="height:4px;background:var(--border2);border-radius:999px;overflow:hidden"><div style="height:100%;width:33.1%;background:var(--green);border-radius:999px"></div></div>
-    </div>
-    <div class="dept-card">
-      <div class="dept-name">Vendor App</div>
-      <div class="dept-nps" style="color:var(--red)">–20</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:10px">HIGH PRIORITY · 20 RESPONSES</div>
-      <div style="height:4px;background:var(--border2);border-radius:999px;overflow:hidden"><div style="height:100%;width:17%;background:var(--red);border-radius:999px"></div></div>
-    </div>
-    <div class="dept-card">
-      <div class="dept-name">Sales & Visibility</div>
-      <div class="dept-nps" style="color:var(--yellow)">+10</div>
-      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:10px">CORE VALUE · 12 RESPONSES</div>
-      <div style="height:4px;background:var(--border2);border-radius:999px;overflow:hidden"><div style="height:100%;width:30.3%;background:var(--yellow);border-radius:999px"></div></div>
-    </div>
-  </div>
 
-  <hr class="sec-divider">
+  `;
+}
 
-  <!-- VALUE DRIVERS -->
-  <div class="sec-tag reveal">PART TWO · WHAT DRIVES VALUE</div>
-  <div class="sec-title reveal">What Sellers Tell Us They Value</div>
-  <div class="val-grid reveal">
-    <div class="val-card"><div class="val-area">Reliable Payments</div><div class="val-pct" style="color:var(--green)">51.7%</div><span class="val-status s-strength">STRENGTH</span><div style="font-size:11px;color:var(--muted);margin-bottom:8px">Sellers' #1 value driver — must never slip</div><div class="val-meter"><div class="val-meter-fill" style="--w:51.7%;background:var(--green)"></div></div></div>
-    <div class="val-card"><div class="val-area">Quality Assurance</div><div class="val-pct" style="color:var(--yellow)">40.1%</div><span class="val-status s-mixed">MIXED</span><div style="font-size:11px;color:var(--muted);margin-bottom:8px">Fix inconsistencies, keep rigor</div><div class="val-meter"><div class="val-meter-fill" style="--w:40%;background:var(--yellow)"></div></div></div>
-    <div class="val-card"><div class="val-area">Seller Support</div><div class="val-pct" style="color:var(--blue)">33.8%</div><span class="val-status s-opportunity">OPPORTUNITY</span><div style="font-size:11px;color:var(--muted);margin-bottom:8px">Fixing issues will amplify perceived value</div><div class="val-meter"><div class="val-meter-fill" style="--w:33.8%;background:var(--blue)"></div></div></div>
-    <div class="val-card"><div class="val-area">Shipping & Logistics</div><div class="val-pct" style="color:var(--green)">33.1%</div><span class="val-status s-strength">STRENGTH</span><div style="font-size:11px;color:var(--muted);margin-bottom:8px">Continue operational excellence</div><div class="val-meter"><div class="val-meter-fill" style="--w:33.1%;background:var(--green)"></div></div></div>
-    <div class="val-card"><div class="val-area">Sales Channel</div><div class="val-pct" style="color:var(--yellow)">30.3%</div><span class="val-status s-mixed">CORE VALUE</span><div style="font-size:11px;color:var(--muted);margin-bottom:8px">Access to global buyers is why they're here</div><div class="val-meter"><div class="val-meter-fill" style="--w:30.3%;background:var(--yellow)"></div></div></div>
-    <div class="val-card"><div class="val-area">Refund Process</div><div class="val-pct" style="color:var(--red)">13.1%</div><span class="val-status s-broken">BROKEN</span><div style="font-size:11px;color:var(--muted);margin-bottom:8px">Valued by 13.1% — significant redesign opportunity</div><div class="val-meter"><div class="val-meter-fill" style="--w:13.1%;background:var(--red)"></div></div></div>
-  </div>
-
-</div>
-
-<footer>
-  <div class="footer-logo">FLEEK — SELLER SUPPORT TEAM</div>
-  <div class="footer-note">NPS REPORT · JANUARY 2026 · 147 RESPONDENTS · CONFIDENTIAL</div>
-</footer>
-
-<script>
-if(sessionStorage.getItem('nps_role')!=='viewer'&&sessionStorage.getItem('nps_role')!=='admin') window.location.href='/';
-function logout(){sessionStorage.removeItem('nps_role');window.location.href='/';}
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+populatePeriods();
+renderView();
 </script>
 </body>
 </html>
